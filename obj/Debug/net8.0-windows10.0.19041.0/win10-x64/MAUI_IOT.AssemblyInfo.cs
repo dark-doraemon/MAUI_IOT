@@ -11,14 +11,14 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyMetadataAttribute("Microsoft.Maui.ApplicationModel.AppInfo.PackageName", "com.companyname.maui_iot")]
+[assembly: System.Reflection.AssemblyMetadataAttribute("Microsoft.Maui.ApplicationModel.AppInfo.PackageName", "com.companyname.maui-iot")]
 [assembly: System.Reflection.AssemblyMetadataAttribute("Microsoft.Maui.ApplicationModel.AppInfo.PublisherName", "User Name")]
 [assembly: System.Reflection.AssemblyMetadataAttribute("Microsoft.Maui.ApplicationModel.AppInfo.Name", "MAUI_IOT")]
 [assembly: System.Reflection.AssemblyMetadataAttribute("Microsoft.Maui.ApplicationModel.AppInfo.Version", "1.0.0.1")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("MAUI_IOT")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+f7e22b73b3684d96f93b95367a6ed6c61d9be4ff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+751c2c2222cfc0305a6fed8c465c977380b90ad4")]
 [assembly: System.Reflection.AssemblyProductAttribute("MAUI_IOT")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MAUI_IOT")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
