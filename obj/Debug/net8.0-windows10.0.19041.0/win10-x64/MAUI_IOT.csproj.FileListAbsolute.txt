@@ -176,3 +176,13 @@ D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\qualifier
 D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\qualifiers.txt.intermediate
 D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
 D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\ProjectArchitectures.txt
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.AspNetCore.Connections.Abstractions.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.AspNetCore.Http.Connections.Client.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.AspNetCore.Http.Connections.Common.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.AspNetCore.SignalR.Client.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.AspNetCore.SignalR.Client.Core.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.AspNetCore.SignalR.Common.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.Extensions.Features.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\System.IO.Pipelines.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Newtonsoft.Json.dll
