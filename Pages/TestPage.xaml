@@ -11,7 +11,9 @@
 
         <Button Text="Connect to node-red" Clicked="Button_Clicked"/>
 
+        <Label Text="Nhiệt độ"/>
         <Label x:Name="lbl_temperature" />
+        <Label Text="Độ ẩm"/>
         <Label x:Name="lbl_humidity" />
 
     </VerticalStackLayout>

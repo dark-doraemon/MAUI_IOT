@@ -8,7 +8,7 @@ namespace MAUI_IOT.Pages;
 public partial class TestPage : ContentPage
 {
     ESP32Sensor esp32Sensor;
-    string uriString = "ws://127.0.0.1:1880/test2";
+    string uriString = "ws://192.168.1.13:1880/test2";
     Uri uri;
     public TestPage()
     {
