@@ -8,7 +8,7 @@ namespace MAUI_IOT.Pages;
 public partial class TestPage : ContentPage
 {
     ESP32Sensor esp32Sensor;
-    string uriString = "ws://192.168.1.13:1880/test2";
+    string uriString = "ws://192.168.1.125:1880/test2";
     Uri uri;
     public TestPage()
     {
@@ -29,6 +29,9 @@ public partial class TestPage : ContentPage
         //đăng kí hàm sẽ gọi khi kết nối wifi thay đổi
         Connectivity.Current.ConnectivityChanged += Connectivity_ConnectivityChanged;
 
+
+        await esp32Sensor.ConnectAsync(uri);
+
     }
 
     private async void Sensor_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -45,15 +48,20 @@ public partial class TestPage : ContentPage
         }
     }
 
-    void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+    async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
     {
         if (Connectivity.Current.NetworkAccess == NetworkAccess.None)
         {
+            esp32Sensor.Close();
             DisplayAlert("Message", "Mất kết nối", "OK");
+            this.lbl_humidity.Text = "";
+            this.lbl_temperature.Text = "";
         }
         else
         {
-            DisplayAlert("Message", "Đã kết nối", "Ok");
+            //DisplayAlert("Message", "Đã kết nối", "Ok");
+            await esp32Sensor.ConnectAsync(uri);
+
         }
     }
 
@@ -65,12 +73,7 @@ public partial class TestPage : ContentPage
         }
         else
         {
-            if (esp32Sensor.isConnected == true)
-            {
-                DisplayAlert("Thông báo", "Bạn đã kết nối tới node-red", "OK");
-            }
-
-            await esp32Sensor.ConnectAsync(uri);
+            //await esp32Sensor.ConnectAsync(uri);
         }
     }
 

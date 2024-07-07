@@ -11,7 +11,6 @@ namespace MAUI_IOT.Hubs
 {
     class ESP32Sensor : INotifyPropertyChanged
     {
-        public bool isConnected { get; private set; } = false;
 
         private ClientWebSocket clientWebSocket;
 
@@ -45,16 +44,17 @@ namespace MAUI_IOT.Hubs
         {
             try
             {
-                if (clientWebSocket.State == WebSocketState.Open)
+                // Kiểm tra nếu WebSocket ở trạng thái không thể sử dụng lại
+                if (clientWebSocket.State == WebSocketState.Closed || clientWebSocket.State == WebSocketState.Aborted)
                 {
-                    isConnected = true;
+                    clientWebSocket.Dispose();
+                    clientWebSocket = new ClientWebSocket();
                 }
                 //kết nối 
                 await clientWebSocket.ConnectAsync(uri, CancellationToken.None);
 
                 if (clientWebSocket.State == WebSocketState.Open)
                 {
-                    isConnected = true;
                     Debug.WriteLine("Connected successfully.");
 
                     // Đọc dữ liệu
@@ -62,7 +62,6 @@ namespace MAUI_IOT.Hubs
                 }
                 else
                 {
-                    isConnected = false;
                 }
 
             }
@@ -88,6 +87,14 @@ namespace MAUI_IOT.Hubs
 
                     ReceivedData = message; // Update ReceivedData property, khi update thì nõ sẽ update trong setter, mà trong setter sẽ kích hoạt PropertyChanged 
                 }
+            }
+        }
+
+        public void Close()
+        {
+            if (clientWebSocket.State == WebSocketState.Aborted)
+            {
+                clientWebSocket.Dispose();
             }
         }
         

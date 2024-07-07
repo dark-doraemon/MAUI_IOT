@@ -4,17 +4,20 @@
              x:Class="MAUI_IOT.Pages.TestPage"
              Title="TestPage">
     <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
 
-        <Button Text="Connect to node-red" Clicked="Button_Clicked"/>
+        <!--<Button Text="Connect to node-red" Clicked="Button_Clicked"/>-->
 
-        <Label Text="Nhiệt độ"/>
-        <Label x:Name="lbl_temperature" />
-        <Label Text="Độ ẩm"/>
-        <Label x:Name="lbl_humidity" />
 
+        <VerticalStackLayout >
+            <HorizontalStackLayout>
+                <Label Text="Nhiệt độ" WidthRequest="150"/>
+                <Label x:Name="lbl_temperature" WidthRequest="150" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <Label Text="Độ ẩm" WidthRequest="150"/>
+                <Label x:Name="lbl_humidity" WidthRequest="150"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

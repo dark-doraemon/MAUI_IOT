@@ -299,3 +299,13 @@ D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-maccatalyst\maccatalyst-x64\refint\MAUI
 D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-maccatalyst\maccatalyst-x64\MAUI_IOT.pdb
 D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-maccatalyst\maccatalyst-x64\MAUI_IOT.genruntimeconfig.cache
 D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-maccatalyst\maccatalyst-x64\ref\MAUI_IOT.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.AspNetCore.Connections.Abstractions.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.AspNetCore.Http.Connections.Client.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.AspNetCore.Http.Connections.Common.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.AspNetCore.SignalR.Client.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.AspNetCore.SignalR.Client.Core.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.AspNetCore.SignalR.Common.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Microsoft.Extensions.Features.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\Newtonsoft.Json.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-maccatalyst\maccatalyst-x64\System.IO.Pipelines.dll
