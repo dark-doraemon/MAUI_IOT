@@ -2,23 +2,35 @@
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        private NodeRedConnector _connector;
+
 
         public MainPage()
         {
+            _connector = new NodeRedConnector("http://127.0.0.1:1880");
+            
+            Button sendButton = new Button { Text = "Send to Node-RED" };
+            sendButton.Clicked += OnConnectClicked;
+
+            Content = new StackLayout
+            {
+                Children = { sendButton }
+            };
             InitializeComponent();
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private async void OnConnectClicked(object sender, EventArgs e)
         {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            try
+            {
+                var payload = new { message = "Hello from MAUI!" };
+                string result = await _connector.SendMessageToNodeRed("/api/data",payload);
+                await DisplayAlert("Success", $"Response: {result}", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
     }
 
