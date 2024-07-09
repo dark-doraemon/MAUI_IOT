@@ -2,14 +2,22 @@
 using MAUI_IOT.Models;
 using Newtonsoft.Json;
 using System.Data;
-
+using SkiaSharp;
+using Microcharts.Maui;
+using Microcharts;
+using System.Collections.ObjectModel;
+using LiveChartsCore.Defaults;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
 namespace MAUI_IOT.Pages;
 
 public partial class TestPage : ContentPage
 {
+   
     ESP32Sensor esp32Sensor;
     string uriString = "ws://192.168.1.125:1880/test2";
     Uri uri;
+
     public TestPage()
     {
         InitializeComponent();
@@ -17,8 +25,9 @@ public partial class TestPage : ContentPage
         esp32Sensor = new ESP32Sensor();
 
         uri = new Uri(uriString);
-
     }
+
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
@@ -28,10 +37,7 @@ public partial class TestPage : ContentPage
 
         //đăng kí hàm sẽ gọi khi kết nối wifi thay đổi
         Connectivity.Current.ConnectivityChanged += Connectivity_ConnectivityChanged;
-
-
         await esp32Sensor.ConnectAsync(uri);
-
     }
 
     private async void Sensor_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -44,7 +50,6 @@ public partial class TestPage : ContentPage
             // Update UI khi có dữ liệu mới
             this.lbl_temperature.Text = eSP32Model.Temperature.ToString();
             this.lbl_humidity.Text = eSP32Model.Humidity.ToString();
-
         }
     }
 
@@ -61,7 +66,6 @@ public partial class TestPage : ContentPage
         {
             //DisplayAlert("Message", "Đã kết nối", "Ok");
             await esp32Sensor.ConnectAsync(uri);
-
         }
     }
 

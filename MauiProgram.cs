@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using MAUI_IOT.ViewModels;
+using MAUI_IOT.Views;
+using Microcharts.Maui;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
-
+using SkiaSharp.Views.Maui.Controls.Hosting; 
 namespace MAUI_IOT
 {
     public static class MauiProgram
@@ -10,6 +13,8 @@ namespace MAUI_IOT
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp(true)
+                .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -19,6 +24,10 @@ namespace MAUI_IOT
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddSingleton<ESP32View>();
+
+            builder.Services.AddSingleton<ESP32ViewModel>();
 
             return builder.Build();
         }

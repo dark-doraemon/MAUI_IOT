@@ -2,11 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MAUI_IOT.Pages.TestPage"
+             xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              Title="TestPage">
     <VerticalStackLayout>
-
         <!--<Button Text="Connect to node-red" Clicked="Button_Clicked"/>-->
-
 
         <VerticalStackLayout >
             <HorizontalStackLayout>
@@ -19,5 +18,8 @@
                 <Label x:Name="lbl_humidity" WidthRequest="150"/>
             </HorizontalStackLayout>
         </VerticalStackLayout>
+        
+
     </VerticalStackLayout>
+
 </ContentPage>

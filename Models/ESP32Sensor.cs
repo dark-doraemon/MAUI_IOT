@@ -25,11 +25,11 @@ namespace MAUI_IOT.Hubs
             set
             {
                 //nếu mà dữ liệu khác trước đó thì cập nhật lại
-                if (_receivedData != value)
+                //if (_receivedData != value)
                 {
                     _receivedData = value;
 
-                    //khi dữ liệu thay đổi thì Invoke, Invoke hàm mà chúng ta đã đăng kí cho PropertyChanged (Ở TestPage)
+                    //khi dữ liệu thay đổi thì Invoke, Invoke hàm mà chúng ta đã đăng kí cho PropertyChanged 
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ReceivedData)));
                 }
             }

@@ -321,4 +321,13 @@ D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\Microsoft.AspNetCo
 D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\Microsoft.Extensions.Features.dll
 D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\Newtonsoft.Json.dll
 D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\System.IO.Pipelines.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\Microcharts.Maui.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\SkiaSharp.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\SkiaSharp.Views.iOS.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\SkiaSharp.Views.Maui.Controls.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\SkiaSharp.Views.Maui.Core.dll
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\Info.plist
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\module.modulemap
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\CodeResources
+D:\Code\Mobile\MAUI_IOT\bin\Debug\net8.0-ios\iossimulator-x64\libSkiaSharp
 D:\Code\Mobile\MAUI_IOT\obj\Debug\net8.0-ios\iossimulator-x64\build-signature\signature
