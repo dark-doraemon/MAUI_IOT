@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI_IOT.Views.ESP32View"
+             xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels.SensorViewModels"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             x:DataType="viewmodel:DHT11ViewModel"
+             Title="ESP32View">
+
+    <ContentPage.BindingContext>
+        <viewmodel:DHT11ViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Text="Connect" Clicked="Button_Clicked" />
+            
+            <VerticalStackLayout  Grid.Row="1">
+                <HorizontalStackLayout>
+                    <Label Text="Nhiệt độ" WidthRequest="150"/>
+                    <Label x:Name="lbl_temperature" WidthRequest="150" Text="{Binding Temp.Temperature}" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout>
+                    <Label Text="Độ ẩm" WidthRequest="150"/>
+                    <Label x:Name="lbl_humidity" WidthRequest="150" Text="{Binding Temp.Humidity}"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding Series}" ZoomMode="Both" ></lvc:CartesianChart>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

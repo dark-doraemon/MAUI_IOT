@@ -1,4 +1,5 @@
 ﻿using MAUI_IOT.ViewModels;
+using MAUI_IOT.ViewModels.SensorViewModels;
 using MAUI_IOT.Views;
 using Microcharts.Maui;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -25,9 +26,11 @@ namespace MAUI_IOT
     		builder.Logging.AddDebug();
 #endif
 
-            builder.Services.AddSingleton<ESP32View>();
 
-            builder.Services.AddSingleton<ESP32ViewModel>();
+            builder.Services.AddSingleton<DHT11ViewModel>();
+
+            builder.Services.AddSingleton<LoginView>();
+            builder.Services.AddSingleton<LoginViewModel>();
 
             return builder.Build();
         }

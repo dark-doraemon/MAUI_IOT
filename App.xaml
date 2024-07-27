@@ -9,6 +9,21 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Color x:Key="PrimaryColor">#042a59</Color>
+            <Color x:Key="SecondaryColor">White</Color>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}"></Setter>
+                <Setter Property="FontFamily" Value="OpenSansRegular"></Setter>
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="TextColor" Value="{DynamicResource SecondaryColor}"></Setter>
+                <Setter Property="FontFamily" Value="OpenSansRegular"></Setter>
+                <Setter Property="BackgroundColor" Value="{DynamicResource PrimaryColor}"></Setter>
+                <Setter Property="Padding" Value="14,10"></Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

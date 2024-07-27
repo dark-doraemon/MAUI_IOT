@@ -16,7 +16,13 @@
 
     <!--<ShellContent ContentTemplate="{DataTemplate pages:TestPage}"/>-->
     <!--<ShellContent ContentTemplate="{DataTemplate pages:ChartTesting}"/>-->
-    <ShellContent ContentTemplate="{DataTemplate views:ESP32View}"/> 
+    
+
+    <ShellContent ContentTemplate="{DataTemplate views:LoginView}"/>
+    <!--<TabBar>
+        <ShellContent Title="DHT11" ContentTemplate="{DataTemplate views:ESP32View}"/>
+        <ShellContent Title="ADXL345" ContentTemplate="{DataTemplate views:ADXL345View}"/>
+    </TabBar>-->
 
 
 </Shell>

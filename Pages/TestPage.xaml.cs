@@ -45,7 +45,7 @@ public partial class TestPage : ContentPage
         //kiểm tra xem tên thuộc tính có phải là ReceivedData không vì ta đã set thuộc tính PropertyName là ReceivedData ở hàm Invoke
         if (e.PropertyName == nameof(ESP32Sensor.ReceivedData))
         {
-            ESP32Model eSP32Model = JsonConvert.DeserializeObject<ESP32Model>(esp32Sensor.ReceivedData);
+            Temp eSP32Model = JsonConvert.DeserializeObject<Temp>(esp32Sensor.ReceivedData);
 
             // Update UI khi có dữ liệu mới
             this.lbl_temperature.Text = eSP32Model.Temperature.ToString();
