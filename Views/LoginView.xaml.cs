@@ -5,7 +5,6 @@ namespace MAUI_IOT.Views;
 
 public partial class LoginView : ContentPage
 {
-    LoginViewModel loginViewModel;
 	public LoginView(LoginViewModel vm)
 	{
 		InitializeComponent();
@@ -15,7 +14,6 @@ public partial class LoginView : ContentPage
             Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
         });
 
-        //loginViewModel = (LoginViewModel)BindingContext;
         BindingContext = vm;
     }
 

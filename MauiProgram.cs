@@ -1,4 +1,6 @@
-﻿using MAUI_IOT.ViewModels;
+﻿using MAUI_IOT.Services.Implements;
+using MAUI_IOT.Services.Interfaces;
+using MAUI_IOT.ViewModels;
 using MAUI_IOT.ViewModels.SensorViewModels;
 using MAUI_IOT.Views;
 using Microcharts.Maui;
@@ -25,12 +27,18 @@ namespace MAUI_IOT
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            builder.Services.AddTransient<IAuthService,AuthService>();
 
-
-            builder.Services.AddSingleton<DHT11ViewModel>();
+            builder.Services.AddTransient<LoadingView>();
 
             builder.Services.AddSingleton<LoginView>();
             builder.Services.AddSingleton<LoginViewModel>();
+
+            builder.Services.AddTransient<HomeView>();
+            builder.Services.AddTransient<HomeViewModel>();
+
+            builder.Services.AddTransient<ProfileView>();
+            builder.Services.AddTransient<ProfileViewModel>();
 
             return builder.Build();
         }

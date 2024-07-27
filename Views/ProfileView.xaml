@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI_IOT.Views.ProfileView"
+             xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
+             x:DataType="viewmodel:ProfileViewModel"
+             Title="Profile">
+    <VerticalStackLayout>
+        <Label 
+            Text="Welcome to .NET MAUI!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+
+
+        <Button Text="Log out" Command="{Binding LogoutCommand}"/>
+    </VerticalStackLayout>
+</ContentPage>

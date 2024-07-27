@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MAUI_IOT.Models;
+using MAUI_IOT.Views;
+using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +13,21 @@ namespace MAUI_IOT.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
+        private readonly HomeViewModel vm;
         [ObservableProperty]
         private Account _account;
 
-        public LoginViewModel()
+        public LoginViewModel(HomeViewModel vm)
         {
             _account = new Account();
+            this.vm = vm;
         }
 
         [RelayCommand]
-        public void Login()
+        public async void Login()
         {
-            string username = _account.Username;
-            string password = _account.Password;
+            Shell.Current.GoToAsync($"//{nameof(HomeView)}");
+            //App.Current.MainPage = new NavigationPage(new HomeView(vm));  
         }
     }
 }

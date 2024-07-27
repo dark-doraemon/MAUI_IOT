@@ -6,8 +6,8 @@
     xmlns:local="clr-namespace:MAUI_IOT"
     xmlns:pages="clr-namespace:MAUI_IOT.Pages"
     xmlns:views="clr-namespace:MAUI_IOT.Views"
-    Shell.FlyoutBehavior="Disabled"
-    Title="MAUI_IOT">
+    Title="MAUI_IOT"
+    Shell.FlyoutBehavior="Flyout">
 
     <!--<ShellContent
         Title="Home"
@@ -16,13 +16,32 @@
 
     <!--<ShellContent ContentTemplate="{DataTemplate pages:TestPage}"/>-->
     <!--<ShellContent ContentTemplate="{DataTemplate pages:ChartTesting}"/>-->
-    
 
-    <ShellContent ContentTemplate="{DataTemplate views:LoginView}"/>
-    <!--<TabBar>
-        <ShellContent Title="DHT11" ContentTemplate="{DataTemplate views:ESP32View}"/>
-        <ShellContent Title="ADXL345" ContentTemplate="{DataTemplate views:ADXL345View}"/>
-    </TabBar>-->
+
+    <ShellContent
+        ContentTemplate="{DataTemplate views:LoadingView}"
+        Shell.FlyoutBehavior="Disabled"
+        Shell.FlyoutItemIsVisible="False" />
+
+
+    <ShellContent
+        ContentTemplate="{DataTemplate views:LoginView}"
+        Shell.FlyoutBehavior="Disabled"
+        Shell.FlyoutItemIsVisible="False" />
+
+
+    <TabBar>
+        <ShellContent
+            Title="Lesson"
+            ContentTemplate="{DataTemplate views:HomeView}"
+            Route="HomeView" />
+
+        <ShellContent
+            Title="Profile"
+            ContentTemplate="{DataTemplate views:ProfileView}"
+            Route="ProfileView" />
+    </TabBar>
+
 
 
 </Shell>
