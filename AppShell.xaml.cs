@@ -8,6 +8,7 @@ namespace MAUI_IOT
         {
             InitializeComponent();
 
+            Routing.RegisterRoute(nameof(LoadingView),typeof(LoadingView));
             Routing.RegisterRoute(nameof(HomeView),typeof(HomeView));
             Routing.RegisterRoute(nameof(ProfileView),typeof(ProfileView));
             Routing.RegisterRoute(nameof(LoginView),typeof(LoginView));

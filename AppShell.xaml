@@ -9,28 +9,20 @@
     Title="MAUI_IOT"
     Shell.FlyoutBehavior="Flyout">
 
-    <!--<ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />-->
-
-    <!--<ShellContent ContentTemplate="{DataTemplate pages:TestPage}"/>-->
-    <!--<ShellContent ContentTemplate="{DataTemplate pages:ChartTesting}"/>-->
-
-
     <ShellContent
         ContentTemplate="{DataTemplate views:LoadingView}"
         Shell.FlyoutBehavior="Disabled"
         Shell.FlyoutItemIsVisible="False" />
 
-
     <ShellContent
         ContentTemplate="{DataTemplate views:LoginView}"
         Shell.FlyoutBehavior="Disabled"
-        Shell.FlyoutItemIsVisible="False" />
+        Shell.FlyoutItemIsVisible="False" 
+        Route="LoginView"
+        Shell.TabBarIsVisible="False"/>
 
 
-    <TabBar>
+    <TabBar >
         <ShellContent
             Title="Lesson"
             ContentTemplate="{DataTemplate views:HomeView}"

@@ -9,5 +9,9 @@ namespace MAUI_IOT.Services.Implements
     public interface IAuthService
     {
         public Task<bool> IsAuthenticatedAsync();
+
+        public void Login();
+        public void Logout();
+
     }
 }
