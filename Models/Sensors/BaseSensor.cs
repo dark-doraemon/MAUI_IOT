@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MAUI_IOT.Models
 {
-    internal class BaseSensor : INotifyPropertyChanged
+    public class BaseSensor : INotifyPropertyChanged
     {
 
         private ClientWebSocket clientWebSocket;

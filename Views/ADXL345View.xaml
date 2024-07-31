@@ -25,17 +25,17 @@
             <VerticalStackLayout  Grid.Row="1">
                 <HorizontalStackLayout>
                     <Label Text="x" WidthRequest="150"/>
-                    <Label x:Name="lbl_x" WidthRequest="150" Text="{Binding ADXL345Model.x}" />
+                    <Label x:Name="lbl_x" WidthRequest="150" Text="{Binding ADXL345Axis.x}" />
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout>
                     <Label Text="y" WidthRequest="150"/>
-                    <Label x:Name="lbl_y" WidthRequest="150" Text="{Binding ADXL345Model.y}"/>
+                    <Label x:Name="lbl_y" WidthRequest="150" Text="{Binding ADXL345Axis.y}"/>
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout>
                     <Label Text="z" WidthRequest="150"/>
-                    <Label x:Name="lbl_z" WidthRequest="150" Text="{Binding ADXL345Model.z}"/>
+                    <Label x:Name="lbl_z" WidthRequest="150" Text="{Binding ADXL345Axis.z}"/>
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 

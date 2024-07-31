@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MAUI_IOT.Models
 {
-    class ADXL345Sensor : BaseSensor
+    public class ADXL345Sensor : BaseSensor
     {
         public ADXL345Sensor()
         {

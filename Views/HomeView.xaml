@@ -4,10 +4,34 @@
              x:Class="MAUI_IOT.Views.HomeView"
              xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
              x:DataType="viewmodel:HomeViewModel"
+             xmlns:lessonType="clr-namespace:MAUI_IOT.Models"
              FlyoutItem.IsVisible="True"
              Title="Home">
 
-    <VerticalStackLayout>
-        <Label>Xin chao</Label>
-    </VerticalStackLayout>
+
+    <CollectionView ItemsSource="{Binding Lessons}"
+                    >
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="{x:Type lessonType:Lesson}">
+                <Frame BorderColor="Gray" CornerRadius="10" Margin="10" HasShadow="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:HomeViewModel}},Path=MoveToLessonCommand}"
+                                               CommandParameter="{Binding LessonId}"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout>
+                        <StackLayout Orientation="Horizontal" BackgroundColor="LightBlue" >
+                            <Label FontSize="Large" Text="{Binding LessonName}" HorizontalOptions="StartAndExpand"/>
+                            <Label FontSize="Large" Text="{Binding LessonStatus}" HorizontalOptions="EndAndExpand"/>
+                        </StackLayout>
+
+                        <Image Source="{Binding LessonImage}" />
+
+                        <StackLayout Orientation="Horizontal">
+                            <Label FontSize="Large" Text="{Binding LessonPoint,StringFormat='0/{0} điểm'}" HorizontalOptions="EndAndExpand"/>
+                        </StackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentPage>

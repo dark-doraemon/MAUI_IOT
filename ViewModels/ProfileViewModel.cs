@@ -19,10 +19,10 @@ namespace MAUI_IOT.ViewModels
             this.authService = authService;
         }
         [RelayCommand]
-        public void Logout()
+        async Task Logout()
         {
             authService.Logout();
-            Shell.Current.GoToAsync($"//{nameof(LoginView)}");
+            await Shell.Current.GoToAsync($"//{nameof(LoginView)}");
         }
     }
 

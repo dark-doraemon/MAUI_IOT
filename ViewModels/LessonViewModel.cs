@@ -1,32 +1,35 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LiveChartsCore;
 using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
-using MAUI_IOT.Hubs;
+using LiveChartsCore;
 using MAUI_IOT.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using LiveChartsCore.SkiaSharpView;
+using Newtonsoft.Json;
+using CommunityToolkit.Mvvm.Input;
 
-namespace MAUI_IOT.ViewModels.SensorViewModels
+namespace MAUI_IOT.ViewModels
 {
-    public class ADXL345ViewModel : ObservableObject
+    [QueryProperty(nameof(Lesson), "data")]
+    public partial class LessonViewModel : ObservableObject
     {
+        [ObservableProperty]
+        public Lesson lesson;
+
         private readonly ObservableCollection<ObservableValue> xAxis;
         private readonly ObservableCollection<ObservableValue> yAxis;
         private readonly ObservableCollection<ObservableValue> zAxis;
-
+        
         public ObservableCollection<ISeries> Series1 { get; set; }
         public ObservableCollection<ISeries> Series2 { get; set; }
         public ObservableCollection<ISeries> Series3 { get; set; }
 
         ADXL345Sensor ADXL345Sensor { get; set; }
-
+        
         private Models.Axis aDXL345Axis;
 
         public Models.Axis ADXL345Axis
@@ -34,16 +37,14 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
             get => aDXL345Axis;
             set
             {
-                if (aDXL345Axis != value)
-                {
-                    aDXL345Axis = value;
-                    OnPropertyChanged(nameof(ADXL345Axis));
-                }
+                aDXL345Axis = value;
+                OnPropertyChanged(nameof(ADXL345Axis));
             }
         }
 
+        public ObservableCollection<ISeries> Series { get; set; }
 
-        public ADXL345ViewModel()
+        public LessonViewModel()
         {
             xAxis = new ObservableCollection<ObservableValue>
             {
@@ -57,7 +58,7 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
             yAxis = new ObservableCollection<ObservableValue>();
             zAxis = new ObservableCollection<ObservableValue>();
 
-            Series1 = new ObservableCollection<ISeries>
+            Series = new ObservableCollection<ISeries>
             {
                 new LineSeries<ObservableValue>
                 {
@@ -82,20 +83,14 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
             aDXL345Axis = new Models.Axis();
             ADXL345Sensor = new ADXL345Sensor();
             ADXL345Sensor.PropertyChanged += ADXL345Sensor_PropertyChanged;
-
         }
 
-        public async Task Connect()
-        {
-            await ADXL345Sensor.ConnectAsync(new Uri("ws://113.161.84.132:8800/api/adxl345"));
-        }
-
-        private void ADXL345Sensor_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private async void ADXL345Sensor_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ADXL345Sensor.ReceivedData))
             {
                 ADXL345Axis = JsonConvert.DeserializeObject<Models.Axis>(ADXL345Sensor.ReceivedData);
-                AddItem(aDXL345Axis.x, aDXL345Axis.y, aDXL345Axis.z);
+                AddItem(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z);
 
 
                 RemoveItem();
@@ -122,6 +117,24 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
                 if (zAxis.Count == 0) return;
                 zAxis.RemoveAt(0);
             }
+        }
+
+        [RelayCommand]
+        async void Start()
+        {
+            await ADXL345Sensor.ConnectAsync(new Uri("ws://113.161.84.132:8800/api/adxl345"));
+        }
+
+        [RelayCommand]
+        void Stop()
+        {
+
+        }
+
+        [RelayCommand]
+        void Save()
+        {
+
         }
     }
 }

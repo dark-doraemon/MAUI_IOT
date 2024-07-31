@@ -28,6 +28,7 @@ namespace MAUI_IOT
     		builder.Logging.AddDebug();
 #endif
             builder.Services.AddTransient<IAuthService,AuthService>();
+            builder.Services.AddTransient<ILessionService,LessionService>();
 
             builder.Services.AddTransient<LoadingView>();
 
@@ -40,7 +41,19 @@ namespace MAUI_IOT
             builder.Services.AddTransient<ProfileView>();
             builder.Services.AddTransient<ProfileViewModel>();
 
+            builder.Services.AddTransient<LessonView>();
+            builder.Services.AddTransient<LessonViewModel>();
+            //builder.Services.AddViewModel<LessonViewModel, LessonView>();
+
             return builder.Build();
+        }
+
+        private static void AddViewModel<TViewModel, TView>(this IServiceCollection services)
+            where TViewModel : class
+            where TView : ContentPage, new()
+        {
+            services.AddTransient<TViewModel>();
+            services.AddTransient<TView>(s => new TView() { BindingContext = s.GetRequiredService<TViewModel>() });
         }
     }
 }
