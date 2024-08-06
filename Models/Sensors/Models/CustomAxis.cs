@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MAUI_IOT.Models
 {
-    public class Axis
+    public class CustomAxis
     {
         public DateTime TimeStamp { get; set; } 
         public float x {  get; set; }

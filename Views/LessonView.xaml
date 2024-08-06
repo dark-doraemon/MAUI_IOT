@@ -4,54 +4,119 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
     Title="LessonView"
     x:DataType="viewmodel:LessonViewModel">
 
     <ContentPage.BindingContext>
-        <viewmodel:LessonViewModel/>
+        <viewmodel:LessonViewModel />
     </ContentPage.BindingContext>
 
 
     <ContentPage.Content>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="200"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <material:TabView>
+            <material:TabItem Title="Tab One">
+                <material:TabItem.ContentTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="50" />
+                            </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Text="{Binding Lesson.LessonName}" HorizontalOptions="Center" FontSize="Large"/>
-            
-            <VerticalStackLayout  Grid.Row="1" Margin="10">
-                <HorizontalStackLayout>
-                    <Label Text="x" WidthRequest="150"/>
-                    <Label x:Name="lbl_x" WidthRequest="150" Text="{Binding ADXL345Axis.x}" />
-                </HorizontalStackLayout>
+                            <Label
+                                Grid.Row="0"
+                                FontSize="Large"
+                                HorizontalOptions="Center"
+                                Text="{Binding Lesson.LessonName}" />
 
-                <HorizontalStackLayout>
-                    <Label Text="y" WidthRequest="150"/>
-                    <Label x:Name="lbl_y" WidthRequest="150" Text="{Binding ADXL345Axis.y}"/>
-                </HorizontalStackLayout>
+                            <VerticalStackLayout Grid.Row="1" Margin="10,0,0,0">
+                                <HorizontalStackLayout>
+                                    <Label Text="x" WidthRequest="150" />
+                                    <Label
+                                        x:Name="lbl_x"
+                                        Text="{Binding ADXL345Axis.x}"
+                                        WidthRequest="150" />
+                                </HorizontalStackLayout>
 
-                <HorizontalStackLayout>
-                    <Label Text="z" WidthRequest="150"/>
-                    <Label x:Name="lbl_z" WidthRequest="150" Text="{Binding ADXL345Axis.z}"/>
-                </HorizontalStackLayout>
-                
-            </VerticalStackLayout>
+                                <HorizontalStackLayout>
+                                    <Label Text="y" WidthRequest="150" />
+                                    <Label
+                                        x:Name="lbl_y"
+                                        Text="{Binding ADXL345Axis.y}"
+                                        WidthRequest="150" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout>
+                                    <Label Text="z" WidthRequest="150" />
+                                    <Label
+                                        x:Name="lbl_z"
+                                        Text="{Binding ADXL345Axis.z}"
+                                        WidthRequest="150" />
+                                </HorizontalStackLayout>
+
+                            </VerticalStackLayout>
 
 
-            <lvc:CartesianChart Grid.Row="2" Series="{Binding Series}" ZoomMode="Both" ></lvc:CartesianChart>
+                            <lvc:CartesianChart
+                                Grid.Row="2"
+                                Series="{Binding SeriesX}"
+                                DrawMarginFrame="{Binding Frame}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxes}"
+                                ZoomMode="Both" />
+                            <lvc:CartesianChart
+                                Grid.Row="3"
+                                Series="{Binding SeriesY}"
+                                DrawMarginFrame="{Binding Frame}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxes}"
+                                ZoomMode="Both" />
+                            <lvc:CartesianChart
+                                Grid.Row="4"
+                                Series="{Binding SeriesZ}"
+                                DrawMarginFrame="{Binding Frame}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxes}"
+                                ZoomMode="Both" />
 
-            <StackLayout Grid.Row="4" Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand"  Spacing="30" >  
-                <Button Text="Start" Command="{Binding StartCommand}"/>
-                <Button Text="Stop"  Command="{Binding StopCommand}"/>
-                <Button Text="Save"  Command="{Binding SaveCommand}"/>
-            </StackLayout>
-        </Grid>
+                            <StackLayout
+                                Grid.Row="5"
+                                HorizontalOptions="CenterAndExpand"
+                                Orientation="Horizontal"
+                                Spacing="30"
+                                VerticalOptions="EndAndExpand">
+                                <Button Command="{Binding StartCommand}" Text="Start" />
+                                <Button Command="{Binding StopCommand}" Text="Stop" />
+                                <Button Command="{Binding SaveCommand}" Text="Save" />
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </material:TabItem.ContentTemplate>
+            </material:TabItem>
+
+
+            <material:TabItem Title="Tab Two">
+                <material:TabItem.ContentTemplate>
+                    <DataTemplate>
+                        <Label Text="Second Tab" />
+                    </DataTemplate>
+                </material:TabItem.ContentTemplate>
+            </material:TabItem>
+
+            <material:TabItem Title="Tab Three">
+                <material:TabItem.ContentTemplate>
+                    <DataTemplate>
+                        <Label Text="Third Tab" />
+                    </DataTemplate>
+                </material:TabItem.ContentTemplate>
+            </material:TabItem>
+        </material:TabView>
     </ContentPage.Content>
 </ContentPage>

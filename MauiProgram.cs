@@ -6,7 +6,8 @@ using MAUI_IOT.Views;
 using Microcharts.Maui;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
-using SkiaSharp.Views.Maui.Controls.Hosting; 
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using UraniumUI;
 namespace MAUI_IOT
 {
     public static class MauiProgram
@@ -18,6 +19,8 @@ namespace MAUI_IOT
                 .UseMauiApp<App>()
                 .UseSkiaSharp(true)
                 .UseMicrocharts()
+                .UseUraniumUI()
+                .UseUraniumUIMaterial()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

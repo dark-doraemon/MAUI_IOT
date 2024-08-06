@@ -2,15 +2,15 @@
 using LiveChartsCore.Defaults;
 using LiveChartsCore;
 using MAUI_IOT.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LiveChartsCore.SkiaSharpView;
 using Newtonsoft.Json;
 using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using LiveChartsCore.Drawing;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
+
 
 namespace MAUI_IOT.ViewModels
 {
@@ -20,19 +20,26 @@ namespace MAUI_IOT.ViewModels
         [ObservableProperty]
         public Lesson lesson;
 
+        private static readonly SKColor s_gray = new(195, 195, 195);
+        private static readonly SKColor s_gray1 = new(160, 160, 160);
+        private static readonly SKColor s_gray2 = new(90, 90, 90);
+        private static readonly SKColor s_dark3 = new(60, 60, 60);
+
+        private readonly DateTimeAxis _customAxis;
+
         private readonly ObservableCollection<ObservableValue> xAxis;
         private readonly ObservableCollection<ObservableValue> yAxis;
         private readonly ObservableCollection<ObservableValue> zAxis;
-        
-        public ObservableCollection<ISeries> Series1 { get; set; }
-        public ObservableCollection<ISeries> Series2 { get; set; }
-        public ObservableCollection<ISeries> Series3 { get; set; }
+
+        public ObservableCollection<ISeries> SeriesX { get; set; }
+        public ObservableCollection<ISeries> SeriesY { get; set; }
+        public ObservableCollection<ISeries> SeriesZ { get; set; }
 
         ADXL345Sensor ADXL345Sensor { get; set; }
-        
-        private Models.Axis aDXL345Axis;
 
-        public Models.Axis ADXL345Axis
+        private CustomAxis aDXL345Axis;
+
+        public CustomAxis ADXL345Axis
         {
             get => aDXL345Axis;
             set
@@ -44,16 +51,97 @@ namespace MAUI_IOT.ViewModels
 
         public ObservableCollection<ISeries> Series { get; set; }
 
+
+        public Axis[] XAxes { get; set; } =
+        {
+            new Axis
+            {
+                Name = "X axis",
+                NamePaint = new SolidColorPaint(s_gray1),
+                TextSize = 18,
+                Padding = new Padding(5, 15, 5, 5),
+                LabelsPaint = new SolidColorPaint(s_gray),
+                SeparatorsPaint = new SolidColorPaint
+                {
+                    Color = s_gray,
+                    StrokeThickness = 1,
+                    PathEffect = new DashEffect(new float[] { 3, 3 })
+                },
+                SubseparatorsPaint = new SolidColorPaint
+                {
+                    Color = s_gray2,
+                    StrokeThickness = 0.5f
+                },
+                SubseparatorsCount = 9,
+                ZeroPaint = new SolidColorPaint
+                {
+                    Color = s_gray1,
+                    StrokeThickness = 2
+                },
+                TicksPaint = new SolidColorPaint
+                {
+                    Color = s_gray,
+                    StrokeThickness = 1.5f
+                },
+                SubticksPaint = new SolidColorPaint
+                {
+                    Color = s_gray,
+                    StrokeThickness = 1
+                }
+            }
+        };
+
+
+        public Axis[] YAxes { get; set; } =
+        {
+            new Axis
+            {
+                Name = "Y axis",
+                NamePaint = new SolidColorPaint(s_gray1),
+                TextSize = 18,
+                Padding = new Padding(5, 0, 15, 0),
+                LabelsPaint = new SolidColorPaint(s_gray),
+                SeparatorsPaint = new SolidColorPaint
+                {
+                    Color = s_gray,
+                    StrokeThickness = 1,
+                    PathEffect = new DashEffect(new float[] { 3, 3 })
+                },
+                SubseparatorsPaint = new SolidColorPaint
+                {
+                    Color = s_gray2,
+                    StrokeThickness = 0.5f
+                },
+                SubseparatorsCount = 9,
+                ZeroPaint = new SolidColorPaint
+                {
+                    Color = s_gray1,
+                    StrokeThickness = 2
+                },
+                TicksPaint = new SolidColorPaint
+                {
+                    Color = s_gray,
+                    StrokeThickness = 1.5f
+                },
+                SubticksPaint = new SolidColorPaint
+                {
+                    Color = s_gray,
+                    StrokeThickness = 1
+                }
+            }
+        };
+
+
         public LessonViewModel()
         {
             xAxis = new ObservableCollection<ObservableValue>
             {
-                 new ObservableValue(5),
-                new(10),
-                new(15),
-                new(20),
-                new(25),
-                new(30),
+                // new ObservableValue(5),
+                //new(10),
+                //new(15),
+                //new(20),
+                //new(25),
+                //new(30),
             };
             yAxis = new ObservableCollection<ObservableValue>();
             zAxis = new ObservableCollection<ObservableValue>();
@@ -80,7 +168,45 @@ namespace MAUI_IOT.ViewModels
                 },
             };
 
-            aDXL345Axis = new Models.Axis();
+
+            SeriesX = new ObservableCollection<ISeries>
+            {
+                new LineSeries<ObservableValue>
+                {
+                    Values = xAxis,
+                    Fill = null,
+                    LineSmoothness = 0,
+                    Stroke = new SolidColorPaint(SKColors.White),
+                    GeometrySize = 0
+                }
+            };
+
+            SeriesY = new ObservableCollection<ISeries>
+            {
+                new LineSeries<ObservableValue>
+                {
+                    Values = yAxis,
+                    Fill = null,
+                    LineSmoothness = 0,
+                    Stroke = new SolidColorPaint(SKColors.White),
+                    GeometrySize = 0
+                }
+            };
+
+            SeriesZ = new ObservableCollection<ISeries>
+            {
+                new LineSeries<ObservableValue>
+                {
+                    Values = zAxis,
+                    Fill = null,
+                    LineSmoothness = 0,
+                    Stroke = new SolidColorPaint(SKColors.White),
+                    GeometrySize = 0
+                }
+            };
+
+
+            aDXL345Axis = new Models.CustomAxis();
             ADXL345Sensor = new ADXL345Sensor();
             ADXL345Sensor.PropertyChanged += ADXL345Sensor_PropertyChanged;
         }
@@ -89,14 +215,14 @@ namespace MAUI_IOT.ViewModels
         {
             if (e.PropertyName == nameof(ADXL345Sensor.ReceivedData))
             {
-                ADXL345Axis = JsonConvert.DeserializeObject<Models.Axis>(ADXL345Sensor.ReceivedData);
+                ADXL345Axis = JsonConvert.DeserializeObject<Models.CustomAxis>(ADXL345Sensor.ReceivedData);
                 AddItem(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z);
 
 
                 RemoveItem();
             }
         }
-
+        
         public void AddItem(float x, float y, float z)
         {
             xAxis.Add(new ObservableValue(x));
@@ -106,7 +232,7 @@ namespace MAUI_IOT.ViewModels
 
         public void RemoveItem()
         {
-            if (xAxis.Count >= 30)
+            if (xAxis.Count >= 100)
             {
                 if (xAxis.Count == 0) return;
                 xAxis.RemoveAt(0);
@@ -136,5 +262,15 @@ namespace MAUI_IOT.ViewModels
         {
 
         }
+
+        public DrawMarginFrame Frame { get; set; } = new()
+        {
+            Fill = new SolidColorPaint(s_dark3),
+            Stroke = new SolidColorPaint
+            {
+                Color = s_gray,
+                StrokeThickness = 1
+            }
+        };
     }
 }

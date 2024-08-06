@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MAUI_IOT.Models;
 using MAUI_IOT.Services.Interfaces;
 using MAUI_IOT.Views;
+using Microsoft.Maui.Controls.Platform;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

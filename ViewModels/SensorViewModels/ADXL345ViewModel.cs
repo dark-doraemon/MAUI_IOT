@@ -27,9 +27,9 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
 
         ADXL345Sensor ADXL345Sensor { get; set; }
 
-        private Models.Axis aDXL345Axis;
+        private Models.CustomAxis aDXL345Axis;
 
-        public Models.Axis ADXL345Axis
+        public Models.CustomAxis ADXL345Axis
         {
             get => aDXL345Axis;
             set
@@ -79,7 +79,7 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
                 },
             };
 
-            aDXL345Axis = new Models.Axis();
+            aDXL345Axis = new Models.CustomAxis();
             ADXL345Sensor = new ADXL345Sensor();
             ADXL345Sensor.PropertyChanged += ADXL345Sensor_PropertyChanged;
 
@@ -94,7 +94,7 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
         {
             if (e.PropertyName == nameof(ADXL345Sensor.ReceivedData))
             {
-                ADXL345Axis = JsonConvert.DeserializeObject<Models.Axis>(ADXL345Sensor.ReceivedData);
+                ADXL345Axis = JsonConvert.DeserializeObject<Models.CustomAxis>(ADXL345Sensor.ReceivedData);
                 AddItem(aDXL345Axis.x, aDXL345Axis.y, aDXL345Axis.z);
 
 

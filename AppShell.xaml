@@ -21,7 +21,8 @@
         Route="LoginView"
         Shell.TabBarIsVisible="False"/>
 
-    <TabBar >
+    <TabBar>
+        
         <ShellContent
             Title="Lesson"
             ContentTemplate="{DataTemplate views:HomeView}"
@@ -33,10 +34,12 @@
             Route="ProfileView" />
     </TabBar>
 
+
     <!--<ShellContent
      ContentTemplate="{DataTemplate views:ADXL345View}"
      Shell.FlyoutBehavior="Disabled"
      Shell.FlyoutItemIsVisible="False" />-->
 
+    
 
 </Shell>
