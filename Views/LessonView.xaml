@@ -15,9 +15,8 @@
 
 
     <ContentPage.Content>
-
         <material:TabView>
-            <material:TabItem Title="Tab One">
+            <material:TabItem Title="Experiment">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
                         <Grid>
@@ -63,7 +62,6 @@
 
                             </VerticalStackLayout>
 
-
                             <lvc:CartesianChart
                                 Grid.Row="2"
                                 Series="{Binding SeriesX}"
@@ -102,21 +100,86 @@
             </material:TabItem>
 
 
-            <material:TabItem Title="Tab Two">
+            <material:TabItem Title="Input Parameters">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
-                        <Label Text="Second Tab" />
+                        <ScrollView Orientation="Both">
+                            <VerticalStackLayout>
+                                <HorizontalStackLayout Padding="5">
+                                    <Label Text="m" WidthRequest="50" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+                                    <Entry TextColor="Red" Text="Enter M" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Padding="5">
+                                    <Label Text="t" WidthRequest="50" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+                                    <Entry TextColor="Red" Text="Enter T" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Padding="5">
+                                    <Label Text="s" WidthRequest="50" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+                                    <Entry TextColor="Red" Text="Enter S" />
+                                </HorizontalStackLayout>
+
+                                <Button Text="Set" FontAttributes="Bold" WidthRequest="60"></Button>
+                            </VerticalStackLayout>
+                        </ScrollView> 
+                        
                     </DataTemplate>
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
 
-            <material:TabItem Title="Tab Three">
+
+
+            <material:TabItem Title="Table">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
-                        <Label Text="Third Tab" />
+                        <ScrollView Orientation="Both" Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Headers -->
+                                <Label Text="time" FontSize="Large" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="0" Padding="25" />
+                                <Label Text="v (m/s)" FontSize="Large" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="1" Padding="25" />
+                                <Label Text="a (m/s^2)" FontSize="Large" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="2" Padding="25" />
+
+                                <!-- Row 1 -->
+                                <Label Text="0.000" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="0" Padding="25" />
+                                <Label Text="0.000" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="1" Padding="25" />
+                                <Label Text="0.000" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="2" Padding="25" />
+
+                                <!-- Row 2 -->
+                                <Label Text="0.050" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="0" Padding="25" />
+                                <Label Text="3.015" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="1" Padding="25" />
+                                <Label Text="4.514" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="2" Padding="25" />
+                                
+                                <!-- Row 3 -->
+                                <Label Text="0.050" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="0" Padding="25" />
+                                <Label Text="3.015" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="1" Padding="25" />
+                                <Label Text="4.514" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="2" Padding="25" />
+
+
+                                <!-- Borders -->
+                                <BoxView Color="Black" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" WidthRequest="1" HorizontalOptions="End" />
+                                <BoxView Color="Black" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" WidthRequest="1" HorizontalOptions="End" />
+                                <BoxView Color="Black" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" WidthRequest="1" HorizontalOptions="End" />
+                                <BoxView Color="Black" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HeightRequest="1" VerticalOptions="End" />
+                                <BoxView Color="Black" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HeightRequest="1" VerticalOptions="End" />
+                                <BoxView Color="Black" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HeightRequest="1" VerticalOptions="End" />
+                            </Grid>
+                        </ScrollView>
                     </DataTemplate>
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
+
         </material:TabView>
     </ContentPage.Content>
 </ContentPage>
