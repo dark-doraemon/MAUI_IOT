@@ -90,11 +90,11 @@ namespace MAUI_IOT.Models
             }
         }
 
-        public void Close()
+        public async Task CloseAsync()
         {
-            if (clientWebSocket.State == WebSocketState.Aborted)
+            if (clientWebSocket.State == WebSocketState.Open)
             {
-                clientWebSocket.Dispose();
+                await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
             }
         }
     }

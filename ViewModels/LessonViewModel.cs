@@ -10,7 +10,8 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using LiveChartsCore.Drawing;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
-
+using MAUI_IOT.Views;
+using Microsoft.Maui.Controls;
 
 namespace MAUI_IOT.ViewModels
 {
@@ -30,6 +31,8 @@ namespace MAUI_IOT.ViewModels
         private readonly ObservableCollection<ObservableValue> xAxis;
         private readonly ObservableCollection<ObservableValue> yAxis;
         private readonly ObservableCollection<ObservableValue> zAxis;
+        private readonly IServiceProvider serviceProvider;
+        private readonly FullScreenChartViewModel fullScreenChartViewModel;
 
         public ObservableCollection<ISeries> SeriesX { get; set; }
         public ObservableCollection<ISeries> SeriesY { get; set; }
@@ -131,8 +134,12 @@ namespace MAUI_IOT.ViewModels
             }
         };
 
-
         public LessonViewModel()
+        {
+            
+        }
+
+        public LessonViewModel(IServiceProvider serviceProvider, FullScreenChartViewModel fullScreenChartViewModel)
         {
             xAxis = new ObservableCollection<ObservableValue>
             {
@@ -152,19 +159,24 @@ namespace MAUI_IOT.ViewModels
                 {
                     Values = xAxis,
                     Fill = null,
-                    LineSmoothness = 0
+                    LineSmoothness = 0,
+                    GeometrySize = 0,
                 },
                 new LineSeries<ObservableValue>
                 {
                     Values = yAxis,
                     Fill = null,
-                    LineSmoothness = 0
+                    LineSmoothness = 0,
+                    GeometrySize = 0,
+
                 },
                 new LineSeries<ObservableValue>
                 {
                     Values = zAxis,
                     Fill = null,
-                    LineSmoothness = 0
+                    LineSmoothness = 0,
+                    GeometrySize = 0,
+
                 },
             };
 
@@ -209,6 +221,8 @@ namespace MAUI_IOT.ViewModels
             aDXL345Axis = new Models.CustomAxis();
             ADXL345Sensor = new ADXL345Sensor();
             ADXL345Sensor.PropertyChanged += ADXL345Sensor_PropertyChanged;
+            this.serviceProvider = serviceProvider;
+            this.fullScreenChartViewModel = fullScreenChartViewModel;
         }
 
         private async void ADXL345Sensor_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -217,8 +231,6 @@ namespace MAUI_IOT.ViewModels
             {
                 ADXL345Axis = JsonConvert.DeserializeObject<Models.CustomAxis>(ADXL345Sensor.ReceivedData);
                 AddItem(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z);
-
-
                 RemoveItem();
             }
         }
@@ -246,15 +258,15 @@ namespace MAUI_IOT.ViewModels
         }
 
         [RelayCommand]
-        async void Start()
+        async Task Start()
         {
             await ADXL345Sensor.ConnectAsync(new Uri("ws://113.161.84.132:8800/api/adxl345"));
         }
 
         [RelayCommand]
-        void Stop()
+        async Task Stop()
         {
-
+            await ADXL345Sensor.CloseAsync();
         }
 
         [RelayCommand]
@@ -272,5 +284,16 @@ namespace MAUI_IOT.ViewModels
                 StrokeThickness = 1
             }
         };
+
+        [RelayCommand]
+        public async Task Zoom(ObservableCollection<ISeries> series)
+        {
+            Dictionary<string, object> paramaters = new Dictionary<string, object>
+            {
+                {"data",series },
+            };
+            await Shell.Current.GoToAsync(nameof(FullScreenChartView),paramaters);
+        }
+
     }
 }

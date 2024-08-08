@@ -62,27 +62,97 @@
 
                             </VerticalStackLayout>
 
-                            <lvc:CartesianChart
-                                Grid.Row="2"
-                                Series="{Binding SeriesX}"
-                                DrawMarginFrame="{Binding Frame}"
-                                XAxes="{Binding XAxes}"
-                                YAxes="{Binding YAxes}"
-                                ZoomMode="Both" />
-                            <lvc:CartesianChart
-                                Grid.Row="3"
-                                Series="{Binding SeriesY}"
-                                DrawMarginFrame="{Binding Frame}"
-                                XAxes="{Binding XAxes}"
-                                YAxes="{Binding YAxes}"
-                                ZoomMode="Both" />
-                            <lvc:CartesianChart
-                                Grid.Row="4"
-                                Series="{Binding SeriesZ}"
-                                DrawMarginFrame="{Binding Frame}"
-                                XAxes="{Binding XAxes}"
-                                YAxes="{Binding YAxes}"
-                                ZoomMode="Both" />
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <lvc:CartesianChart
+                                    Grid.Column="0"
+                                    DrawMarginFrame="{Binding Frame}"
+                                    Series="{Binding SeriesX}"
+                                    XAxes="{Binding XAxes}"
+                                    YAxes="{Binding YAxes}"
+                                    ZoomMode="None" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    HeightRequest="50"
+                                    WidthRequest="50"
+                                    Command="{Binding ZoomCommand}"
+                                    CommandParameter="{Binding SeriesX}"
+                                    >
+                                    <Button.ImageSource>
+                                        <FontImageSource
+                                            FontFamily="FontAwesome"
+                                            Glyph="&#x1F50D;"
+                                            Size="30" />
+                                    </Button.ImageSource>
+                                </Button>
+                            </Grid>
+
+
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <lvc:CartesianChart
+                                    Grid.Column="0"
+                                    DrawMarginFrame="{Binding Frame}"
+                                    Series="{Binding SeriesY}"
+                                    XAxes="{Binding XAxes}"
+                                    YAxes="{Binding YAxes}"
+                                    ZoomMode="None" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    HeightRequest="50"
+                                    WidthRequest="50"
+                                    Command="{Binding ZoomCommand}"
+                                    CommandParameter="{Binding SeriesY}"
+                                    >
+                                    <Button.ImageSource>
+                                        <FontImageSource
+                                            FontFamily="FontAwesome"
+                                            Glyph="&#x1F50D;"
+                                            Size="30" />
+                                    </Button.ImageSource>
+                                </Button>
+                            </Grid>
+
+
+                            <Grid Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <lvc:CartesianChart
+                                    Grid.Column="0"
+                                    DrawMarginFrame="{Binding Frame}"
+                                    Series="{Binding SeriesZ}"
+                                    XAxes="{Binding XAxes}"
+                                    YAxes="{Binding YAxes}"
+                                    ZoomMode="None" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    HeightRequest="50"
+                                    WidthRequest="50"
+                                    Command="{Binding ZoomCommand}"
+                                    CommandParameter="{Binding SeriesZ}"
+                                    >
+                                    <Button.ImageSource>
+                                        <FontImageSource
+                                            FontFamily="FontAwesome"
+                                            Glyph="&#x1F50D;"
+                                            Size="30" />
+                                    </Button.ImageSource>
+                                </Button>
+                            </Grid>
 
                             <StackLayout
                                 Grid.Row="5"
@@ -99,6 +169,18 @@
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
 
+            <material:TabItem Title="All">
+                <material:TabItem.ContentTemplate>
+                    <DataTemplate>
+                        <lvc:CartesianChart
+                            DrawMarginFrame="{Binding Frame}"
+                            Series="{Binding Series}"
+                            TooltipPosition="Hidden"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}" />
+                    </DataTemplate>
+                </material:TabItem.ContentTemplate>
+            </material:TabItem>
 
             <material:TabItem Title="Input Parameters">
                 <material:TabItem.ContentTemplate>
@@ -106,34 +188,50 @@
                         <ScrollView Orientation="Both">
                             <VerticalStackLayout>
                                 <HorizontalStackLayout Padding="5">
-                                    <Label Text="m" WidthRequest="50" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center"/>
-                                    <Entry TextColor="Red" Text="Enter M" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="Medium"
+                                        Text="m"
+                                        VerticalTextAlignment="Center"
+                                        WidthRequest="50" />
+                                    <Entry Text="Enter M" TextColor="Red" />
                                 </HorizontalStackLayout>
 
                                 <HorizontalStackLayout Padding="5">
-                                    <Label Text="t" WidthRequest="50" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center"/>
-                                    <Entry TextColor="Red" Text="Enter T" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="Medium"
+                                        Text="t"
+                                        VerticalTextAlignment="Center"
+                                        WidthRequest="50" />
+                                    <Entry Text="Enter T" TextColor="Red" />
                                 </HorizontalStackLayout>
 
                                 <HorizontalStackLayout Padding="5">
-                                    <Label Text="s" WidthRequest="50" FontSize="Medium" FontAttributes="Bold" VerticalTextAlignment="Center"/>
-                                    <Entry TextColor="Red" Text="Enter S" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="Medium"
+                                        Text="s"
+                                        VerticalTextAlignment="Center"
+                                        WidthRequest="50" />
+                                    <Entry Text="Enter S" TextColor="Red" />
                                 </HorizontalStackLayout>
 
-                                <Button Text="Set" FontAttributes="Bold" WidthRequest="60"></Button>
+                                <Button
+                                    FontAttributes="Bold"
+                                    Text="Set"
+                                    WidthRequest="60" />
                             </VerticalStackLayout>
-                        </ScrollView> 
-                        
+                        </ScrollView>
+
                     </DataTemplate>
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
 
-
-
             <material:TabItem Title="Table">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
-                        <ScrollView Orientation="Both" Padding="10">
+                        <ScrollView Padding="10" Orientation="Both">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto" />
@@ -146,34 +244,157 @@
                                     <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Headers -->
-                                <Label Text="time" FontSize="Large" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="0" Padding="25" />
-                                <Label Text="v (m/s)" FontSize="Large" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="1" Padding="25" />
-                                <Label Text="a (m/s^2)" FontSize="Large" FontAttributes="Bold" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="0" Grid.Column="2" Padding="25" />
+                                <!--  Headers  -->
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Padding="25"
+                                    FontAttributes="Bold"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="time"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Padding="25"
+                                    FontAttributes="Bold"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="v (m/s)"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Padding="25"
+                                    FontAttributes="Bold"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="a (m/s^2)"
+                                    VerticalTextAlignment="Center" />
 
-                                <!-- Row 1 -->
-                                <Label Text="0.000" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="0" Padding="25" />
-                                <Label Text="0.000" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="1" Padding="25" />
-                                <Label Text="0.000" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="2" Padding="25" />
+                                <!--  Row 1  -->
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="0.000"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="0.000"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="0.000"
+                                    VerticalTextAlignment="Center" />
 
-                                <!-- Row 2 -->
-                                <Label Text="0.050" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="0" Padding="25" />
-                                <Label Text="3.015" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="1" Padding="25" />
-                                <Label Text="4.514" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="2" Padding="25" />
-                                
-                                <!-- Row 3 -->
-                                <Label Text="0.050" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="0" Padding="25" />
-                                <Label Text="3.015" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="1" Padding="25" />
-                                <Label Text="4.514" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Grid.Row="2" Grid.Column="2" Padding="25" />
+                                <!--  Row 2  -->
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="0.050"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="3.015"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="4.514"
+                                    VerticalTextAlignment="Center" />
+
+                                <!--  Row 3  -->
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="0.050"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="3.015"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    Padding="25"
+                                    FontSize="Large"
+                                    HorizontalTextAlignment="Center"
+                                    Text="4.514"
+                                    VerticalTextAlignment="Center" />
 
 
-                                <!-- Borders -->
-                                <BoxView Color="Black" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" WidthRequest="1" HorizontalOptions="End" />
-                                <BoxView Color="Black" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" WidthRequest="1" HorizontalOptions="End" />
-                                <BoxView Color="Black" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" WidthRequest="1" HorizontalOptions="End" />
-                                <BoxView Color="Black" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HeightRequest="1" VerticalOptions="End" />
-                                <BoxView Color="Black" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HeightRequest="1" VerticalOptions="End" />
-                                <BoxView Color="Black" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HeightRequest="1" VerticalOptions="End" />
+                                <!--  Borders  -->
+                                <BoxView
+                                    Grid.Row="0"
+                                    Grid.RowSpan="3"
+                                    Grid.Column="0"
+                                    HorizontalOptions="End"
+                                    WidthRequest="1"
+                                    Color="Black" />
+                                <BoxView
+                                    Grid.Row="0"
+                                    Grid.RowSpan="3"
+                                    Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    WidthRequest="1"
+                                    Color="Black" />
+                                <BoxView
+                                    Grid.Row="0"
+                                    Grid.RowSpan="3"
+                                    Grid.Column="2"
+                                    HorizontalOptions="End"
+                                    WidthRequest="1"
+                                    Color="Black" />
+                                <BoxView
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    HeightRequest="1"
+                                    VerticalOptions="End"
+                                    Color="Black" />
+                                <BoxView
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    HeightRequest="1"
+                                    VerticalOptions="End"
+                                    Color="Black" />
+                                <BoxView
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    HeightRequest="1"
+                                    VerticalOptions="End"
+                                    Color="Black" />
                             </Grid>
                         </ScrollView>
                     </DataTemplate>

@@ -7,8 +7,9 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource PrimaryColor}">
 
-    <!--<ContentPage.BindingContext>
-    </ContentPage.BindingContext>-->
+    <ContentPage.BindingContext>
+        <viewmodel:LoginViewModel/>
+    </ContentPage.BindingContext>
     
     <ContentPage.Resources>
         <Style x:Key="entryStyle" TargetType="Entry">

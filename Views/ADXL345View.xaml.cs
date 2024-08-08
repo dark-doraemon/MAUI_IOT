@@ -1,4 +1,3 @@
-using MAUI_IOT.Models;
 using MAUI_IOT.ViewModels.SensorViewModels;
 
 namespace MAUI_IOT.Views;

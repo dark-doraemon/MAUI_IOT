@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MAUI_IOT.Views.FullScreenChartView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
+    Title="FullScreenChartView"
+    x:DataType="viewmodel:FullScreenChartViewModel">
+
+
+    <ContentPage.BindingContext>
+        <viewmodel:FullScreenChartViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <material:TabView>
+            <material:TabItem Title="Chart">
+                <material:TabItem.ContentTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="13*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+
+                            <lvc:CartesianChart
+                                Grid.Row="0"
+                                DrawMarginFrame="{Binding Frame}"
+                                Series="{Binding Series}"
+                                TooltipPosition="Hidden"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxes}"
+                                ZoomMode="Both" />
+
+                            <StackLayout
+                                Grid.Row="1"
+                                HorizontalOptions="CenterAndExpand"
+                                Orientation="Horizontal"
+                                Spacing="30"
+                                VerticalOptions="EndAndExpand">
+                                <Button Text="Start" />
+                                <Button Text="Stop" />
+                                <Button Text="Save" />
+                            </StackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </material:TabItem.ContentTemplate>
+            </material:TabItem>
+
+
+
+            <material:TabItem Title="Input">
+                <material:TabItem.ContentTemplate>
+                    <DataTemplate />
+                </material:TabItem.ContentTemplate>
+            </material:TabItem>
+
+
+
+            <material:TabItem Title="Output">
+                <material:TabItem.ContentTemplate>
+                    <DataTemplate />
+                </material:TabItem.ContentTemplate>
+            </material:TabItem>
+
+        </material:TabView>
+    </ContentPage.Content>
+</ContentPage>

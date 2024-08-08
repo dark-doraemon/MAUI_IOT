@@ -48,15 +48,19 @@ namespace MAUI_IOT
             builder.Services.AddTransient<LessonViewModel>();
             //builder.Services.AddViewModel<LessonViewModel, LessonView>();
 
+            //builder.Services.AddViewModel<FullScreenChartView,FullScreenChartViewModel>();
+            builder.Services.AddTransient<FullScreenChartView>();
+            builder.Services.AddTransient<FullScreenChartViewModel>();
+
             return builder.Build();
         }
 
-        private static void AddViewModel<TViewModel, TView>(this IServiceCollection services)
-            where TViewModel : class
+        private static void AddViewModel<TView, TViewModel>(this IServiceCollection services)
             where TView : ContentPage, new()
+            where TViewModel : class
         {
-            services.AddTransient<TViewModel>();
             services.AddTransient<TView>(s => new TView() { BindingContext = s.GetRequiredService<TViewModel>() });
+            services.AddTransient<TViewModel>();
         }
     }
 }

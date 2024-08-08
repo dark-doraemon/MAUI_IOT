@@ -26,10 +26,15 @@ namespace MAUI_IOT.ViewModels
             this.authService = authService;
         }
 
+        public LoginViewModel()
+        {
+            
+        }
+
         [RelayCommand]
         public async void Login()
         {
-            authService.Login();
+            //authService.Login();
             Shell.Current.GoToAsync($"//{nameof(HomeView)}");
             //App.Current.MainPage = new NavigationPage(new HomeView(vm));  
         }

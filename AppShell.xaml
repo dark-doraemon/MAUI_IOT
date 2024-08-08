@@ -16,17 +16,19 @@
 
     <ShellContent
         ContentTemplate="{DataTemplate views:LoginView}"
-        Shell.FlyoutBehavior="Disabled"
-        Shell.FlyoutItemIsVisible="False" 
         Route="LoginView"
-        Shell.TabBarIsVisible="False"/>
+        Shell.FlyoutBehavior="Disabled"
+        Shell.FlyoutItemIsVisible="False"
+        Shell.TabBarIsVisible="False" />
+
 
     <TabBar>
-        
+
         <ShellContent
             Title="Lesson"
             ContentTemplate="{DataTemplate views:HomeView}"
-            Route="HomeView" />
+            Route="HomeView" 
+            />
 
         <ShellContent
             Title="Profile"
@@ -34,12 +36,9 @@
             Route="ProfileView" />
     </TabBar>
 
-
     <!--<ShellContent
      ContentTemplate="{DataTemplate views:ADXL345View}"
      Shell.FlyoutBehavior="Disabled"
      Shell.FlyoutItemIsVisible="False" />-->
-
-    
 
 </Shell>
