@@ -1,10 +1,8 @@
 ﻿using MAUI_IOT.Services.Implements;
 using MAUI_IOT.Services.Interfaces;
 using MAUI_IOT.ViewModels;
-using MAUI_IOT.ViewModels.SensorViewModels;
 using MAUI_IOT.Views;
 using Microcharts.Maui;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using UraniumUI;

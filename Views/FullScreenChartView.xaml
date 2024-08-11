@@ -3,12 +3,13 @@
     x:Class="MAUI_IOT.Views.FullScreenChartView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:liveCharts="clr-namespace:LiveChartsCore.Defaults;assembly=LiveChartsCore"
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:observableValue="[observableValue ]Live"
+    xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
     xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
-    Title="FullScreenChartView"
-    x:DataType="viewmodel:FullScreenChartViewModel">
-
+    Title="FullScreenChartView">
 
     <ContentPage.BindingContext>
         <viewmodel:FullScreenChartViewModel />
@@ -19,22 +20,22 @@
             <material:TabItem Title="Chart">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid x:Name="grid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="13*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-
                             <lvc:CartesianChart
+                                x:Name="chart"
                                 Grid.Row="0"
                                 DrawMarginFrame="{Binding Frame}"
+                                PressedCommand="{Binding PointerPressedCommand}"
                                 Series="{Binding Series}"
-                                TooltipPosition="Hidden"
+                                TooltipPosition="Auto"
                                 XAxes="{Binding XAxes}"
                                 YAxes="{Binding YAxes}"
-                                ZoomMode="Both" />
-
+                                ZoomMode="X" />
                             <StackLayout
                                 Grid.Row="1"
                                 HorizontalOptions="CenterAndExpand"
@@ -44,28 +45,37 @@
                                 <Button Text="Start" />
                                 <Button Text="Stop" />
                                 <Button Text="Save" />
+                                <Button
+                                    Command="{Binding SelectRangeCommand}"
+                                    IsEnabled="{Binding IsButtonEnabled}"
+                                    Text="{Binding ButtonText}" />
                             </StackLayout>
                         </Grid>
                     </DataTemplate>
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
 
-
-
             <material:TabItem Title="Input">
                 <material:TabItem.ContentTemplate>
-                    <DataTemplate />
+                    <DataTemplate>
+                        <Grid>
+                            <CollectionView ItemsSource="{Binding SelectedValue}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="liveCharts:ObservableValue">
+                                        <Label Text="{Binding Value}" />
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+                    </DataTemplate>
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
-
-
 
             <material:TabItem Title="Output">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate />
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
-
         </material:TabView>
     </ContentPage.Content>
 </ContentPage>

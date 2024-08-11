@@ -189,7 +189,7 @@ namespace MAUI_IOT.ViewModels
                     Fill = null,
                     LineSmoothness = 0,
                     Stroke = new SolidColorPaint(SKColors.White),
-                    GeometrySize = 0
+                    GeometrySize = 2
                 }
             };
 
