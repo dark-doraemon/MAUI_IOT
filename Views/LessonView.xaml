@@ -19,57 +19,56 @@
             <material:TabItem Title="Experiment">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
-                        <ScrollView Orientation="Vertical" Padding="10">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30" />
-                                    <RowDefinition Height="60" />
-                                    <RowDefinition Height="300" />
-                                    <RowDefinition Height="300" />
-                                    <RowDefinition Height="300" />
-                                    <RowDefinition Height="50" />
-                                </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="50" />
+                            </Grid.RowDefinitions>
 
-                                <Label
+                            <Label
                                 Grid.Row="0"
                                 FontSize="Large"
                                 HorizontalOptions="Center"
                                 Text="{Binding Lesson.LessonName}" />
 
-                                <VerticalStackLayout Grid.Row="1" Margin="10,0,0,0">
-                                    <HorizontalStackLayout>
-                                        <Label Text="x" WidthRequest="150" />
-                                        <Label
+                            <VerticalStackLayout Grid.Row="1" Margin="10,0,0,0">
+                                <HorizontalStackLayout>
+                                    <Label Text="x" WidthRequest="150" />
+                                    <Label
                                         x:Name="lbl_x"
                                         Text="{Binding ADXL345Axis.x}"
                                         WidthRequest="150" />
-                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
 
-                                    <HorizontalStackLayout>
-                                        <Label Text="y" WidthRequest="150" />
-                                        <Label
+                                <HorizontalStackLayout>
+                                    <Label Text="y" WidthRequest="150" />
+                                    <Label
                                         x:Name="lbl_y"
                                         Text="{Binding ADXL345Axis.y}"
                                         WidthRequest="150" />
-                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
 
-                                    <HorizontalStackLayout>
-                                        <Label Text="z" WidthRequest="150" />
-                                        <Label
+                                <HorizontalStackLayout>
+                                    <Label Text="z" WidthRequest="150" />
+                                    <Label
                                         x:Name="lbl_z"
                                         Text="{Binding ADXL345Axis.z}"
                                         WidthRequest="150" />
-                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
 
-                                </VerticalStackLayout>
+                            </VerticalStackLayout>
 
-                                <Grid Grid.Row="2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="10*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                    <lvc:CartesianChart
+                                <lvc:CartesianChart
                                     Grid.Column="0"
                                     DrawMarginFrame="{Binding Frame}"
                                     Series="{Binding SeriesX}"
@@ -77,30 +76,30 @@
                                     YAxes="{Binding YAxes}"
                                     ZoomMode="None" />
 
-                                    <Button
+                                <Button
                                     Grid.Column="1"
                                     HeightRequest="50"
                                     WidthRequest="50"
                                     Command="{Binding ZoomCommand}"
                                     CommandParameter="{Binding SeriesX}"
                                     >
-                                        <Button.ImageSource>
-                                            <FontImageSource
+                                    <Button.ImageSource>
+                                        <FontImageSource
                                             FontFamily="FontAwesome"
                                             Glyph="&#x1F50D;"
                                             Size="30" />
-                                        </Button.ImageSource>
-                                    </Button>
-                                </Grid>
+                                    </Button.ImageSource>
+                                </Button>
+                            </Grid>
 
 
-                                <Grid Grid.Row="3">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="10*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                    <lvc:CartesianChart
+                                <lvc:CartesianChart
                                     Grid.Column="0"
                                     DrawMarginFrame="{Binding Frame}"
                                     Series="{Binding SeriesY}"
@@ -108,30 +107,30 @@
                                     YAxes="{Binding YAxes}"
                                     ZoomMode="None" />
 
-                                    <Button
+                                <Button
                                     Grid.Column="1"
                                     HeightRequest="50"
                                     WidthRequest="50"
                                     Command="{Binding ZoomCommand}"
                                     CommandParameter="{Binding SeriesY}"
                                     >
-                                        <Button.ImageSource>
-                                            <FontImageSource
+                                    <Button.ImageSource>
+                                        <FontImageSource
                                             FontFamily="FontAwesome"
                                             Glyph="&#x1F50D;"
                                             Size="30" />
-                                        </Button.ImageSource>
-                                    </Button>
-                                </Grid>
+                                    </Button.ImageSource>
+                                </Button>
+                            </Grid>
 
 
-                                <Grid Grid.Row="4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="10*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                            <Grid Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                                    <lvc:CartesianChart
+                                <lvc:CartesianChart
                                     Grid.Column="0"
                                     DrawMarginFrame="{Binding Frame}"
                                     Series="{Binding SeriesZ}"
@@ -139,34 +138,33 @@
                                     YAxes="{Binding YAxes}"
                                     ZoomMode="None" />
 
-                                    <Button
+                                <Button
                                     Grid.Column="1"
                                     HeightRequest="50"
                                     WidthRequest="50"
                                     Command="{Binding ZoomCommand}"
                                     CommandParameter="{Binding SeriesZ}"
                                     >
-                                        <Button.ImageSource>
-                                            <FontImageSource
+                                    <Button.ImageSource>
+                                        <FontImageSource
                                             FontFamily="FontAwesome"
                                             Glyph="&#x1F50D;"
                                             Size="30" />
-                                        </Button.ImageSource>
-                                    </Button>
-                                </Grid>
+                                    </Button.ImageSource>
+                                </Button>
+                            </Grid>
 
-                                <StackLayout
+                            <StackLayout
                                 Grid.Row="5"
                                 HorizontalOptions="CenterAndExpand"
                                 Orientation="Horizontal"
                                 Spacing="30"
                                 VerticalOptions="EndAndExpand">
-                                    <Button Command="{Binding StartCommand}" Text="Start" />
-                                    <Button Command="{Binding StopCommand}" Text="Stop" />
-                                    <Button Command="{Binding SaveCommand}" Text="Save" />
-                                </StackLayout>
-                            </Grid>
-                        </ScrollView>
+                                <Button Command="{Binding StartCommand}" Text="Start" />
+                                <Button Command="{Binding StopCommand}" Text="Stop" />
+                                <Button Command="{Binding SaveCommand}" Text="Save" />
+                            </StackLayout>
+                        </Grid>
                     </DataTemplate>
                 </material:TabItem.ContentTemplate>
             </material:TabItem>
