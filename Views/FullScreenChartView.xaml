@@ -59,10 +59,89 @@
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
                         <Grid>
-                            <CollectionView ItemsSource="{Binding SelectedValue}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Headers -->
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Padding="10"
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                HorizontalTextAlignment="Center"
+                                Text="Index"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Padding="10"
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                HorizontalTextAlignment="Center"
+                                Text="Value"
+                                VerticalTextAlignment="Center" />
+
+                            <!-- Data Rows -->
+                            <CollectionView
+                                Grid.Row="1"
+                                Grid.ColumnSpan="2"
+                                ItemsSource="{Binding SelectedValue}">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="liveCharts:ObservableValue">
-                                        <Label Text="{Binding Value}" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Label
+                                                Grid.Column="0"
+                                                Padding="10"
+                                                FontSize="Medium"
+                                                HorizontalTextAlignment="Center"
+                                                Text="X"
+                                                VerticalTextAlignment="Center" />
+                                            <Label
+                                                Grid.Column="1"
+                                                Padding="10"
+                                                FontSize="Medium"
+                                                HorizontalTextAlignment="Center"
+                                                Text="{Binding Value}"
+                                                VerticalTextAlignment="Center" />
+
+                                            <!-- Grid Lines -->
+                                            <BoxView
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Color="Black"
+                                                HeightRequest="1"
+                                                VerticalOptions="End" />
+                                            <BoxView
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Color="Black"
+                                                HeightRequest="1"
+                                                VerticalOptions="End" />
+                                            <BoxView
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                Color="Black"
+                                                WidthRequest="1"
+                                                HorizontalOptions="End" />
+                                            <BoxView
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                Color="Black"
+                                                WidthRequest="1"
+                                                HorizontalOptions="End" />
+                                        </Grid>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
