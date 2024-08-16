@@ -196,7 +196,7 @@
                                         Text="m"
                                         VerticalTextAlignment="Center"
                                         WidthRequest="50" />
-                                    <Entry Text="Enter M" TextColor="Red" />
+                                    <Entry Text="{Binding M}" Placeholder="Nhập khối lượng: " TextColor="Red" />
                                 </HorizontalStackLayout>
 
                                 <HorizontalStackLayout Padding="5">
@@ -221,7 +221,7 @@
 
                                 <Button
                                     FontAttributes="Bold"
-                                    Text="Set"
+                                    Text="Set"                                  
                                     WidthRequest="60" />
                             </VerticalStackLayout>
                         </ScrollView>
@@ -233,171 +233,117 @@
             <material:TabItem Title="Table">
                 <material:TabItem.ContentTemplate>
                     <DataTemplate>
-                        <ScrollView Padding="10" Orientation="Both">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
+                        <ScrollView Padding="5" Orientation="Both">
+
+                            <Grid Padding="5">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!--  Headers  -->
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Padding="25"
-                                    FontAttributes="Bold"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="time"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Padding="25"
-                                    FontAttributes="Bold"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="v (m/s)"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    Padding="25"
-                                    FontAttributes="Bold"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="a (m/s^2)"
-                                    VerticalTextAlignment="Center" />
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="100" />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                                <!--  Row 1  -->
-                                <Label
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="0.000"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="0.000"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="0.000"
-                                    VerticalTextAlignment="Center" />
+                                <Label  Grid.Row="0"
+                                        Grid.Column="0"
+                                        Padding="25"
+                                        FontAttributes="Bold"
+                                        FontSize="Large"
+                                        HorizontalTextAlignment="Center"
+                                        Text="Time"
+                                        VerticalTextAlignment="Center" />
 
-                                <!--  Row 2  -->
-                                <Label
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="0.050"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="3.015"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="2"
-                                    Grid.Column="2"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="4.514"
-                                    VerticalTextAlignment="Center" />
+                                <Label  Grid.Row="0"
+                                        Grid.Column="1"
+                                        Padding="25"
+                                        FontAttributes="Bold"
+                                        FontSize="Large"
+                                        HorizontalTextAlignment="Center"
+                                        Text="v(m/s^2)"
+                                        VerticalTextAlignment="Center" />
 
-                                <!--  Row 3  -->
-                                <Label
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="0.050"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="3.015"
-                                    VerticalTextAlignment="Center" />
-                                <Label
-                                    Grid.Row="2"
-                                    Grid.Column="2"
-                                    Padding="25"
-                                    FontSize="Large"
-                                    HorizontalTextAlignment="Center"
-                                    Text="4.514"
-                                    VerticalTextAlignment="Center" />
+                                <Label  Grid.Row="0"
+                                        Grid.Column="2"
+                                        Padding="25"
+                                        FontAttributes="Bold"
+                                        FontSize="Large"
+                                        HorizontalTextAlignment="Center"
+                                        Text="F (N)"
+                                        VerticalTextAlignment="Center" />
+
+                                <CollectionView ItemsSource="{Binding a}" Grid.Column="1" Grid.Row="1" HorizontalOptions="Center" Margin="0, 0, 0, 10" >
+                                    <CollectionView.ItemTemplate >
+                                        <DataTemplate>
+                                            <Label Text="{Binding ., StringFormat='{0:F2}'}" VerticalOptions="Center"  />
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                                <CollectionView ItemsSource="{Binding F}" Grid.Column="2" Grid.Row="1" HorizontalOptions="Center">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Text="{Binding ., StringFormat='{0:F2}'}" VerticalOptions="Center"  />
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                                <CollectionView ItemsSource="{Binding Duration}" Grid.Column="0" Grid.Row="1" HorizontalOptions="Center">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Text="{Binding ., StringFormat='{0:ss\\.ff} s'}" VerticalOptions="Center"  />
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                                <Label Grid.Column="2" Grid.Row="2" 
+                                       Text="{Binding AvgF, StringFormat='F={0:F2}'}"
+                                       Margin="0, 10, 0, 0"
+                                       FontSize="17"
+                                       HorizontalOptions="Center"  
+                                       FontAttributes="Bold" />
 
 
-                                <!--  Borders  -->
-                                <BoxView
-                                    Grid.Row="0"
-                                    Grid.RowSpan="3"
-                                    Grid.Column="0"
-                                    HorizontalOptions="End"
-                                    WidthRequest="1"
-                                    Color="Black" />
-                                <BoxView
-                                    Grid.Row="0"
-                                    Grid.RowSpan="3"
-                                    Grid.Column="1"
-                                    HorizontalOptions="End"
-                                    WidthRequest="1"
-                                    Color="Black" />
-                                <BoxView
-                                    Grid.Row="0"
-                                    Grid.RowSpan="3"
-                                    Grid.Column="2"
-                                    HorizontalOptions="End"
-                                    WidthRequest="1"
-                                    Color="Black" />
-                                <BoxView
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="3"
-                                    HeightRequest="1"
-                                    VerticalOptions="End"
-                                    Color="Black" />
-                                <BoxView
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="3"
-                                    HeightRequest="1"
-                                    VerticalOptions="End"
-                                    Color="Black" />
-                                <BoxView
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="3"
-                                    HeightRequest="1"
-                                    VerticalOptions="End"
-                                    Color="Black" />
+                                <BoxView Color="Black" 
+                                         HeightRequest="2" 
+                                         Grid.Row="0" 
+                                         Grid.ColumnSpan="3" 
+                                         VerticalOptions="Start" />
+
+                                <BoxView Color="Black" 
+                                         WidthRequest="2" 
+                                         Grid.Column="0" 
+                                         Grid.RowSpan="2" 
+                                         HorizontalOptions="Start" />
+
+                                <BoxView Color="Black" 
+                                         HeightRequest="2" 
+                                         Grid.Row="1" 
+                                         Grid.ColumnSpan="3" 
+                                         VerticalOptions="End" />
+
+                                <BoxView Color="Black" 
+                                         WidthRequest="2" 
+                                         Grid.Column="2" 
+                                         Grid.RowSpan="2" 
+                                         HorizontalOptions="End" />
+
+                                <BoxView Color="Black" 
+                                         WidthRequest="2" 
+                                         Grid.Column="1" 
+                                         Grid.RowSpan="2" 
+                                         HorizontalOptions="End" />
+                                <BoxView Color="Black" 
+                                         WidthRequest="2" 
+                                         Grid.Column="0" 
+                                         Grid.RowSpan="2" 
+                                         HorizontalOptions="End" />
+
                             </Grid>
+
                         </ScrollView>
                     </DataTemplate>
                 </material:TabItem.ContentTemplate>

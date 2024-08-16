@@ -12,6 +12,7 @@ using LiveChartsCore.Drawing;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using MAUI_IOT.Views;
 using Microsoft.Maui.Controls;
+using System.Diagnostics;
 
 namespace MAUI_IOT.ViewModels
 {
@@ -37,6 +38,18 @@ namespace MAUI_IOT.ViewModels
         public ObservableCollection<ISeries> SeriesX { get; set; }
         public ObservableCollection<ISeries> SeriesY { get; set; }
         public ObservableCollection<ISeries> SeriesZ { get; set; }
+
+        public ObservableCollection<double> a { get; set; }
+        public ObservableCollection<double> F { get; set; }
+        public ObservableCollection<DateTime> Time { get; set; }
+        public ObservableCollection<TimeSpan> Duration { get; set; }
+
+        //dữ liệu khối lượng
+        [ObservableProperty]
+        private double m;
+
+        [ObservableProperty]
+        private double avgF;
 
         ADXL345Sensor ADXL345Sensor { get; set; }
 
@@ -223,6 +236,12 @@ namespace MAUI_IOT.ViewModels
             ADXL345Sensor.PropertyChanged += ADXL345Sensor_PropertyChanged;
             this.serviceProvider = serviceProvider;
             this.fullScreenChartViewModel = fullScreenChartViewModel;
+
+            //khởi tạo các biến lưu giá trị a, F, Time, Duration ( rút gọn của thời gian)
+            a = new ObservableCollection<double>();
+            F = new ObservableCollection<double>();
+            Time = new ObservableCollection<DateTime>();
+            Duration = new ObservableCollection<TimeSpan>();
         }
 
         private async void ADXL345Sensor_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -231,6 +250,7 @@ namespace MAUI_IOT.ViewModels
             {
                 ADXL345Axis = JsonConvert.DeserializeObject<Models.CustomAxis>(ADXL345Sensor.ReceivedData);
                 AddItem(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z);
+                caculateA(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z, ADXL345Axis.TimeStamp);
                 RemoveItem();
             }
         }
@@ -267,6 +287,7 @@ namespace MAUI_IOT.ViewModels
         async Task Stop()
         {
             await ADXL345Sensor.CloseAsync();
+            await DataBinding();
         }
 
         [RelayCommand]
@@ -292,8 +313,55 @@ namespace MAUI_IOT.ViewModels
             {
                 {"data",series },
             };
-            await Shell.Current.GoToAsync(nameof(FullScreenChartView),paramaters);
+            await Shell.Current.GoToAsync(nameof(FullScreenChartView), paramaters);
         }
 
+        public async Task caculateA(double x, double y, double z, DateTime time)
+        {
+            await Task.Run(() =>
+            {
+                double result = Math.Sqrt(x * x + y * y + z * z);
+                MainThread.BeginInvokeOnMainThread(() => { a.Add(result); F.Add(result * m); Time.Add(time); });
+            });
+        }
+
+        //dữ liệu cho bảng
+        private async Task DataBinding()
+        {
+            if (a.Count == 0 || Time.Count == 0 || a.Count != F.Count || a.Count != Time.Count)
+            {
+                Debug.WriteLine("Dữ liệu không hợp lệ.");
+                return;
+            }
+
+            int n = a.Count;
+            if (n <= 1) return;
+
+            TimeSpan diff = Time[n - 1] - Time[0];
+
+            // số mẫu lấy trong một 100ms
+            int duration = 15;
+
+
+            //Tạo biến hứng giá trị
+            ObservableCollection<double> _a = new ObservableCollection<double>();
+            ObservableCollection<double> _F = new ObservableCollection<double>();
+            ObservableCollection<DateTime> _time = new ObservableCollection<DateTime>();
+            for (int i = 0; i < n; i+=duration)
+            {          
+                _a.Add(a[i]);
+                _F.Add(F[i]);
+                _time.Add(Time[i]);
+            }
+
+            a = _a;
+            F = _F;
+            Time = _time;
+
+            for (int i = 0; i < Time.Count; i++)
+                Duration.Add(Time[i] - Time[0]);
+
+            avgF = F.Any() ? F.Average() : 0;            
+        }
     }
 }
