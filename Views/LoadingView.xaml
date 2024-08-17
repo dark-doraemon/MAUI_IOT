@@ -4,8 +4,7 @@
              x:Class="MAUI_IOT.Views.LoadingView"
              Shell.NavBarIsVisible="False"
              Title="LoadingView">
-    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-        <Label>Checking authentication state</Label>
-        <ActivityIndicator IsRunning="True"/>
-    </VerticalStackLayout>
+
+    
+
 </ContentPage>

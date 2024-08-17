@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI_IOT.Views.NewContent1">
+
+    <StackLayout>
+        <!-- Tab 1 -->
+        <TabbedPage Title="Tab 1">
+            <ContentPage Title="Page 1A">
+                <StackLayout>
+                    <Label Text="Content for Page 1A" />
+                </StackLayout>
+            </ContentPage>
+            <ContentPage Title="Page 1B">
+                <StackLayout>
+                    <Label Text="Content for Page 1B" />
+                </StackLayout>
+            </ContentPage>
+        </TabbedPage>
+
+        <!-- Tab 2 -->
+        <TabbedPage Title="Tab 2">
+            <ContentPage Title="Page 2A">
+                <StackLayout>
+                    <Label Text="Content for Page 2A" />
+                </StackLayout>
+            </ContentPage>
+            <ContentPage Title="Page 2B">
+                <StackLayout>
+                    <Label Text="Content for Page 2B" />
+                </StackLayout>
+            </ContentPage>
+        </TabbedPage>
+    </StackLayout>
+
+</ContentView>

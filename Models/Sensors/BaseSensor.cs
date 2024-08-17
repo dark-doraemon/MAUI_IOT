@@ -15,6 +15,9 @@ namespace MAUI_IOT.Models
 
         private ClientWebSocket clientWebSocket;
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public static event EventHandler OnStart;
+
         private string _receivedData;
 
         public string ReceivedData
@@ -74,6 +77,7 @@ namespace MAUI_IOT.Models
         //hàm đọc dữ liệu từ node-red thông qua websocket
         public async Task ReceiveData()
         {
+            OnStart?.Invoke(this, new EventArgs());
             byte[] buffer = new byte[1024];
             while (clientWebSocket.State == WebSocketState.Open)
             {

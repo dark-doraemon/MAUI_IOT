@@ -13,6 +13,7 @@ using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using MAUI_IOT.Views;
 using Microsoft.Maui.Controls;
 using System.Diagnostics;
+using Microsoft.Maui.Storage;
 
 namespace MAUI_IOT.ViewModels
 {
@@ -50,6 +51,9 @@ namespace MAUI_IOT.ViewModels
 
         [ObservableProperty]
         private double avgF;
+
+        public event EventHandler OnStop;
+        public event EventHandler OnSave;
 
         ADXL345Sensor ADXL345Sensor { get; set; }
 
@@ -249,13 +253,13 @@ namespace MAUI_IOT.ViewModels
             if (e.PropertyName == nameof(ADXL345Sensor.ReceivedData))
             {
                 ADXL345Axis = JsonConvert.DeserializeObject<Models.CustomAxis>(ADXL345Sensor.ReceivedData);
-                AddItem(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z);
+                await AddItem(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z);
                 caculateA(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z, ADXL345Axis.TimeStamp);
                 RemoveItem();
             }
         }
         
-        public void AddItem(float x, float y, float z)
+        public async Task AddItem(float x, float y, float z)
         {
             xAxis.Add(new ObservableValue(x));
             yAxis.Add(new ObservableValue(y));
@@ -288,12 +292,15 @@ namespace MAUI_IOT.ViewModels
         {
             await ADXL345Sensor.CloseAsync();
             await DataBinding();
+            OnStop?.Invoke(this, new EventArgs());
         }
 
         [RelayCommand]
-        void Save()
+        async Task Save()
         {
-
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, "data_table.json");
+            await SaveFile(filePath);
+            OnSave?.Invoke(this, new EventArgs());
         }
 
         public DrawMarginFrame Frame { get; set; } = new()
@@ -363,5 +370,34 @@ namespace MAUI_IOT.ViewModels
 
             avgF = F.Any() ? F.Average() : 0;            
         }
+
+
+        //lưu dữ liệu cho bảng
+        public async Task SaveFile(string path)
+        {
+            var dataSave = new
+            {
+                a = a.ToArray(),
+                F = F.ToArray(),
+                Time = Time.Select(dt => dt.ToString("o")).ToArray(),
+                Duration = Duration.Select(ts => ts.ToString()).ToArray(),
+                m = m
+            };
+
+            var jsonData = JsonConvert.SerializeObject(dataSave, Formatting.Indented);
+
+            try
+            {
+                await File.WriteAllTextAsync(path, jsonData);
+                this.path = path;
+                Debug.Write(path + "save file");
+            }
+            catch(Exception ex) {
+                Debug.WriteLine("SaveFile: " + ex.ToString());
+            }
+        }
+    
+        public string path { get; set; }
+
     }
 }

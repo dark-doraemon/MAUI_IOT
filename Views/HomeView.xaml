@@ -6,7 +6,7 @@
              x:DataType="viewmodel:HomeViewModel"
              xmlns:lessonType="clr-namespace:MAUI_IOT.Models"
              FlyoutItem.IsVisible="True"
-             Title="Home">
+             Title="Lab">
 
 
     <CollectionView ItemsSource="{Binding Lessons}"

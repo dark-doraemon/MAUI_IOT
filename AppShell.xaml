@@ -6,35 +6,44 @@
     xmlns:local="clr-namespace:MAUI_IOT"
     xmlns:pages="clr-namespace:MAUI_IOT.Pages"
     xmlns:views="clr-namespace:MAUI_IOT.Views"
+    xmlns:temp ="clr-namespace:MAUI_IOT.Views"
     Title="MAUI_IOT"
     Shell.FlyoutBehavior="Flyout">
 
-    <ShellContent
-        ContentTemplate="{DataTemplate views:LoadingView}"
-        Shell.FlyoutBehavior="Disabled"
-        Shell.FlyoutItemIsVisible="False" />
+    <FlyoutItem Title="Home">
+        <ShellContent Title="Home">
+            <ContentPage Title="Home" />
+        </ShellContent>
+    </FlyoutItem>
 
-    <ShellContent
-        ContentTemplate="{DataTemplate views:LoginView}"
-        Route="LoginView"
-        Shell.FlyoutBehavior="Disabled"
-        Shell.FlyoutItemIsVisible="False"
-        Shell.TabBarIsVisible="False" />
+    <FlyoutItem Title="Chart">
+        <ShellContent Title="Chart">
+            <ContentPage Title="Chart"/>
+        </ShellContent>
+    </FlyoutItem>
 
+    <FlyoutItem Title="Group">
+        <ShellContent Title="Group">
+            <ContentPage Title="Group"/>
+        </ShellContent>
+    </FlyoutItem>
 
-    <TabBar>
+    <FlyoutItem Title="Assignment">
+        <ShellContent Title="Assignment" Route="NewContent1" ContentTemplate="{DataTemplate temp:NewContent1}"/>
+    </FlyoutItem>
 
-        <ShellContent
-            Title="Lesson"
-            ContentTemplate="{DataTemplate views:HomeView}"
-            Route="HomeView" 
-            />
+    <FlyoutItem Title="Lab">
+        <Tab Title="Lab">
+            <ShellContent Title="Class 10" ContentTemplate="{DataTemplate views:HomeView}" Route="HomeView" />
+            <ShellContent Title="Class 11">
+                <ContentPage Title="Lab"/>
+            </ShellContent>
 
-        <ShellContent
-            Title="Profile"
-            ContentTemplate="{DataTemplate views:ProfileView}"
-            Route="ProfileView" />
-    </TabBar>
+            <ShellContent Title="Class 12">
+                <ContentPage Title="Lab"/>
+            </ShellContent>
+        </Tab>
+    </FlyoutItem>
 
     <!--<ShellContent
      ContentTemplate="{DataTemplate views:ADXL345View}"
