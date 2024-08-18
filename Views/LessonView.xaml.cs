@@ -4,20 +4,25 @@ using System.Diagnostics;
 using MAUI_IOT.Models;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
+using System.Globalization;
+using UraniumUI.ViewExtensions;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
 {
     public LessonViewModel lessonViewModel;
 
-    public ObservableCollection<double> a;
-    public ObservableCollection<double> F;
-    public ObservableCollection<TimeSpan> Duration;
+    public ObservableCollection<double> a = new ObservableCollection<double>();
+    public ObservableCollection<double> F = new ObservableCollection<double>();
+    public ObservableCollection<TimeSpan> Duration = new ObservableCollection<TimeSpan>();
 
     private const string result_textcolor = "#FFFFFF";
     private const string backgroundColor_odd = "#2C3034";
     private const string backgroundColor_even = "#212529";
 
+    private bool isEntryM = false;
+    private bool isSave = false;
+    private event EventHandler SetM;
     public LessonView(LessonViewModel lessonViewModel)
     {
         InitializeComponent();
@@ -25,9 +30,10 @@ public partial class LessonView : ContentPage
         this.lessonViewModel = lessonViewModel;
         BindingContext = lessonViewModel;
 
-        Models.BaseSensor.OnStart += Handle_Onstart;
+        lessonViewModel.OnStart += Handle_Onstart;
         lessonViewModel.OnStop += Handle_Onstop;
         lessonViewModel.OnSave += Handle_OnSave;
+        tab_View.PropertyChanged += OnTabView;
 
         loadingPosition();
 
@@ -53,11 +59,26 @@ public partial class LessonView : ContentPage
     {
         if (await ReadData(lessonViewModel.path))
         {
-            Debug.Write("Load data success");
+            await DisplayAlert("Thông báo!", "Lưu dữ liệu thành công", "OK");
+            isSave = true;
+            try
+            {
+                a = lessonViewModel.a;
+                F = lessonViewModel.F;
+                Duration = lessonViewModel.Duration;
+                await BindingData(table, a.Count, Duration, a, F);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ReadData: "+ex.ToString());
+            }
+            
+            EnabledButton(false);
+            tab_View.SelectedTab = table_results;
         }
         else
         {
-            Debug.Write("Load data fail");
+            await DisplayAlert("Thông báo!", "Lưu dữ liệu thất bại", "OK");
         }  
     }
     private async void Handle_Onstop(object sender, EventArgs e)
@@ -72,28 +93,34 @@ public partial class LessonView : ContentPage
         loading_text_1.IsVisible = loading_text_2.IsVisible = loading_text_3.IsVisible = false;
 
 
-        a = lessonViewModel.a;
-        F = lessonViewModel.F;
-        Duration = lessonViewModel.Duration;
+      
 
-        BindingData(table, a.Count, Duration, a, F);
+        //BindingData(table, a.Count, Duration, a, F);
     }
-
     private void Handle_Onstart(object sender, EventArgs e)
     {
-        chart_1.IsVisible = false;
-        loading_1.IsRunning = true;
-        chart_2.IsVisible = false;
-        loading_2.IsRunning = true;
-        chart_3.IsVisible = false;
-        loading_3.IsRunning = true;
-        loading_text_1.IsVisible = loading_text_2.IsVisible = loading_text_3.IsVisible = true;
-        Debug.Write("Start" + DateTime.Now.ToString());
+
+        if (isEntryM)
+        {
+
+            chart_1.IsVisible = false;
+            loading_1.IsRunning = true;
+            chart_2.IsVisible = false;
+            loading_2.IsRunning = true;
+            chart_3.IsVisible = false;
+            loading_3.IsRunning = true;
+            loading_text_1.IsVisible = loading_text_2.IsVisible = loading_text_3.IsVisible = true;
+            Debug.Write("Start" + DateTime.Now.ToString());
+        }
+        else
+        {
+            DisplayAlert("Thông báo!", "Bạn phải nhập khối lượng!", "Xác nhận");
+            tab_View.SelectedTab = inputParameters;
+        }
     }
 
-
     // tạo ra dữ liệu cho bảng dữ liệu
-    private void BindingData(Grid table, int rows, ObservableCollection<TimeSpan> Duration, ObservableCollection<double> a, ObservableCollection<double> F)
+    private async Task BindingData(Grid table, int rows, ObservableCollection<TimeSpan> Duration, ObservableCollection<double> a, ObservableCollection<double> F)
     {
         double tableWidth = DeviceDisplay.MainDisplayInfo.Width / 9;
 
@@ -166,46 +193,31 @@ public partial class LessonView : ContentPage
             Text = $"AVG F = {Math.Round(F.Average(), 3)} (N)",
             HorizontalTextAlignment = TextAlignment.Center,
             FontAttributes = FontAttributes.Bold,
-            FontSize = 20
+            FontSize = 15
         };
         table.SetRow(label, rows);
         table.SetColumn(label, 2);
         table.Children.Add(label);
     }
 
-
     //đọc file sau khi lưu
     private async Task<bool> ReadData(string path)
     {
         try
         {
-            var jsonData = await File.ReadAllTextAsync(path);
 
-           
-            var data = JsonConvert.DeserializeObject<dynamic>(jsonData);
+            var jsonData = await File.ReadAllTextAsync(path);        
+            var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData);
 
             if (data != null)
-            {           
-                var aList = JsonConvert.DeserializeObject<List<double>>(data.a.ToString());
-                var FList = JsonConvert.DeserializeObject<List<double>>(data.F.ToString());
-                var durationList = JsonConvert.DeserializeObject<List<string>>(data.Duration.ToString());
-              
-                var durationTimeSpanList = new List<TimeSpan>();
-                foreach (var duration in durationList)
-                {
-                    if (TimeSpan.TryParse(duration, out TimeSpan ts))
-                    {
-                        durationTimeSpanList.Add(ts);
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"Parse failed");
-                    }
-                }
+            {
 
-                a = new ObservableCollection<double>(aList);
-                F = new ObservableCollection<double>(FList);
-                Duration = new ObservableCollection<TimeSpan>(durationTimeSpanList);
+
+
+                var aList = JsonConvert.DeserializeObject<List<double>>(data["a"].ToString());
+                var FList = JsonConvert.DeserializeObject<List<double>>(data["F"].ToString());
+                var durationList = JsonConvert.DeserializeObject<List<TimeSpan>>(data["Duration"].ToString());
+                var mData = data["m"];
 
                 return true;
             }
@@ -219,6 +231,58 @@ public partial class LessonView : ContentPage
         {
             Debug.WriteLine($"ReadFile Error: {ex.Message}");
             return false;
+        }
+    }
+
+    private async void Handle_Set(object sender, EventArgs e)
+    {
+        bool answer = await DisplayAlert("Xác nhận!", $"Khối lượng m = {weight_entry.Text} kg", "Lưu", "Nhập lại");
+        double temp = lessonViewModel.M;
+        if (answer) {
+            string entryAfterFormatted = weight_entry.Text.Replace(",", ".");
+            if (double.TryParse(entryAfterFormatted, NumberStyles.Any, CultureInfo.InvariantCulture, out temp))
+            {
+                lessonViewModel.M = temp;
+            }
+            tab_View.SelectedTab = Experiment;
+        }
+
+        weight_entry.Text = temp.ToString();
+
+        isEntryM = true;
+        
+    }
+
+    public async void OnTabView(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if ("Table".Equals(tab_View.SelectedTab.Title))
+        {
+            if (!isSave)
+            {
+                await DisplayAlert("Thông báo!", "Chưa có dữ liệu", "OK");
+                tab_View.SelectedTab = Experiment;
+            }
+        }
+    }
+
+
+    private void EnabledButton(bool value)
+    {
+        if (value)
+        {
+            weight.IsEnabled = true;
+            weight_entry.IsEnabled = true;
+            btn_Stop.IsEnabled = true;
+            btn_Save.IsEnabled = true;
+            btn_Start.IsEnabled = true;
+        }
+        else
+        {
+            weight.IsEnabled = false;
+            weight_entry.IsEnabled = false;
+            btn_Save.IsEnabled = false;
+            btn_Start.IsEnabled = false;
+            btn_Stop.IsEnabled = false;
         }
     }
 }

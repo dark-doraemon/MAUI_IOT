@@ -10,29 +10,32 @@
     Title="MAUI_IOT"
     Shell.FlyoutBehavior="Flyout">
 
-    <FlyoutItem Title="Home">
-        <ShellContent Title="Home">
+    <FlyoutItem Title="Home" Icon="home.png">
+        <ShellContent Route="HomeView">
+
             <ContentPage Title="Home" />
         </ShellContent>
     </FlyoutItem>
 
-    <FlyoutItem Title="Chart">
-        <ShellContent Title="Chart">
-            <ContentPage Title="Chart"/>
+    <FlyoutItem Title="Chat" Icon="chat.png">
+        <ShellContent Title="Chat">
+            <ContentPage Title="Chat" />
         </ShellContent>
     </FlyoutItem>
 
-    <FlyoutItem Title="Group">
+    <FlyoutItem Title="Group" Icon="group.png">
         <ShellContent Title="Group">
             <ContentPage Title="Group"/>
         </ShellContent>
     </FlyoutItem>
 
-    <FlyoutItem Title="Assignment">
-        <ShellContent Title="Assignment" Route="NewContent1" ContentTemplate="{DataTemplate temp:NewContent1}"/>
+    <FlyoutItem Title="Assignment" Icon="assignment">
+        <ShellContent>
+            <ContentPage Title="Assignment" />
+        </ShellContent>
     </FlyoutItem>
 
-    <FlyoutItem Title="Lab">
+    <FlyoutItem Title="Lab" Icon="lab.png">
         <Tab Title="Lab">
             <ShellContent Title="Class 10" ContentTemplate="{DataTemplate views:HomeView}" Route="HomeView" />
             <ShellContent Title="Class 11">

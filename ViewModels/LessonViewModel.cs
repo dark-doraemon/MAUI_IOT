@@ -14,6 +14,7 @@ using MAUI_IOT.Views;
 using Microsoft.Maui.Controls;
 using System.Diagnostics;
 using Microsoft.Maui.Storage;
+using System.Reflection.Metadata;
 
 namespace MAUI_IOT.ViewModels
 {
@@ -54,6 +55,7 @@ namespace MAUI_IOT.ViewModels
 
         public event EventHandler OnStop;
         public event EventHandler OnSave;
+        public event EventHandler OnStart;
 
         ADXL345Sensor ADXL345Sensor { get; set; }
 
@@ -284,6 +286,8 @@ namespace MAUI_IOT.ViewModels
         [RelayCommand]
         async Task Start()
         {
+            OnStart?.Invoke(this, new EventArgs());
+            if (m == 0) return;
             await ADXL345Sensor.ConnectAsync(new Uri("ws://113.161.84.132:8800/api/adxl345"));
         }
 
@@ -292,7 +296,7 @@ namespace MAUI_IOT.ViewModels
         {
             await ADXL345Sensor.CloseAsync();
             await DataBinding();
-            OnStop?.Invoke(this, new EventArgs());
+            OnStop?.Invoke(this, new EventArgs());         
         }
 
         [RelayCommand]
@@ -346,42 +350,58 @@ namespace MAUI_IOT.ViewModels
 
             TimeSpan diff = Time[n - 1] - Time[0];
 
-            // số mẫu lấy trong một 100ms
-            int duration = 15;
+            // Số mẫu lấy trong 100ms
+            int duration = (int)(n * 100 / diff.TotalMilliseconds);
 
+            if (duration <= 0)
+            {
+                Debug.WriteLine("Duration phải lớn hơn 0.");
+                return;
+            }
 
-            //Tạo biến hứng giá trị
+            // Tạo biến hứng giá trị
             ObservableCollection<double> _a = new ObservableCollection<double>();
             ObservableCollection<double> _F = new ObservableCollection<double>();
             ObservableCollection<DateTime> _time = new ObservableCollection<DateTime>();
-            for (int i = 0; i < n; i+=duration)
-            {          
-                _a.Add(a[i]);
-                _F.Add(F[i]);
-                _time.Add(Time[i]);
+
+            for (int i = 0; i < n; i += duration)
+            {
+                if (i < a.Count && i < F.Count && i < Time.Count)
+                {
+                    _a.Add(a[i]);
+                    _F.Add(F[i]);
+                    _time.Add(Time[i]);
+                }
             }
 
             a = _a;
             F = _F;
             Time = _time;
 
+            Duration.Clear();
+
             for (int i = 0; i < Time.Count; i++)
                 Duration.Add(Time[i] - Time[0]);
 
-            avgF = F.Any() ? F.Average() : 0;            
+            avgF = F.Any() ? F.Average() : 0;
         }
+
 
 
         //lưu dữ liệu cho bảng
         public async Task SaveFile(string path)
         {
+            if (Duration.Count < Time.Count)
+            {
+                Duration.Add(Time[Time.Count - 1] - Time[0]);
+            }
             var dataSave = new
             {
                 a = a.ToArray(),
                 F = F.ToArray(),
                 Time = Time.Select(dt => dt.ToString("o")).ToArray(),
                 Duration = Duration.Select(ts => ts.ToString()).ToArray(),
-                m = m
+                m = M
             };
 
             var jsonData = JsonConvert.SerializeObject(dataSave, Formatting.Indented);
@@ -390,7 +410,7 @@ namespace MAUI_IOT.ViewModels
             {
                 await File.WriteAllTextAsync(path, jsonData);
                 this.path = path;
-                Debug.Write(path + "save file");
+                Debug.Write(path + "save file success");
             }
             catch(Exception ex) {
                 Debug.WriteLine("SaveFile: " + ex.ToString());

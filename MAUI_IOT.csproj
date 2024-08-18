@@ -67,6 +67,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Icon\assignment.png" />
+	  <None Remove="Resources\Icon\chat.png" />
+	  <None Remove="Resources\Icon\group.png" />
+	  <None Remove="Resources\Icon\home.png" />
+	  <None Remove="Resources\Icon\lab.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Icon\assignment.png" />
+	  <MauiImage Include="Resources\Icon\chat.png" />
+	  <MauiImage Include="Resources\Icon\group.png" />
+	  <MauiImage Include="Resources\Icon\home.png" />
+	  <MauiImage Include="Resources\Icon\lab.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-rc2" />
 		<PackageReference Include="Microcharts.Maui" Version="1.0.0" />
@@ -112,9 +128,6 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\LoginView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\NewContent1.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\ProfileView.xaml">

@@ -14,254 +14,260 @@
         <viewmodel:LessonViewModel />
     </ContentPage.BindingContext>
 
+    <material:TabView x:Name="tab_View">
 
-    <ContentPage.Content>
-        
-        <material:TabView x:Name="tab_View">
-            <material:TabItem Title="Experiment">
-                <ScrollView Orientation="Vertical" Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="300" />
-                            <RowDefinition Height="300" />
-                            <RowDefinition Height="300" />
-                            <RowDefinition Height="50" />
-                        </Grid.RowDefinitions>
+        <material:TabItem Title="Experiment" x:Name="Experiment" >
+            <ScrollView Orientation="Vertical" Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="300" />
+                        <RowDefinition Height="300" />
+                        <RowDefinition Height="300" />
+                        <RowDefinition Height="50" />
+                    </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0" FontSize="Large" HorizontalOptions="Center" Text="{Binding Lesson.LessonName}" />
+                    <Label Grid.Row="0" FontSize="Large" HorizontalOptions="Center" Text="{Binding Lesson.LessonName}" />
 
-                        <VerticalStackLayout Grid.Row="1" Margin="10,0,0,0">
-                            <HorizontalStackLayout>
-                                <Label Text="x" WidthRequest="150" />
-                                <Label x:Name="lbl_x" Text="{Binding ADXL345Axis.x}" WidthRequest="150" />
-                            </HorizontalStackLayout>
+                    <VerticalStackLayout Grid.Row="1" Margin="10,0,0,0">
+                        <HorizontalStackLayout>
+                            <Label Text="x" WidthRequest="150" />
+                            <Label x:Name="lbl_x" Text="{Binding ADXL345Axis.x}" WidthRequest="150" />
+                        </HorizontalStackLayout>
 
-                            <HorizontalStackLayout>
-                                <Label Text="y" WidthRequest="150" />
-                                <Label x:Name="lbl_y" Text="{Binding ADXL345Axis.y}" WidthRequest="150" />
-                            </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="y" WidthRequest="150" />
+                            <Label x:Name="lbl_y" Text="{Binding ADXL345Axis.y}" WidthRequest="150" />
+                        </HorizontalStackLayout>
 
-                            <HorizontalStackLayout>
-                                <Label Text="z" WidthRequest="150" />
-                                <Label x:Name="lbl_z" Text="{Binding ADXL345Axis.z}" WidthRequest="150" />
-                            </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Text="z" WidthRequest="150" />
+                            <Label x:Name="lbl_z" Text="{Binding ADXL345Axis.z}" WidthRequest="150" />
+                        </HorizontalStackLayout>
 
-                        </VerticalStackLayout>
+                    </VerticalStackLayout>
 
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                            <lvc:CartesianChart x:Name="chart_1"
-                                                IsVisible="True"
+                        <lvc:CartesianChart x:Name="chart_1"
+                                        IsVisible="True"
+                                        Grid.Column="0"
+                                        DrawMarginFrame="{Binding Frame}"
+                                        Series="{Binding SeriesX}"
+                                        XAxes="{Binding XAxes}"
+                                        YAxes="{Binding YAxes}"
+                                        ZoomMode="None" />
+
+                        <ActivityIndicator IsRunning="False" x:Name="loading_1" Color="Orange"                                              
+                                    HeightRequest="100"/>
+                        <Label Grid.Column="0" x:Name="loading_text_1" IsVisible="False"
+                        Text="Loading...." TextColor="Black" FontSize="20" 
+                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                        TranslationY="40" TranslationX="35"/>
+
+
+                        <Button Grid.Column="1"
+                                        HeightRequest="50"
+                                        WidthRequest="50"
+                                        Command="{Binding ZoomCommand}"
+                                        CommandParameter="{Binding SeriesX}">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="FontAwesome"
+                                                        Glyph="&#x1F50D;"
+                                                        Size="30" />
+                            </Button.ImageSource>
+                        </Button>
+                    </Grid>
+
+
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <lvc:CartesianChart x:Name="chart_2"
+                                        Grid.Column="0"
+                                        DrawMarginFrame="{Binding Frame}"
+                                        Series="{Binding SeriesY}"
+                                        XAxes="{Binding XAxes}"
+                                        YAxes="{Binding YAxes}"
+                                        ZoomMode="None" />
+
+                        <ActivityIndicator IsRunning="False" x:Name="loading_2" Color="Orange"                                              
+                                    HeightRequest="100"/>
+
+                        <Label Grid.Column="0" x:Name="loading_text_2"
+                        Text="Loading...." TextColor="Black" FontSize="20" IsVisible="False"
+                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                        TranslationY="40" TranslationX="35"/>
+
+                        <Button Grid.Column="1"
+                            HeightRequest="50"
+                            WidthRequest="50"
+                            Command="{Binding ZoomCommand}"
+                            CommandParameter="{Binding SeriesY}">
+                            <Button.ImageSource>
+                                <FontImageSource
+                                    FontFamily="FontAwesome"
+                                    Glyph="&#x1F50D;"
+                                    Size="30" />
+                            </Button.ImageSource>
+                        </Button>
+                    </Grid>
+
+
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <lvc:CartesianChart x:Name="chart_3"
                                                 Grid.Column="0"
                                                 DrawMarginFrame="{Binding Frame}"
-                                                Series="{Binding SeriesX}"
+                                                Series="{Binding SeriesZ}"
                                                 XAxes="{Binding XAxes}"
                                                 YAxes="{Binding YAxes}"
                                                 ZoomMode="None" />
 
-                            <ActivityIndicator IsRunning="False" x:Name="loading_1" Color="Orange"                                              
-                                               HeightRequest="100"/>
-                            <Label Grid.Column="0" x:Name="loading_text_1" IsVisible="False"
-                                   Text="Loading...." TextColor="Black" FontSize="20" 
-                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
-                                   TranslationY="40" TranslationX="35"/>
+                        <ActivityIndicator IsRunning="False" x:Name="loading_3" Color="Orange"                                              
+                                        HeightRequest="100"/>
 
+                        <Label Grid.Column="0" x:Name="loading_text_3"
+                        Text="Loading...." TextColor="Black" FontSize="20" IsVisible="False"
+                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                        TranslationY="40" TranslationX="35"/>
 
-                            <Button Grid.Column="1"
-                                                HeightRequest="50"
-                                                WidthRequest="50"
-                                                Command="{Binding ZoomCommand}"
-                                                CommandParameter="{Binding SeriesX}">
-                                <Button.ImageSource>
-                                    <FontImageSource FontFamily="FontAwesome"
-                                                                 Glyph="&#x1F50D;"
-                                                                 Size="30" />
-                                </Button.ImageSource>
-                            </Button>
-                        </Grid>
-
-
-                        <Grid Grid.Row="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <lvc:CartesianChart x:Name="chart_2"
-                                                Grid.Column="0"
-                                                DrawMarginFrame="{Binding Frame}"
-                                                Series="{Binding SeriesY}"
-                                                XAxes="{Binding XAxes}"
-                                                YAxes="{Binding YAxes}"
-                                                ZoomMode="None" />
-
-                            <ActivityIndicator IsRunning="False" x:Name="loading_2" Color="Orange"                                              
-                                               HeightRequest="100"/>
-
-                            <Label Grid.Column="0" x:Name="loading_text_2"
-                                   Text="Loading...." TextColor="Black" FontSize="20" IsVisible="False"
-                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
-                                   TranslationY="40" TranslationX="35"/>
-
-                            <Button Grid.Column="1"
+                        <Button Grid.Column="1"
                                     HeightRequest="50"
                                     WidthRequest="50"
                                     Command="{Binding ZoomCommand}"
-                                    CommandParameter="{Binding SeriesY}">
-                                <Button.ImageSource>
-                                    <FontImageSource
-                                            FontFamily="FontAwesome"
-                                            Glyph="&#x1F50D;"
-                                            Size="30" />
-                                </Button.ImageSource>
-                            </Button>
-                        </Grid>
-
-
-                        <Grid Grid.Row="4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <lvc:CartesianChart x:Name="chart_3"
-                                                        Grid.Column="0"
-                                                        DrawMarginFrame="{Binding Frame}"
-                                                        Series="{Binding SeriesZ}"
-                                                        XAxes="{Binding XAxes}"
-                                                        YAxes="{Binding YAxes}"
-                                                        ZoomMode="None" />
-
-                            <ActivityIndicator IsRunning="False" x:Name="loading_3" Color="Orange"                                              
-                                                HeightRequest="100"/>
-
-                            <Label Grid.Column="0" x:Name="loading_text_3"
-                                   Text="Loading...." TextColor="Black" FontSize="20" IsVisible="False"
-                                   HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
-                                   TranslationY="40" TranslationX="35"/>
-
-                            <Button Grid.Column="1"
-                                            HeightRequest="50"
-                                            WidthRequest="50"
-                                            Command="{Binding ZoomCommand}"
-                                            CommandParameter="{Binding SeriesZ}">
-                                <Button.ImageSource>
-                                    <FontImageSource
-                                            FontFamily="FontAwesome"
-                                            Glyph="&#x1F50D;"
-                                            Size="30" />
-                                </Button.ImageSource>
-                            </Button>
-                        </Grid>
-
-                        <StackLayout
-                                Grid.Row="5"
-                                HorizontalOptions="CenterAndExpand"
-                                Orientation="Horizontal"
-                                Spacing="30"
-                                VerticalOptions="EndAndExpand">
-                            <Button Command="{Binding StartCommand}" Text="Start" />
-                            <Button Command="{Binding StopCommand}" Text="Stop" />
-                            <Button Command="{Binding SaveCommand}" Text="Save" />
-                        </StackLayout>
-                    </Grid>
-                </ScrollView>
-            </material:TabItem>
-
-            <material:TabItem Title="All">
-                <material:TabItem.ContentTemplate>
-                    <DataTemplate>
-                        <lvc:CartesianChart
-                            DrawMarginFrame="{Binding Frame}"
-                            Series="{Binding Series}"
-                            TooltipPosition="Hidden"
-                            XAxes="{Binding XAxes}"
-                            YAxes="{Binding YAxes}" />
-                    </DataTemplate>
-                </material:TabItem.ContentTemplate>
-            </material:TabItem>
-
-            <material:TabItem Title="Input Parameters">
-                <material:TabItem.ContentTemplate>
-                    <DataTemplate>
-                        <ScrollView Orientation="Both">
-                            <VerticalStackLayout>
-                                <HorizontalStackLayout Padding="5">
-                                    <Label
-                                        FontAttributes="Bold"
-                                        FontSize="Medium"
-                                        Text="m"
-                                        VerticalTextAlignment="Center"
-                                        WidthRequest="50" />
-                                    <Entry Text="{Binding M}" Placeholder="Nhập khối lượng: " TextColor="Red" />
-                                </HorizontalStackLayout>
-
-                                
-
-                                <Button
-                                    FontAttributes="Bold"
-                                    Text="Set"                                  
-                                    WidthRequest="60" />
-                            </VerticalStackLayout>
-                        </ScrollView>
-
-                    </DataTemplate>
-                </material:TabItem.ContentTemplate>
-            </material:TabItem>
-
-            <material:TabItem Title="Table">
-                <ScrollView Padding="5" Orientation="Both">
-                    <Grid Padding="0" x:Name="table" >
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-
-                        <Label  Grid.Row="0"                                     
-                                        Grid.Column="0"
-                                        Padding="5"
-                                        FontAttributes="Bold"
-                                        FontSize="25"
-                                        HorizontalTextAlignment="Center"
-                                        Text="Time"
-                                        VerticalTextAlignment="Center" />
-
-                        <Label  Grid.Row="0"
-                                        Grid.Column="1"
-                                        Padding="5"
-                                        FontAttributes="Bold"
-                                        FontSize="25"
-                                        HorizontalTextAlignment="Center"
-                                        Text="v(m/s^2)"
-                                        VerticalTextAlignment="Center" />
-
-                        <Label  Grid.Row="0"
-                                        Grid.Column="2"
-                                        Padding="5"
-                                        FontAttributes="Bold"
-                                        FontSize="25"
-                                        HorizontalTextAlignment="Center"
-                                        Text="F (N)"
-                                        VerticalTextAlignment="Center" />
-
+                                    CommandParameter="{Binding SeriesZ}">
+                            <Button.ImageSource>
+                                <FontImageSource
+                                    FontFamily="FontAwesome"
+                                    Glyph="&#x1F50D;"
+                                    Size="30" />
+                            </Button.ImageSource>
+                        </Button>
                     </Grid>
 
-                </ScrollView>
-            </material:TabItem>
-        </material:TabView>
-        
-    </ContentPage.Content>
+                    <StackLayout
+                        Grid.Row="5"
+                        HorizontalOptions="CenterAndExpand"
+                        Orientation="Horizontal"
+                        Spacing="30"
+                        VerticalOptions="EndAndExpand">
+                        <Button Command="{Binding StartCommand}" x:Name="btn_Start" Text="Start" />
+                        <Button Command="{Binding StopCommand}" x:Name="btn_Stop" Text="Stop" />
+                        <Button Command="{Binding SaveCommand}" x:Name="btn_Save" Text="Save" />
+                    </StackLayout>
+                </Grid>
+            </ScrollView>
+        </material:TabItem>
+
+        <material:TabItem Title="All" x:Name="All">
+            <material:TabItem.ContentTemplate>
+                <DataTemplate>
+                    <lvc:CartesianChart
+                    DrawMarginFrame="{Binding Frame}"
+                    Series="{Binding Series}"
+                    TooltipPosition="Hidden"
+                    XAxes="{Binding XAxes}"
+                    YAxes="{Binding YAxes}" />
+                </DataTemplate>
+            </material:TabItem.ContentTemplate>
+        </material:TabItem>
+
+        <material:TabItem Title="Input Parameters" x:Name="inputParameters">
+
+            <ScrollView Orientation="Both">
+                <VerticalStackLayout>
+                    <HorizontalStackLayout Padding="5">
+                        <Label FontAttributes="Bold"
+                        FontSize="Medium"
+                        Text="m: "
+                        VerticalTextAlignment="Center"
+                        WidthRequest="50" />
+                        <Entry x:Name="weight_entry" 
+                        Text="0" 
+                        Placeholder="Nhập khối lượng: " 
+                        TextColor="Red" 
+                        Keyboard="Numeric"/>
+                    </HorizontalStackLayout>
+
+
+
+                    <Button x:Name="weight"
+                        FontAttributes="Bold"
+                        Text="Set"                                  
+                        WidthRequest="60"
+                        Clicked="Handle_Set"/>
+                </VerticalStackLayout>
+            </ScrollView>
+
+
+        </material:TabItem>
+
+        <material:TabItem Title="Table" x:Name="table_results" >
+            <ScrollView Padding="5" Orientation="Both">
+                <Grid Padding="0" x:Name="table" >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label  Grid.Row="0"                                     
+                                Grid.Column="0"
+                                Padding="5"
+                                FontAttributes="Bold"
+                                FontSize="25"
+                                HorizontalTextAlignment="Center"
+                                Text="Time"
+                                VerticalTextAlignment="Center" />
+
+                    <Label  Grid.Row="0"
+                                Grid.Column="1"
+                                Padding="5"
+                                FontAttributes="Bold"
+                                FontSize="25"
+                                HorizontalTextAlignment="Center"
+                                Text="v(m/s^2)"
+                                VerticalTextAlignment="Center" />
+
+                    <Label  Grid.Row="0"
+                                Grid.Column="2"
+                                Padding="5"
+                                FontAttributes="Bold"
+                                FontSize="25"
+                                HorizontalTextAlignment="Center"
+                                Text="F (N)"
+                                VerticalTextAlignment="Center" />
+
+                </Grid>
+
+            </ScrollView>
+        </material:TabItem>
+
+    </material:TabView>
+
+
+
+
+
+
+
 
 </ContentPage>
