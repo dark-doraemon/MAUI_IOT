@@ -63,13 +63,6 @@
                                         YAxes="{Binding YAxes}"
                                         ZoomMode="None" />
 
-                        <ActivityIndicator IsRunning="False" x:Name="loading_1" Color="Orange"                                              
-                                    HeightRequest="100"/>
-                        <Label Grid.Column="0" x:Name="loading_text_1" IsVisible="False"
-                        Text="Loading...." TextColor="Black" FontSize="20" 
-                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
-                        TranslationY="40" TranslationX="35"/>
-
 
                         <Button Grid.Column="1"
                                         HeightRequest="50"
@@ -99,13 +92,7 @@
                                         YAxes="{Binding YAxes}"
                                         ZoomMode="None" />
 
-                        <ActivityIndicator IsRunning="False" x:Name="loading_2" Color="Orange"                                              
-                                    HeightRequest="100"/>
 
-                        <Label Grid.Column="0" x:Name="loading_text_2"
-                        Text="Loading...." TextColor="Black" FontSize="20" IsVisible="False"
-                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
-                        TranslationY="40" TranslationX="35"/>
 
                         <Button Grid.Column="1"
                             HeightRequest="50"
@@ -136,14 +123,6 @@
                                                 YAxes="{Binding YAxes}"
                                                 ZoomMode="None" />
 
-                        <ActivityIndicator IsRunning="False" x:Name="loading_3" Color="Orange"                                              
-                                        HeightRequest="100"/>
-
-                        <Label Grid.Column="0" x:Name="loading_text_3"
-                        Text="Loading...." TextColor="Black" FontSize="20" IsVisible="False"
-                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
-                        TranslationY="40" TranslationX="35"/>
-
                         <Button Grid.Column="1"
                                     HeightRequest="50"
                                     WidthRequest="50"
@@ -173,16 +152,33 @@
         </material:TabItem>
 
         <material:TabItem Title="All" x:Name="All">
-            <material:TabItem.ContentTemplate>
-                <DataTemplate>
-                    <lvc:CartesianChart
-                    DrawMarginFrame="{Binding Frame}"
-                    Series="{Binding Series}"
-                    TooltipPosition="Hidden"
-                    XAxes="{Binding XAxes}"
-                    YAxes="{Binding YAxes}" />
-                </DataTemplate>
-            </material:TabItem.ContentTemplate>
+            
+            <Grid Margin="10" x:Name="grid_Chart">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="15*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <lvc:CartesianChart Grid.Row="0"
+                                    x:Name="chart_All"
+                                    DrawMarginFrame="{Binding Frame}"
+                                    Series="{Binding Series}"
+                                    Sections="{Binding Sections}"
+                                    PressedCommand="{Binding PointerPressedCommand}"
+                                    TooltipPosition="Hidden"
+                                    XAxes="{Binding XAxes}"
+                                    YAxes="{Binding YAxes}"
+                                    ZoomMode="X"/>
+
+                <Button Grid.Row="1"
+                        x:Name="selectChartAll"
+                        Clicked="OnClick"
+                        Text="Select Range" />
+                        <!--Command="{Binding SelectRangeCommand}"-->
+            </Grid>
+
+
+           
         </material:TabItem>
 
         <material:TabItem Title="Input Parameters" x:Name="inputParameters">
@@ -215,9 +211,9 @@
 
         </material:TabItem>
 
-        <material:TabItem Title="Table" x:Name="table_results" >
-            <ScrollView Padding="5" Orientation="Both">
-                <Grid Padding="0" x:Name="table" >
+        <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
+            <ScrollView Padding="5" Orientation="Vertical">
+                <Grid Padding="0" x:Name="table">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

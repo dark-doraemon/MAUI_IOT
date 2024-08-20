@@ -31,11 +31,12 @@
                                 Grid.Row="0"
                                 DrawMarginFrame="{Binding Frame}"
                                 PressedCommand="{Binding PointerPressedCommand}"
+                                Sections="{Binding Sections}"
                                 Series="{Binding Series}"
                                 TooltipPosition="Auto"
                                 XAxes="{Binding XAxes}"
                                 YAxes="{Binding YAxes}"
-                                ZoomMode="X" />
+                                ZoomMode="X"></lvc:CartesianChart>
                             <StackLayout
                                 Grid.Row="1"
                                 HorizontalOptions="CenterAndExpand"

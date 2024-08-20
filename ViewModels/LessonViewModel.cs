@@ -15,6 +15,10 @@ using Microsoft.Maui.Controls;
 using System.Diagnostics;
 using Microsoft.Maui.Storage;
 using System.Reflection.Metadata;
+using LiveChartsCore.Kernel.Events;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView.Drawing;
+
 
 namespace MAUI_IOT.ViewModels
 {
@@ -56,6 +60,10 @@ namespace MAUI_IOT.ViewModels
         public event EventHandler OnStop;
         public event EventHandler OnSave;
         public event EventHandler OnStart;
+
+        public bool isSelected;
+        [ObservableProperty]
+        private List<ObservableValue> selectedValue = new List<ObservableValue>();
 
         ADXL345Sensor ADXL345Sensor { get; set; }
 
@@ -109,7 +117,7 @@ namespace MAUI_IOT.ViewModels
                 {
                     Color = s_gray,
                     StrokeThickness = 1
-                }
+                },
             }
         };
 
@@ -153,6 +161,15 @@ namespace MAUI_IOT.ViewModels
             }
         };
 
+        public RectangularSection[] Sections { get; set; } = new RectangularSection[]
+                   {
+                        new RectangularSection {
+                            Xi = 0,
+                            Xj = 0,
+                            Fill = new SolidColorPaint(new SKColor(255, 255, 255))
+                        },
+                   };
+
         public LessonViewModel()
         {
             
@@ -180,6 +197,7 @@ namespace MAUI_IOT.ViewModels
                     Fill = null,
                     LineSmoothness = 0,
                     GeometrySize = 0,
+                    Stroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 1 },
                 },
                 new LineSeries<ObservableValue>
                 {
@@ -187,7 +205,7 @@ namespace MAUI_IOT.ViewModels
                     Fill = null,
                     LineSmoothness = 0,
                     GeometrySize = 0,
-
+                     Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 1 },
                 },
                 new LineSeries<ObservableValue>
                 {
@@ -195,7 +213,7 @@ namespace MAUI_IOT.ViewModels
                     Fill = null,
                     LineSmoothness = 0,
                     GeometrySize = 0,
-
+                    Stroke = new SolidColorPaint(SKColors.Yellow) { StrokeThickness = 1 },
                 },
             };
 
@@ -419,5 +437,118 @@ namespace MAUI_IOT.ViewModels
     
         public string path { get; set; }
 
+        private double x1 = -10;
+        private double x2 = -10;
+
+        public ObservableCollection<double> xValues;
+        public ObservableCollection<double> yValues;
+        public ObservableCollection<double> zValues;
+
+        [RelayCommand]
+        public void OnPointerPressed(PointerCommandArgs e)
+        {
+
+            if (isSelected == true)
+            {
+                var chart = (ICartesianChartView<SkiaSharpDrawingContext>)e.Chart;
+                var scaledPoint = chart.ScalePixelsToData(e.PointerPosition);
+
+                if (x1 == -10)
+                {
+                    x1 = Math.Floor(scaledPoint.X);
+                    if (x1 < 0)
+                    {
+                        x1 = 0;
+                    }
+                    return;
+                }
+
+                if (x2 == -10)
+                {
+                    x2 = Math.Ceiling(scaledPoint.X);
+                    if (x2 < 0)
+                    {
+                        x2 = 0;
+                    }
+                }
+
+                if (x2 > x1)
+                {
+                    this.SelectedValue.Clear();
+
+                    var xValues = ((LineSeries<ObservableValue>)Series[0]).Values.Select(x => x.Value).ToList().Skip((int)x1).Take((int)x2 - (int)x1 + 1).ToList();
+                    var yValues = ((LineSeries<ObservableValue>)Series[1]).Values.Select(x => x.Value).ToList().Skip((int)x1).Take((int)x2 - (int)x1 + 1).ToList();
+                    var zValues = ((LineSeries<ObservableValue>)Series[2]).Values.Select(x => x.Value).ToList().Skip((int)x1).Take((int)x2 - (int)x1 + 1).ToList();
+
+
+                    getXYZ_range(xValues, yValues, zValues);
+                }
+
+                isSelected = false;
+
+
+                Debug.Write("Selected strat x1: " + x1 + "\n");
+                Debug.Write("Selected stop x2: " + x2);
+                try
+                {
+                    Sections[0].Xi = x1;
+                    Sections[0].Xj = x2;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Selected error: " + ex.ToString());
+                }
+                FinishSelected?.Invoke(this, new EventArgs());
+            }
+
+        }
+        public event EventHandler FinishSelected;
+
+        //[RelayCommand]
+        //public void SelectRange()
+        //{
+        //    if (Series.Count < 1)
+        //    {
+        //        Debug.WriteLine("Không có dữ liệu");
+        //    }
+
+        //    else
+        //    {
+        //       SelectedBtn?.Invoke(this, new EventArgs());
+        //    }
+        //}
+
+        public ObservableCollection<double> afterSelected_a { get; set; }
+        public ObservableCollection<double> afterSelected_F { get; set; }
+
+        private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)
+        {
+            if(x.Count != y.Count || x.Count != z.Count) return;
+            // Chuyển một list có thể có giá trị null sang một list không có giá trị null
+            var nonNullxValue = x.Where(value => value.HasValue).Select(value => value.Value).ToList();
+            var nonNullyValue = y.Where(value => value.HasValue).Select(value => value.Value).ToList();
+            var nonNullzValue = z.Where(value => value.HasValue).Select(value => value.Value).ToList();
+
+            this.xValues = new ObservableCollection<double>(nonNullxValue);
+            this.yValues = new ObservableCollection<double>(nonNullyValue);
+            this.zValues = new ObservableCollection<double>(nonNullzValue);
+
+            afterSelected_F = new ObservableCollection<double>();
+            afterSelected_a = new ObservableCollection<double>();
+
+            for(int i = 0; i < xValues.Count; i++)
+            {
+                afterSelected_a.Add(Math.Sqrt(xValues[i] * xValues[i] + yValues[i] * yValues[i] + zValues[i] * zValues[i]));
+            }
+
+            if (afterSelected_a.Count != xValues.Count) return;
+
+            foreach (var value in afterSelected_a) { 
+                afterSelected_F.Add(this.M *  value);
+            }
+
+            Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
+
+        }
     }
 }

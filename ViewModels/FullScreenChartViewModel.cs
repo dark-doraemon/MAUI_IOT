@@ -13,6 +13,7 @@ using LiveChartsCore.Kernel.Events;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView.Drawing;
 using LiveChartsCore.Defaults;
+using static System.Collections.Specialized.BitVector32;
 
 namespace MAUI_IOT.ViewModels
 {
@@ -40,6 +41,16 @@ namespace MAUI_IOT.ViewModels
         private static readonly SKColor s_gray1 = new(160, 160, 160);
         private static readonly SKColor s_gray2 = new(90, 90, 90);
         private static readonly SKColor s_dark3 = new(60, 60, 60);
+
+
+        public RectangularSection[] Sections { get; set; } = new RectangularSection[]
+                    {
+                        new RectangularSection {
+                            Xi = 0,
+                            Xj = 0,
+                            Fill = new SolidColorPaint(new SKColor(255, 205, 210))
+                        },
+                    };
 
         private bool isSelectingRange = false;
 
@@ -95,18 +106,30 @@ namespace MAUI_IOT.ViewModels
                             }
                         }
                     }
-                    x1 = -10;
-                    x2 = -10;
+
+            
                 }
 
                 isSelectingRange = false;
                 this.ButtonText = "Select range";
                 this.IsButtonEnabled = true;
+
+                Debug.Write("Selected strat x1: " + x1 + "\n");
+                Debug.Write("Selected stop x2: " + x2);
+                try
+                {
+                    Sections[0].Xi = x1;
+                    Sections[0].Xj = x2;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Selected error: " + ex.ToString());
+                }
             }
 
         }
 
-        
+     
 
 
         public Axis[] XAxes { get; set; } =
