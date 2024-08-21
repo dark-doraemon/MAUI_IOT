@@ -30,7 +30,6 @@ public partial class LessonView : ContentPage
     private bool isStop = false;
     private event EventHandler SetM;
 
-
     private string path;
     public LessonView(LessonViewModel lessonViewModel)
     {
