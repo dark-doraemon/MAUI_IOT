@@ -11,6 +11,7 @@ using Microsoft.Maui.Controls;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.Drawing;
+using SkiaSharp;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
@@ -28,24 +29,23 @@ public partial class LessonView : ContentPage
     private bool isEntryM = false;
     private bool isSave = false;
     private bool isStop = false;
+    private bool isStart = false;
+
     private event EventHandler SetM;
 
     private string path;
     public LessonView(LessonViewModel lessonViewModel)
     {
         InitializeComponent();
-
+        Tabinit();
         this.lessonViewModel = lessonViewModel;
         BindingContext = lessonViewModel;
-
         lessonViewModel.OnStart += Handle_Onstart;
         lessonViewModel.OnStop += Handle_Onstop;
         lessonViewModel.OnSave += Handle_OnSave;
         tab_View.PropertyChanged += OnTabView;
         lessonViewModel.FinishSelected += Handle_Selecting;
         lessonViewModel.isSelected = false;
-
-        Debug.Write("Path: " + path);
     }
 
     private void OnClick(object sender, EventArgs e) {
@@ -63,7 +63,6 @@ public partial class LessonView : ContentPage
             Debug.WriteLine("Select False");
         }
     }
-
     private async void Handle_OnSave(object sender, EventArgs e)
     {
         if (!isStop) {
@@ -97,29 +96,32 @@ public partial class LessonView : ContentPage
     }
     private async void Handle_Onstop(object sender, EventArgs e)
     {
-        isStop = true;
-        a = lessonViewModel.a;
-        F = lessonViewModel.F;
-        Duration = lessonViewModel.Duration;
-        MainThread.BeginInvokeOnMainThread(async () =>
+        if (isStart)
         {
-            await BindingData(table, a.Count, Duration, a, F);
-        });
+            isStop = true;
+            a = lessonViewModel.a;
+            F = lessonViewModel.F;
+            Duration = lessonViewModel.Duration;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await BindingData(table, a.Count, Duration, a, F);
+            });
+            btn_Save.IsEnabled = true;
+            btn_Start.IsEnabled = true;
+            btn_Start.BackgroundColor = Color.FromHex("#052959");
+            btn_Save.BackgroundColor = Color.FromHex("#052959");
+        }
     }
     private void Handle_Onstart(object sender, EventArgs e)
     {
 
         if (isEntryM)
         {
-
-            /*chart_1.IsVisible = false;
-            loading_1.IsRunning = true;
-            chart_2.IsVisible = false;
-            loading_2.IsRunning = true;
-            chart_3.IsVisible = false;
-            loading_3.IsRunning = true;
-            loading_text_1.IsVisible = loading_text_2.IsVisible = loading_text_3.IsVisible = true;*/
-            Debug.Write("Start" + DateTime.Now.ToString());
+            isStart = true;
+            btn_Start.IsEnabled = false;
+            btn_Save.IsEnabled = false;
+            btn_Start.BackgroundColor = Color.FromHex("#5F6265");
+            btn_Save.BackgroundColor = Color.FromHex("#5F6265");
         }
         else
         {
@@ -241,10 +243,18 @@ public partial class LessonView : ContentPage
         }
     }
 
-    //Kiểm tra phần nhập vào khối lượng
+    //Kiểm tra phần nhập vào khố
+    //i lượng
     private async void Handle_Set(object sender, EventArgs e)
     {
         bool answer = await DisplayAlert("Xác nhận!", $"Khối lượng m = {weight_entry.Text} kg", "Lưu", "Nhập lại");
+
+        if(weight_entry.Text == String.Empty)
+        {
+            await DisplayAlert("Thông báo", "Khối lượng không hợp lệ", "OK");
+            return;
+        }
+
         double temp = lessonViewModel.M;
         if (answer) {
             string entryAfterFormatted = weight_entry.Text.Replace(",", ".");
@@ -261,7 +271,6 @@ public partial class LessonView : ContentPage
 
     }
 
-
     //Kiểm tra đang ở tab nào
     public async void OnTabView(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -275,6 +284,19 @@ public partial class LessonView : ContentPage
         if ("Table".Equals(tab_View.SelectedTab.Title))
         {
             MainThread.BeginInvokeOnMainThread(async ()=> { table.IsVisible = false; table.IsVisible = true; });
+        }
+
+        if ("All".Equals(tab_View.SelectedTab.Title))
+        {
+            Debug.WriteLine("Tab All");
+            if (!isStart)
+            {
+                if (!isStop)
+                {
+                    await DisplayAlert("Thông báo!", "Chưa bắt đầu thí nghiệm", "OK");
+                    tab_View.SelectedTab = Experiment;
+                }
+            }
         }
     }
 
@@ -298,7 +320,6 @@ public partial class LessonView : ContentPage
         }
     }
 
-
     private async void loadDataTable(string path)
     {
         if (!(await ReadData(path)))
@@ -309,7 +330,6 @@ public partial class LessonView : ContentPage
             Debug.Write("loadData");
         }
     }
-
 
     private async Task BindingDataAfterSelected(Grid table, int rows, ObservableCollection<double> a, ObservableCollection<double> F)
     {
@@ -455,5 +475,10 @@ public partial class LessonView : ContentPage
             F = lessonViewModel.afterSelected_F;          
             await BindingDataAfterSelected(table, a.Count, a, F);
         }
+    }
+
+    private void Tabinit()
+    {
+        tab_View.SelectedTab = inputParameters;
     }
 }

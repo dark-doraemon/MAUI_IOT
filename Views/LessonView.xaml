@@ -145,7 +145,7 @@
                         VerticalOptions="EndAndExpand">
                         <Button Command="{Binding StartCommand}" x:Name="btn_Start" Text="Start" />
                         <Button Command="{Binding StopCommand}" x:Name="btn_Stop" Text="Stop" />
-                        <Button Command="{Binding SaveCommand}" x:Name="btn_Save" Text="Save" />
+                        <Button Command="{Binding SaveCommand}" x:Name="btn_Save" Text="Save" IsEnabled="False" BackgroundColor="#007DF2"  />
                     </StackLayout>
                 </Grid>
             </ScrollView>
@@ -192,7 +192,7 @@
                         VerticalTextAlignment="Center"
                         WidthRequest="50" />
                         <Entry x:Name="weight_entry" 
-                        Text="0" 
+                        Text="" 
                         Placeholder="Nhập khối lượng: " 
                         TextColor="Red" 
                         Keyboard="Numeric"/>

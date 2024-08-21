@@ -65,6 +65,15 @@ namespace MAUI_IOT.ViewModels
         [ObservableProperty]
         private List<ObservableValue> selectedValue = new List<ObservableValue>();
 
+        // điểm đầu điểm cuối
+        private double x1 = -10;
+        private double x2 = -10;
+
+        //Lưu các giá trị trên biểu đồ
+        public ObservableCollection<double> xValues;
+        public ObservableCollection<double> yValues;
+        public ObservableCollection<double> zValues;
+
         ADXL345Sensor ADXL345Sensor { get; set; }
 
         private CustomAxis aDXL345Axis;
@@ -437,13 +446,6 @@ namespace MAUI_IOT.ViewModels
     
         public string path { get; set; }
 
-        private double x1 = -10;
-        private double x2 = -10;
-
-        public ObservableCollection<double> xValues;
-        public ObservableCollection<double> yValues;
-        public ObservableCollection<double> zValues;
-
         [RelayCommand]
         public void OnPointerPressed(PointerCommandArgs e)
         {
@@ -504,19 +506,6 @@ namespace MAUI_IOT.ViewModels
         }
         public event EventHandler FinishSelected;
 
-        //[RelayCommand]
-        //public void SelectRange()
-        //{
-        //    if (Series.Count < 1)
-        //    {
-        //        Debug.WriteLine("Không có dữ liệu");
-        //    }
-
-        //    else
-        //    {
-        //       SelectedBtn?.Invoke(this, new EventArgs());
-        //    }
-        //}
 
         public ObservableCollection<double> afterSelected_a { get; set; }
         public ObservableCollection<double> afterSelected_F { get; set; }
