@@ -59,19 +59,18 @@ namespace MAUI_IOT.ViewModels
             PointerPressedCommand = new RelayCommand<PointerCommandArgs>(OnPointerPressed);
 
         }
-        
+
         private void OnPointerPressed(PointerCommandArgs e)
         {
 
-            if(isSelectingRange == true)
+            if (isSelectingRange == true)
             {
                 var chart = (ICartesianChartView<SkiaSharpDrawingContext>)e.Chart;
                 var scaledPoint = chart.ScalePixelsToData(e.PointerPosition);
-
-                if(x1 == -10)
+                if (x1 == -10)
                 {
                     x1 = Math.Floor(scaledPoint.X);
-                    if(x1 < 0)
+                    if (x1 < 0)
                     {
                         x1 = 0;
                     }
@@ -87,27 +86,20 @@ namespace MAUI_IOT.ViewModels
                     }
                 }
 
-                if(x2 > x1)
+                if (x2 > x1)
                 {
                     this.SelectedValue.Clear();
                     foreach (var seriesItem in series)
                     {
                         if (seriesItem is LineSeries<ObservableValue> lineSeries)
                         {
-                            var values = lineSeries.Values.OfType<ObservableValue>().ToList();
-
                             // Lấy giá trị trong khoảng từ sampleIndex1 đến sampleIndex2
                             selectedValue = lineSeries.Values.OfType<ObservableValue>().ToList()
                                 .Skip((int)x1).Take((int)x2 - (int)x1 + 1).ToList();
-
-                            foreach (var v in selectedValue)
-                            {
-                                Console.WriteLine($"Value: {v.Value}");
-                            }
                         }
                     }
 
-            
+
                 }
 
                 isSelectingRange = false;
@@ -129,7 +121,7 @@ namespace MAUI_IOT.ViewModels
 
         }
 
-     
+
 
 
         public Axis[] XAxes { get; set; } =
