@@ -181,7 +181,7 @@ namespace MAUI_IOT.ViewModels
 
         public LessonViewModel()
         {
-            
+
         }
 
         public LessonViewModel(IServiceProvider serviceProvider, FullScreenChartViewModel fullScreenChartViewModel)
@@ -287,7 +287,7 @@ namespace MAUI_IOT.ViewModels
                 RemoveItem();
             }
         }
-        
+
         public async Task AddItem(float x, float y, float z)
         {
             xAxis.Add(new ObservableValue(x));
@@ -323,7 +323,7 @@ namespace MAUI_IOT.ViewModels
         {
             await ADXL345Sensor.CloseAsync();
             await DataBinding();
-            OnStop?.Invoke(this, new EventArgs());         
+            OnStop?.Invoke(this, new EventArgs());
         }
 
         [RelayCommand]
@@ -439,11 +439,12 @@ namespace MAUI_IOT.ViewModels
                 this.path = path;
                 Debug.Write(path + "save file success");
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 Debug.WriteLine("SaveFile: " + ex.ToString());
             }
         }
-    
+
         public string path { get; set; }
 
         [RelayCommand]
@@ -512,7 +513,7 @@ namespace MAUI_IOT.ViewModels
 
         private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)
         {
-            if(x.Count != y.Count || x.Count != z.Count) return;
+            if (x.Count != y.Count || x.Count != z.Count) return;
             // Chuyển một list có thể có giá trị null sang một list không có giá trị null
             var nonNullxValue = x.Where(value => value.HasValue).Select(value => value.Value).ToList();
             var nonNullyValue = y.Where(value => value.HasValue).Select(value => value.Value).ToList();
@@ -525,15 +526,16 @@ namespace MAUI_IOT.ViewModels
             afterSelected_F = new ObservableCollection<double>();
             afterSelected_a = new ObservableCollection<double>();
 
-            for(int i = 0; i < xValues.Count; i++)
+            for (int i = 0; i < xValues.Count; i++)
             {
                 afterSelected_a.Add(Math.Sqrt(xValues[i] * xValues[i] + yValues[i] * yValues[i] + zValues[i] * zValues[i]));
             }
 
             if (afterSelected_a.Count != xValues.Count) return;
 
-            foreach (var value in afterSelected_a) { 
-                afterSelected_F.Add(this.M *  value);
+            foreach (var value in afterSelected_a)
+            {
+                afterSelected_F.Add(this.M * value);
             }
 
             Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
