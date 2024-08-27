@@ -4,7 +4,6 @@ using LiveChartsCore;
 using MAUI_IOT.Models;
 using System.Collections.ObjectModel;
 using LiveChartsCore.SkiaSharpView;
-using Newtonsoft.Json;
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
@@ -18,13 +17,150 @@ using System.Reflection.Metadata;
 using LiveChartsCore.Kernel.Events;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView.Drawing;
-
+using System.Threading.Tasks;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using MAUI_IOT.Services.Interfaces;
+using MAUI_IOT.Services.Interfaces.MQTT;
+using MQTTnet;
+using MAUI_IOT.Models.Data;
+using System.Text;
+using System.Text.Json;
 
 namespace MAUI_IOT.ViewModels
 {
+
     [QueryProperty(nameof(Lesson), "data")]
     public partial class LessonViewModel : ObservableObject
     {
+        //Services
+        private IConnect _connect;
+        private IPublish _publisher;
+        private ISubscribe _subscriber;
+
+
+        //Chart
+        private readonly List<double> _accX;
+        private readonly List<double> _accY;
+        private readonly List<double> _accZ;
+        private readonly List<double> _force;
+
+        private MqttFactory mqttFactory;
+
+        private readonly DateTimeAxis _newCustomAxis;
+
+        public ObservableCollection<ISeries> new_Series { get; set; }
+        public Axis[] newXAxes { get; set; }
+        public object Sync { get; } = new object();
+
+
+        public LessonViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber)
+        {
+            new_Series = new ObservableCollection<ISeries>()
+            {
+                new LineSeries<double>
+                {
+                    Values = _accX,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke = new SolidColorPaint(SKColors.Green){StrokeThickness = 1 }
+                },
+                new LineSeries<double>
+                {
+                    Values = _accY,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke = new SolidColorPaint(SKColors.Yellow){StrokeThickness =1 }
+                },
+                new LineSeries<double>
+                {
+                    Values= _accZ,
+                    Fill = null,  
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = 1 }
+                },
+                new LineSeries<double>
+                {
+                    Values = _force,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = 1},
+                }
+            };
+
+            _newCustomAxis = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
+            {
+                CustomSeparators = GetSeparators(),
+                AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+                SeparatorsPaint = new SolidColorPaint(SKColors.Tomato.WithAlpha(100))
+            };
+
+            newXAxes = new Axis[] { _newCustomAxis };
+
+            mqttFactory = new MqttFactory();
+
+            Task.Run(() => newStart());
+        }
+
+        private double[] GetSeparators()
+        {
+            var now = DateTime.Now;
+
+            return new double[]
+            {
+            now.AddSeconds(-25).Ticks,
+            now.AddSeconds(-20).Ticks,
+            now.AddSeconds(-15).Ticks,
+            now.AddSeconds(-10).Ticks,
+            now.AddSeconds(-5).Ticks,
+            now.Ticks
+            };
+        }
+
+        private static string Formatter(DateTime date)
+        {
+            var secsAgo = (DateTime.Now - date).TotalSeconds;
+
+            return secsAgo < 1
+                ? "now"
+                : $"{secsAgo:N0}s ago";
+        }
+
+
+        private async Task newStart()
+        {
+            var mqttClient = mqttFactory.CreateMqttClient();
+            mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
+            mqttClient = await _subscriber.ISubscriber(mqttClient, "/adxl345/data");
+
+            mqttClient.ApplicationMessageReceivedAsync += async e =>
+            {
+                var josn = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
+                Packet packet = JsonSerializer.Deserialize<Packet>(josn);
+
+                if (packet != null)
+                {
+                    Console.WriteLine($"Name: {packet.name} \n Packet number: {packet.packetNumber} \n data: {packet.data}");
+                    foreach (Data data in packet.data)
+                    {
+                        Console.WriteLine($"timetamp: {data.timetamp}\naccX: {data.accX}\naccY: {data.accX}\naccZ: {data.accZ}");
+                    }
+                }
+
+                else
+                {
+                    Console.WriteLine($"Null");
+                }
+            };
+            await Task.Delay(Timeout.Infinite);
+        }
+
+
+        //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//
         [ObservableProperty]
         public Lesson lesson;
 
@@ -52,16 +188,12 @@ namespace MAUI_IOT.ViewModels
 
         //dữ liệu khối lượng
         [ObservableProperty]
-        private double m;
+        private double m = 0;
 
         [ObservableProperty]
         private double avgF;
 
-        public event EventHandler OnStop;
-        public event EventHandler OnSave;
-        public event EventHandler OnStart;
 
-        public bool isSelected;
         [ObservableProperty]
         private List<ObservableValue> selectedValue = new List<ObservableValue>();
 
@@ -89,7 +221,6 @@ namespace MAUI_IOT.ViewModels
         }
 
         public ObservableCollection<ISeries> Series { get; set; }
-
 
         public Axis[] XAxes { get; set; } =
         {
@@ -129,8 +260,6 @@ namespace MAUI_IOT.ViewModels
                 },
             }
         };
-
-
         public Axis[] YAxes { get; set; } =
         {
             new Axis
@@ -179,13 +308,11 @@ namespace MAUI_IOT.ViewModels
                         },
                    };
 
-        public LessonViewModel()
-        {
-            
-        }
+        public LessonViewModel(){}
 
         public LessonViewModel(IServiceProvider serviceProvider, FullScreenChartViewModel fullScreenChartViewModel)
         {
+
             xAxis = new ObservableCollection<ObservableValue>
             {
                 // new ObservableValue(5),
@@ -225,7 +352,6 @@ namespace MAUI_IOT.ViewModels
                     Stroke = new SolidColorPaint(SKColors.Yellow) { StrokeThickness = 1 },
                 },
             };
-
 
             SeriesX = new ObservableCollection<ISeries>
             {
@@ -268,26 +394,34 @@ namespace MAUI_IOT.ViewModels
             ADXL345Sensor = new ADXL345Sensor();
             ADXL345Sensor.PropertyChanged += ADXL345Sensor_PropertyChanged;
             this.serviceProvider = serviceProvider;
-            this.fullScreenChartViewModel = fullScreenChartViewModel;
+            this.fullScreenChartViewModel = fullScreenChartViewModel; 
 
             //khởi tạo các biến lưu giá trị a, F, Time, Duration ( rút gọn của thời gian)
             a = new ObservableCollection<double>();
             F = new ObservableCollection<double>();
             Time = new ObservableCollection<DateTime>();
             Duration = new ObservableCollection<TimeSpan>();
+
+            OnStartCommand = new RelayCommand(async () => await OnStart());
+            OnStopCommand = new RelayCommand(async () => await OnStop());
+            OnSaveCommand = new RelayCommand(() => OnSave());
+
+            
+
         }
 
         private async void ADXL345Sensor_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ADXL345Sensor.ReceivedData))
             {
-                ADXL345Axis = JsonConvert.DeserializeObject<Models.CustomAxis>(ADXL345Sensor.ReceivedData);
+                //ADXL345Axis = JsonConvert.DeserializeObject<Models.CustomAxis>(ADXL345Sensor.ReceivedData);
                 await AddItem(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z);
-                caculateA(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z, ADXL345Axis.TimeStamp);
+                //Datas.Add(new Data(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z, ADXL345Axis.TimeStamp, M));
+                //caculateA(ADXL345Axis.x, ADXL345Axis.y, ADXL345Axis.z, ADXL345Axis.TimeStamp);
                 RemoveItem();
             }
         }
-        
+
         public async Task AddItem(float x, float y, float z)
         {
             xAxis.Add(new ObservableValue(x));
@@ -310,28 +444,27 @@ namespace MAUI_IOT.ViewModels
             }
         }
 
-        [RelayCommand]
+        //[RelayCommand]
         async Task Start()
         {
-            OnStart?.Invoke(this, new EventArgs());
+            //OnStart?.Invoke(this, new EventArgs());
             if (m == 0) return;
             await ADXL345Sensor.ConnectAsync(new Uri("ws://113.161.84.132:8800/api/adxl345"));
         }
 
-        [RelayCommand]
+        //[RelayCommand]
         async Task Stop()
         {
             await ADXL345Sensor.CloseAsync();
-            await DataBinding();
-            OnStop?.Invoke(this, new EventArgs());         
+            //await DataBinding();            
         }
 
-        [RelayCommand]
+        //[RelayCommand]
         async Task Save()
         {
             var filePath = Path.Combine(FileSystem.AppDataDirectory, "data_table.json");
-            await SaveFile(filePath);
-            OnSave?.Invoke(this, new EventArgs());
+            //await SaveFile(filePath);
+            //OnSave?.Invoke(this, new EventArgs());
         }
 
         public DrawMarginFrame Frame { get; set; } = new()
@@ -354,95 +487,8 @@ namespace MAUI_IOT.ViewModels
             await Shell.Current.GoToAsync(nameof(FullScreenChartView), paramaters);
         }
 
-        public async Task caculateA(double x, double y, double z, DateTime time)
-        {
-            await Task.Run(() =>
-            {
-                double result = Math.Sqrt(x * x + y * y + z * z);
-                MainThread.BeginInvokeOnMainThread(() => { a.Add(result); F.Add(result * m); Time.Add(time); });
-            });
-        }
-
-        //dữ liệu cho bảng
-        private async Task DataBinding()
-        {
-            if (a.Count == 0 || Time.Count == 0 || a.Count != F.Count || a.Count != Time.Count)
-            {
-                Debug.WriteLine("Dữ liệu không hợp lệ.");
-                return;
-            }
-
-            int n = a.Count;
-            if (n <= 1) return;
-
-            TimeSpan diff = Time[n - 1] - Time[0];
-
-            // Số mẫu lấy trong 100ms
-            int duration = (int)(n * 100 / diff.TotalMilliseconds);
-
-            if (duration <= 0)
-            {
-                Debug.WriteLine("Duration phải lớn hơn 0.");
-                return;
-            }
-
-            // Tạo biến hứng giá trị
-            ObservableCollection<double> _a = new ObservableCollection<double>();
-            ObservableCollection<double> _F = new ObservableCollection<double>();
-            ObservableCollection<DateTime> _time = new ObservableCollection<DateTime>();
-
-            for (int i = 0; i < n; i += duration)
-            {
-                if (i < a.Count && i < F.Count && i < Time.Count)
-                {
-                    _a.Add(a[i]);
-                    _F.Add(F[i]);
-                    _time.Add(Time[i]);
-                }
-            }
-
-            a = _a;
-            F = _F;
-            Time = _time;
-
-            Duration.Clear();
-
-            for (int i = 0; i < Time.Count; i++)
-                Duration.Add(Time[i] - Time[0]);
-
-            avgF = F.Any() ? F.Average() : 0;
-        }
-
-
-
-        //lưu dữ liệu cho bảng
-        public async Task SaveFile(string path)
-        {
-            if (Duration.Count < Time.Count)
-            {
-                Duration.Add(Time[Time.Count - 1] - Time[0]);
-            }
-            var dataSave = new
-            {
-                a = a.ToArray(),
-                F = F.ToArray(),
-                Time = Time.Select(dt => dt.ToString("o")).ToArray(),
-                Duration = Duration.Select(ts => ts.ToString()).ToArray(),
-                m = M
-            };
-
-            var jsonData = JsonConvert.SerializeObject(dataSave, Formatting.Indented);
-
-            try
-            {
-                await File.WriteAllTextAsync(path, jsonData);
-                this.path = path;
-                Debug.Write(path + "save file success");
-            }
-            catch(Exception ex) {
-                Debug.WriteLine("SaveFile: " + ex.ToString());
-            }
-        }
+       
+       
     
         public string path { get; set; }
 
@@ -450,7 +496,7 @@ namespace MAUI_IOT.ViewModels
         public void OnPointerPressed(PointerCommandArgs e)
         {
 
-            if (isSelected == true)
+            if (IsButtonSelectActive == true)
             {
                 var chart = (ICartesianChartView<SkiaSharpDrawingContext>)e.Chart;
                 var scaledPoint = chart.ScalePixelsToData(e.PointerPosition);
@@ -482,11 +528,10 @@ namespace MAUI_IOT.ViewModels
                     var yValues = ((LineSeries<ObservableValue>)Series[1]).Values.Select(x => x.Value).ToList().Skip((int)x1).Take((int)x2 - (int)x1 + 1).ToList();
                     var zValues = ((LineSeries<ObservableValue>)Series[2]).Values.Select(x => x.Value).ToList().Skip((int)x1).Take((int)x2 - (int)x1 + 1).ToList();
 
-
                     getXYZ_range(xValues, yValues, zValues);
                 }
 
-                isSelected = false;
+                IsButtonSelectActive = false;
 
 
                 Debug.Write("Selected strat x1: " + x1 + "\n");
@@ -500,20 +545,82 @@ namespace MAUI_IOT.ViewModels
                 {
                     Debug.WriteLine("Selected error: " + ex.ToString());
                 }
-                FinishSelected?.Invoke(this, new EventArgs());
+                //FinishSelected?.Invoke(this, new EventArgs());
             }
 
         }
-        public event EventHandler FinishSelected;
 
+        [RelayCommand]
+        public void PointerDown(PointerCommandArgs args)
+        {
+            var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
+            var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
+            Sections[0].Xi = Sections[0].Xj = 0;
+
+            Sections[0].Xi = scaledPoint.X;
+        }
+
+        [RelayCommand] 
+        public void PointerUp(PointerCommandArgs args)
+        {
+            Debug.WriteLine("Pointer Up");
+          
+            
+            this.SelectedValue.Clear();
+
+            var xValues = ((LineSeries<ObservableValue>)Series[0]).Values.Select(x => x.Value).ToList().Skip((int)Sections[0].Xi).Take((int)Sections[0].Xj - (int)Sections[0].Xi + 1).ToList();
+            var yValues = ((LineSeries<ObservableValue>)Series[1]).Values.Select(x => x.Value).ToList().Skip((int)Sections[0].Xi).Take((int)Sections[0].Xj - (int)Sections[0].Xi + 1).ToList();
+            var zValues = ((LineSeries<ObservableValue>)Series[2]).Values.Select(x => x.Value).ToList().Skip((int)Sections[0].Xi).Take((int)Sections[0].Xj - (int)Sections[0].Xi + 1).ToList();
+            getXYZ_range(xValues, yValues, zValues);
+        }
+
+        [RelayCommand]
+        public void PointerMove(PointerCommandArgs args)
+        {
+            var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
+            var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
+
+            Sections[0].Xj = scaledPoint.X;
+            Debug.WriteLine("scaledPointMove" + scaledPoint.ToString());
+        }
 
         public ObservableCollection<double> afterSelected_a { get; set; }
         public ObservableCollection<double> afterSelected_F { get; set; }
 
+        //private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)
+        //{
+        //    if(x.Count != y.Count || x.Count != z.Count) return;
+        //    // Chuyển một list có thể có giá trị null sang một list không có giá trị null
+        //    var nonNullxValue = x.Where(value => value.HasValue).Select(value => value.Value).ToList();
+        //    var nonNullyValue = y.Where(value => value.HasValue).Select(value => value.Value).ToList();
+        //    var nonNullzValue = z.Where(value => value.HasValue).Select(value => value.Value).ToList();
+
+        //    this.xValues = new ObservableCollection<double>(nonNullxValue);
+        //    this.yValues = new ObservableCollection<double>(nonNullyValue);
+        //    this.zValues = new ObservableCollection<double>(nonNullzValue);
+
+        //    afterSelected_F = new ObservableCollection<double>();
+        //    afterSelected_a = new ObservableCollection<double>();
+
+        //    for(int i = 0; i < xValues.Count; i++)
+        //    {
+        //        afterSelected_a.Add(Math.Sqrt(xValues[i] * xValues[i] + yValues[i] * yValues[i] + zValues[i] * zValues[i]));
+        //    }
+
+        //    if (afterSelected_a.Count != xValues.Count) return;
+
+        //    foreach (var value in afterSelected_a) { 
+        //        afterSelected_F.Add(this.M *  value);
+        //    }
+
+        //    Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
+
+        //}
+
+        //const color hex
+
         private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)
         {
-            if(x.Count != y.Count || x.Count != z.Count) return;
-            // Chuyển một list có thể có giá trị null sang một list không có giá trị null
             var nonNullxValue = x.Where(value => value.HasValue).Select(value => value.Value).ToList();
             var nonNullyValue = y.Where(value => value.HasValue).Select(value => value.Value).ToList();
             var nonNullzValue = z.Where(value => value.HasValue).Select(value => value.Value).ToList();
@@ -522,22 +629,121 @@ namespace MAUI_IOT.ViewModels
             this.yValues = new ObservableCollection<double>(nonNullyValue);
             this.zValues = new ObservableCollection<double>(nonNullzValue);
 
-            afterSelected_F = new ObservableCollection<double>();
-            afterSelected_a = new ObservableCollection<double>();
+            //DatasSelected.Clear();
 
-            for(int i = 0; i < xValues.Count; i++)
-            {
-                afterSelected_a.Add(Math.Sqrt(xValues[i] * xValues[i] + yValues[i] * yValues[i] + zValues[i] * zValues[i]));
-            }
-
-            if (afterSelected_a.Count != xValues.Count) return;
-
-            foreach (var value in afterSelected_a) { 
-                afterSelected_F.Add(this.M *  value);
-            }
-
-            Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
-
+            //for (int i = 0; i < xValues.Count; i++)
+            //{
+            //    DatasSelected.Add(new Data(xValues[i], yValues[i], zValues[i], DateTime.Now, M));
+            //    Debug.Write(DatasSelected[i]);
+            //}
         }
+
+        private const string activeColor = "#007BFF";
+        private const string inActiveColor = "#6C757D";
+
+        //State
+        [ObservableProperty]
+        private bool isEnableEntryWeight = true;
+        [ObservableProperty]
+        private bool isEnableButtonSave = false;
+        [ObservableProperty]
+        private bool isEnableButtonStop = false;
+        [ObservableProperty]
+        private bool isEnableButtonStart = true;
+        [ObservableProperty]
+        private bool isStartingButtonStart = false;
+        [ObservableProperty]
+        private bool isEnableTabAll = false;
+        [ObservableProperty]
+        private bool isNull = false;
+        [ObservableProperty]
+        private bool isValidEntryWeight = false;
+        [ObservableProperty]
+        private bool isButtonSelectActive;
+
+        //Color
+        [ObservableProperty]
+        private Color colorButtonStart = Color.FromHex(activeColor);
+        [ObservableProperty]
+        private Color colorButtonSave = Color.FromHex(inActiveColor);
+        [ObservableProperty]
+        private Color colorButtonStop = Color.FromHex(inActiveColor);
+
+        //
+        [ObservableProperty]
+        private string textButtonSelect = "Select Range";
+
+
+        [ObservableProperty]
+        private string entry_weight;
+        public ICommand OnStartCommand { get; }
+        public ICommand OnStopCommand { get; }
+        public ICommand OnSaveCommand { get; }
+
+        private async Task OnStart()
+        {
+            if (!IsEnableButtonStart) return;
+
+            if (!IsEnableEntryWeight) return;
+
+            if (!IsValidEntryWeight) return;
+
+            ColorButtonStart = Color.FromHex(inActiveColor);
+            ColorButtonStop = Color.FromHex(activeColor);
+            ColorButtonSave = Color.FromHex(inActiveColor);
+
+            IsEnableButtonStop = true;
+            IsEnableButtonSave = false;
+            IsEnableButtonStart = false;
+            IsEnableEntryWeight = false;
+            IsStartingButtonStart = true;
+
+            await Start();
+        }
+      
+        private async Task OnStop()
+        {
+            Debug.Write("OnStop");
+
+            if (!IsStartingButtonStart)
+            {
+                return;
+            }
+
+            await Stop();
+
+            IsEnableButtonStart = true;
+            IsEnableButtonStop = false;
+            IsEnableButtonSave = true;
+            IsEnableTabAll = true;
+            IsEnableEntryWeight = true;
+            IsStartingButtonStart = false;
+
+            ColorButtonStart = Color.FromHex(activeColor);
+            ColorButtonStop = Color.FromHex(inActiveColor);
+            ColorButtonSave = Color.FromHex(activeColor);
+            
+        }
+
+        private void OnSave()
+        {
+            Debug.Write("OnSave");
+            if (!IsEnableButtonSave)
+            {
+                MessagingCenter.Send(this, "Thông báo", "Chưa thực hiện thí nghiệm");
+                return;
+            }
+        }
+
+        [RelayCommand]
+        private void SelectingChart()
+        {
+            IsButtonSelectActive = !IsButtonSelectActive;
+            if (IsButtonSelectActive)
+                TextButtonSelect = "Selecting";
+            else
+                TextButtonSelect = "Select Range";
+        }
+      
     }
 }

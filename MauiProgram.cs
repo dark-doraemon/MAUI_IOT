@@ -1,7 +1,9 @@
 ﻿using MAUI_IOT.Services.Implements;
 using MAUI_IOT.Services.Interfaces;
+using MAUI_IOT.Services.Interfaces.MQTT;
 using MAUI_IOT.ViewModels;
 using MAUI_IOT.Views;
+using MauiApp1.Services.Implements;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
@@ -23,7 +25,8 @@ namespace MAUI_IOT
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+                })
+                .RegisterServices();
 
 #if DEBUG
     		builder.Logging.AddDebug();
@@ -44,6 +47,7 @@ namespace MAUI_IOT
 
             builder.Services.AddTransient<LessonView>();
             builder.Services.AddTransient<LessonViewModel>();
+            builder.Services.AddTransient<LessonnViewModel>();
             //builder.Services.AddViewModel<LessonViewModel, LessonView>();
 
             //builder.Services.AddViewModel<FullScreenChartView,FullScreenChartViewModel>();
@@ -59,6 +63,14 @@ namespace MAUI_IOT
         {
             services.AddTransient<TView>(s => new TView() { BindingContext = s.GetRequiredService<TViewModel>() });
             services.AddTransient<TViewModel>();
+        }
+
+        public static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
+        {
+            builder.Services.AddSingleton<IConnect, Connect>();
+            builder.Services.AddTransient<IPublish, Publisher>();
+            builder.Services.AddTransient<ISubscribe, Subscriber>();
+            return builder;
         }
     }
 }

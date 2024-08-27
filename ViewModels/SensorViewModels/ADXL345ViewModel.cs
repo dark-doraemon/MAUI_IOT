@@ -87,7 +87,7 @@ namespace MAUI_IOT.ViewModels.SensorViewModels
 
         public async Task Connect()
         {
-            await ADXL345Sensor.ConnectAsync(new Uri("ws://113.161.84.132:8800/api/adxl345"));
+            await ADXL345Sensor.ConnectAsync(new Uri("ws://113.161.84.132:8800/temp"));
         }
 
         private void ADXL345Sensor_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
