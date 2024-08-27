@@ -68,7 +68,6 @@
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
-
                             <!-- Headers -->
                             <Label
                                 Grid.Row="0"
@@ -98,8 +97,8 @@
                                     <DataTemplate x:DataType="liveCharts:ObservableValue">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto" />
-                                                <ColumnDefinition Width="auto" />
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="80" />
                                             </Grid.ColumnDefinitions>
 
                                             <Label
@@ -114,9 +113,8 @@
                                                 Padding="10"
                                                 FontSize="Medium"
                                                 HorizontalTextAlignment="Center"
-                                                Text="{Binding Value}"
+                                                Text="{Binding Value ,StringFormat='{}{0:F2}'}"
                                                 VerticalTextAlignment="Center" />
-
                                             <!-- Grid Lines -->
                                             <BoxView
                                                 Grid.Row="0"
