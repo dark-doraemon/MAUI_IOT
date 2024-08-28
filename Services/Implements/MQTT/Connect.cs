@@ -24,9 +24,20 @@ namespace MauiApp1.Services.Implements
             return mqttClient;
         }
 
+        public async Task<IMqttClient> IConnect(MqttFactory mqttFactory, string tcpServer, int port)
+        {
+            var mqttClient = mqttFactory.CreateMqttClient();
+            var mqttOptions = new MqttClientOptionsBuilder().WithTcpServer(tcpServer, port).WithCleanSession().Build();
+            await mqttClient.ConnectAsync(mqttOptions, CancellationToken.None);
+            Debug.WriteLine("Connection to the Broker successful");
+            return mqttClient;
+        }
+
+
+
         public async Task<IMqttClient> IDisconnect(IMqttClient mqttClient)
         {
-            await mqttClient.DisconnectAsync(new MqttClientDisconnectOptionsBuilder().Build(), CancellationToken.None);
+            await mqttClient.DisconnectAsync(MqttClientDisconnectOptionsReason.ImplementationSpecificError);
             Debug.WriteLine("Disconnection to the Broker successful");
             return mqttClient;
         }

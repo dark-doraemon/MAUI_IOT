@@ -8,6 +8,7 @@
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
     xmlns:model="clr-namespace:MAUI_IOT.Models"
+    xmlns:data="clr-namespace:MAUI_IOT.Models.Data"
     Title="LessonView"
     x:DataType="viewmodel:LessonnViewModel">
     
@@ -60,17 +61,16 @@
                                        
                                         Grid.Column="0"
                                         SyncContext="{Binding Sync}"
-                                        Series="{Binding new_Series}"
-                                        XAxes="{Binding newXAxes}"
+                                        Series="{Binding Series_X}"
+                                        XAxes="{Binding XAxes}"
+                                        DrawMarginFrame="{Binding Frame }"
                                         ZoomMode="None" />
-                                        <!--DrawMarginFrame="{Binding Frame}"-->
-
 
                         <Button Grid.Column="1"
                                         HeightRequest="50"
-                                        WidthRequest="50">
-                            <!--Command="{Binding ZoomCommand}"
-                                        CommandParameter="{Binding SeriesX}">-->
+                                        WidthRequest="50"
+                                        Command="{Binding ZoomCommand}"
+                                        CommandParameter="{Binding Series_X}">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="FontAwesome"
                                                         Glyph="&#x1F50D;"
@@ -88,19 +88,19 @@
 
                         <lvc:CartesianChart x:Name="chart_2"
                                         Grid.Column="0"
-                                        ZoomMode="None" />
-                                        <!--DrawMarginFrame="{Binding Frame}"
-                                        Series="{Binding SeriesY}"
+                                        SyncContext="{Binding Sync}"
+                                        Series="{Binding Series_Y}"
                                         XAxes="{Binding XAxes}"
-                                        YAxes="{Binding YAxes}"-->
+                                        DrawMarginFrame="{Binding Frame}"
+                                        ZoomMode="None" />
 
 
 
                         <Button Grid.Column="1"
                             HeightRequest="50"
-                            WidthRequest="50">
-                            <!--Command="{Binding ZoomCommand}"
-                            CommandParameter="{Binding SeriesY}">-->
+                            WidthRequest="50"
+                            CommandParameter="{Binding Series_Y}"
+                            Command="{Binding ZoomCommand}">
                             <Button.ImageSource>
                                 <FontImageSource
                                     FontFamily="FontAwesome"
@@ -117,19 +117,19 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <lvc:CartesianChart x:Name="chart_3"
-                                                Grid.Column="0"
-                                                ZoomMode="None" />
-                                                <!--DrawMarginFrame="{Binding Frame}"
-                                                Series="{Binding SeriesZ}"
-                                                XAxes="{Binding XAxes}"
-                                                YAxes="{Binding YAxes}"-->
+                        <lvc:CartesianChart  x:Name="chart_3"
+                                             Grid.Column="0"
+                                             SyncContext="{Binding Sync}"
+                                             Series="{Binding Series_Z}"
+                                             XAxes="{Binding XAxes}"
+                                             DrawMarginFrame="{Binding Frame}"
+                                             ZoomMode="None" />
 
                         <Button Grid.Column="1"
                                     HeightRequest="50"
-                                    WidthRequest="50">
-                            <!--Command="{Binding ZoomCommand}"
-                                    CommandParameter="{Binding SeriesZ}">-->
+                                    WidthRequest="50"
+                                    CommandParameter="{Binding Series_Z}"
+                                    Command="{Binding ZoomCommand}">
                             <Button.ImageSource>
                                 <FontImageSource
                                     FontFamily="FontAwesome"
@@ -146,15 +146,15 @@
                         Spacing="30"
                         VerticalOptions="EndAndExpand">
 
-                        <Button Command="{Binding StartButtonCommand}" x:Name="btn_Start" />
-                        <!--Text="Start" IsEnabled="{Binding IsEnableButtonStart}"
-                                    BackgroundColor="{Binding ColorButtonStart}"/>-->
+                        <Button Command="{Binding StartCommand}" x:Name="btn_Start"
+                                Text="Start" IsEnabled="{Binding IsEnableButtonStart}"
+                                BackgroundColor="{Binding ColorButtonStart}"/>
 
-                            <!--<Button Command="{Binding OnStopCommand }" x:Name="btn_Stop" 
-                                    Text="Stop" IsEnabled="{Binding IsEnableButtonStop}" 
-                                    BackgroundColor="{Binding ColorButtonStop}"/>
+                        <Button Command="{Binding StopCommand }" x:Name="btn_Stop"
+                                Text="Stop" IsEnabled="{Binding IsEnableButtonStop}" 
+                                BackgroundColor="{Binding ColorButtonStop}"/>
 
-                            <Button Command="{Binding OnSaveCommand}" x:Name="btn_Save"
+                        <!--<Button Command="{Binding OnSaveCommand}" x:Name="btn_Save"
                                     Text="Save" IsEnabled="{Binding IsEnableButtonSave}"
                                     BackgroundColor="{Binding ColorButtonSave}"/>-->
                     </StackLayout>
@@ -164,7 +164,7 @@
 
         <material:TabItem Title="All" x:Name="All">
 
-            <!--<Grid Margin="10" x:Name="grid_Chart"> --><!--IsEnabled="{Binding IsEnableTabAll}--><!--
+            <Grid Margin="10" x:Name="grid_Chart">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="15*"/>
                     <RowDefinition Height="*"/>
@@ -172,24 +172,24 @@
 
                 <lvc:CartesianChart Grid.Row="0"
                                     x:Name="chart_All"
+                                    SyncContext="{Binding Sync}"
                                     DrawMarginFrame="{Binding Frame}"
-                                    Series="{Binding Series}"
-                                    Sections="{Binding Sections}"
-                                    PressedCommand="{Binding PointerDownCommand}"
-                                    ReleasedCommand="{Binding PointerUpCommand}"
-                                    MovedCommand="{Binding PointerMoveCommand}"
+                                    Series="{Binding new_Series}"
                                     TooltipPosition="Hidden"
                                     XAxes="{Binding XAxes}"
-                                    YAxes="{Binding YAxes}"
-                                    ZoomMode="None"/>
+                                    ZoomMode="None"
+                                    Sections="{Binding Section}"
+                                    MovedCommand="{Binding PointerMoveCommand}"
+                                    PressedCommand="{Binding PointerDownCommand}"
+                                    ReleasedCommand="{Binding PointerUpCommand}"/>
 
                 <Button Grid.Row="1"
                         x:Name="selectChartAll"
-                        Command="{Binding SelectingChartCommand}"
                         Text="{Binding TextButtonSelect}"/>
-                --><!--Command="{Binding SelectRangeCommand}"/>-->
-                        <!--Clicked="OnClick"--><!--
-            </Grid>-->
+                        <!--Command="{Binding SelectingChartCommand}"-->
+                <!--Command="{Binding SelectRangeCommand}"/>
+                        Clicked="OnClick"-->
+            </Grid>
 
 
            
@@ -252,20 +252,18 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center" />
                     <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center" />
                     <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center" />
                     <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Label Grid.Column="4" Text="A" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Label Grid.Column="5" Text="F" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Grid>
 
                 <!-- CollectionView for data items -->
-                <!--<CollectionView Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Datas}" x:Name="table_data">
+                <CollectionView Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding Datas}" x:Name="table_data" ItemsUpdatingScrollMode="KeepScrollOffset">
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:Data">
+                        <DataTemplate x:DataType="data:Data">
                             <Grid Padding="10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -273,18 +271,16 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" Text="{Binding Time, StringFormat='{0:ss}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="1" Text="{Binding X, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
-                                <Label Grid.Column="2" Text="{Binding Y, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="3" Text="{Binding Z, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="4" Text="{Binding A, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="5" Text="{Binding F, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="0" Text="{Binding timetamp, StringFormat='{0:ss} s'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
-                </CollectionView>-->
+                </CollectionView>
             </Grid>
 
         </material:TabItem>

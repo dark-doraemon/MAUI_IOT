@@ -486,10 +486,6 @@ namespace MAUI_IOT.ViewModels
             };
             await Shell.Current.GoToAsync(nameof(FullScreenChartView), paramaters);
         }
-
-       
-       
-    
         public string path { get; set; }
 
         [RelayCommand]

@@ -35,7 +35,6 @@
                                 Series="{Binding Series}"
                                 TooltipPosition="Auto"
                                 XAxes="{Binding XAxes}"
-                                YAxes="{Binding YAxes}"
                                 ZoomMode="X"></lvc:CartesianChart>
                             <StackLayout
                                 Grid.Row="1"
