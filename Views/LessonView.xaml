@@ -11,8 +11,8 @@
     xmlns:data="clr-namespace:MAUI_IOT.Models.Data"
     Title="LessonView"
     x:DataType="viewmodel:LessonnViewModel">
-    
-    
+
+
     <ContentPage.BindingContext>
         <viewmodel:LessonnViewModel />
     </ContentPage.BindingContext>
@@ -186,13 +186,13 @@
                 <Button Grid.Row="1"
                         x:Name="selectChartAll"
                         Text="{Binding TextButtonSelect}"/>
-                        <!--Command="{Binding SelectingChartCommand}"-->
+                <!--Command="{Binding SelectingChartCommand}"-->
                 <!--Command="{Binding SelectRangeCommand}"/>
                         Clicked="OnClick"-->
             </Grid>
 
 
-           
+
         </material:TabItem>
 
         <material:TabItem Title="Input Parameters" x:Name="inputParameters">
@@ -205,7 +205,7 @@
                         Text="m: "
                         VerticalTextAlignment="Center"
                         WidthRequest="50" />
-                        
+
                         <Entry x:Name="weight_entry" 
                         Text="0" 
                         Placeholder="Nhập khối lượng: " 
@@ -253,11 +253,11 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                    <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                    <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                    <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center"   FontAttributes="Bold" />
+                    <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
                 </Grid>
 
                 <!-- CollectionView for data items -->

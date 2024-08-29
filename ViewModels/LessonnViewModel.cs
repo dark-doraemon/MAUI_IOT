@@ -23,7 +23,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
+using Newtonsoft.Json;
+using System.IO;
 namespace MAUI_IOT.ViewModels
 {
     public partial class LessonnViewModel : ObservableObject
@@ -257,16 +258,16 @@ namespace MAUI_IOT.ViewModels
             _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
 
             Config config = new Config(5000, 50);
-            string config_json = JsonSerializer.Serialize(config);
+            string config_json = System.Text.Json.JsonSerializer.Serialize(config);
 
-            _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "ABCD/control/config/req");  
+            _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "ABCD/control/config/req");
             _mqttClient = await _publisher.IPublisher(_mqttClient, "start", "/ABCD/control/start/req");
 
             _mqttClient.ApplicationMessageReceivedAsync += async e =>
             {
 
                 var json = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-                Packet packet = JsonSerializer.Deserialize<Packet>(json);
+                Packet packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
 
                 if (packet != null)
                 {
@@ -311,8 +312,8 @@ namespace MAUI_IOT.ViewModels
         }
         private async Task Disconnect()
         {
-           await _publisher.IPublisher(_mqttClient, "stop", "/ABCD/control/stop/req");
-           await _disconnect.IDisconnect(_mqttClient);
+            await _publisher.IPublisher(_mqttClient, "stop", "/ABCD/control/stop/req");
+            await _disconnect.IDisconnect(_mqttClient);
         }
 
         [RelayCommand]
@@ -349,7 +350,7 @@ namespace MAUI_IOT.ViewModels
             Task.Run(async () => { await Connect(); });
 
             ColorButtonStart = InActive;
-            ColorButtonStop = Active; 
+            ColorButtonStop = Active;
             ColorButtonSave = InActive;
 
             IsEnableButtonStop = true;
@@ -394,10 +395,10 @@ namespace MAUI_IOT.ViewModels
 
             this.SelectedDatas.Clear();
 
-           // var xValues = ((LineSeries<ObservableValue>)new_Series[0]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-           // var yValues = ((LineSeries<ObservableValue>)new_Series[1]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-           // var zValues = ((LineSeries<ObservableValue>)new_Series[2]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-            
+            // var xValues = ((LineSeries<ObservableValue>)new_Series[0]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
+            // var yValues = ((LineSeries<ObservableValue>)new_Series[1]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
+            // var zValues = ((LineSeries<ObservableValue>)new_Series[2]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
+
         }
 
         [RelayCommand]
@@ -440,5 +441,38 @@ namespace MAUI_IOT.ViewModels
         //    Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
 
         //}
+
+        [RelayCommand]
+        public void Save()
+        {
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, "data_table.json");
+            // string jsonData = JsonConvert.SerializeObject(datas, Formatting.Indented);
+            string a = "Võ Minh Quân 123 ";
+            string jsonData = JsonConvert.SerializeObject(a, Formatting.Indented);
+            File.WriteAllText(filePath, jsonData);
+            Debug.WriteLine(filePath);
+
+        }
+        [RelayCommand]
+        public void Load()
+        {
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, "data_table.json");
+            if (File.Exists(filePath))
+            {
+                string jsonData = File.ReadAllText(filePath);
+                // datas = JsonConvert.DeserializeObject<ObservableCollection<Data>>(jsonData); 
+                string b = JsonConvert.DeserializeObject<string>(jsonData);
+                int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
+                Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
+            }
+            else
+            {
+
+                Debug.WriteLine("khong tồn tại file ");
+            }
+
+        }
+
+
     }
 }

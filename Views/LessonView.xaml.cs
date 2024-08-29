@@ -85,7 +85,43 @@ public partial class LessonView : ContentPage
             }
         };
 
+        int n = 1;
+
+
+
+
+        var toolbarItemLast = new ToolbarItem
+        {
+            Text = "Thêm thí nghiệm ...",
+            Order = ToolbarItemOrder.Secondary,
+        };
+        ToolbarItems.Add(toolbarItemLast);
+        toolbarItemLast.Clicked += (sender, e) => createToolbar(++n);
+        createToolbar(n);
     }
+
+
+    private void createToolbar(int n)
+    {
+        if (n > 10)
+        {
+            DisplayAlert("Warming", "Đã đạt giới hạn", "Thoát");
+            return;
+        }
+        var toolbarItem = new ToolbarItem
+        {
+            Text = $"thí nghiệm thứ {n}",
+            Order = ToolbarItemOrder.Secondary,
+            Command = ((LessonnViewModel)BindingContext).LoadCommand, // Gán Command
+            CommandParameter = n,
+
+
+        };
+
+        ToolbarItems.Add(toolbarItem);
+    }
+
+
 
     private void FormatWeightEntry()
     {
@@ -95,7 +131,7 @@ public partial class LessonView : ContentPage
             string entryAfterFormatted = weight_entry.Text.Replace(",", ".");
             if (double.TryParse(entryAfterFormatted, NumberStyles.Any, CultureInfo.InvariantCulture, out temp))
             {
-                _lessonnViewModel.M= temp;
+                _lessonnViewModel.M = temp;
 
                 if (temp < 0)
                 {

@@ -11,7 +11,6 @@ namespace MAUI_IOT.Services.Interfaces
     public interface ILessionService
     {
         ObservableCollection<Lesson> GetLessons();
-
         Lesson GetLessonById(string id);
     }
 }
