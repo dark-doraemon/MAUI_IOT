@@ -1,4 +1,5 @@
 ﻿using MAUI_IOT.Services.Implements;
+using MAUI_IOT.Services.Implements.MQTT;
 using MAUI_IOT.Services.Interfaces;
 using MAUI_IOT.Services.Interfaces.MQTT;
 using MAUI_IOT.ViewModels;
@@ -70,6 +71,7 @@ namespace MAUI_IOT
             builder.Services.AddSingleton<IConnect, Connect>();
             builder.Services.AddTransient<IPublish, Publisher>();
             builder.Services.AddTransient<ISubscribe, Subscriber>();
+            builder.Services.AddTransient<IDisconnect, Disconnect>();
             return builder;
         }
     }

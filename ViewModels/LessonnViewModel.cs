@@ -32,6 +32,7 @@ namespace MAUI_IOT.ViewModels
         private IConnect _connect;
         private IPublish _publisher;
         private ISubscribe _subscriber;
+        private IDisconnect _disconnect;
 
         //Data
         private readonly List<double> _accX = new List<double>();
@@ -49,8 +50,8 @@ namespace MAUI_IOT.ViewModels
         private IMqttClient _mqttClient;
 
         //Chart
-        private Axis _xAxes { get; set; }
         public Axis[] XAxes { get; set; }
+        private readonly DateTimeAxis _customAxis;
         public object Sync { get; } = new object();
         public DrawMarginFrame Frame { get; set; } = new()
         {
@@ -71,33 +72,28 @@ namespace MAUI_IOT.ViewModels
         [ObservableProperty]
         private double m = 0;
 
-        private string Formatter(double timeSpan)
+        private double[] GetSeparators()
         {
-            return $"{timeSpan:D2}s";
+            var now = DateTime.Now;
+
+            return new double[]
+            {
+            now.AddSeconds(-25).Ticks,
+            now.AddSeconds(-20).Ticks,
+            now.AddSeconds(-15).Ticks,
+            now.AddSeconds(-10).Ticks,
+            now.AddSeconds(-5).Ticks,
+            now.Ticks
+            };
         }
+        private static string Formatter(DateTime date)
+        {
+            var secsAgo = (DateTime.Now - date).TotalSeconds;
 
-        //private double[] GetSeparators()
-        //{
-        //    var now = DateTime.Now;
-
-        //    return new double[]
-        //    {
-        //    now.AddSeconds(-25).Ticks,
-        //    now.AddSeconds(-20).Ticks,
-        //    now.AddSeconds(-15).Ticks,
-        //    now.AddSeconds(-10).Ticks,
-        //    now.AddSeconds(-5).Ticks,
-        //    now.Ticks
-        //    };
-        //}
-        //private static string Formatter(DateTime date)
-        //{
-        //    var secsAgo = (DateTime.Now - date).TotalSeconds;
-
-        //    return secsAgo < 1
-        //        ? "now"
-        //        : $"{secsAgo:N0}s ago";
-        //}
+            return secsAgo < 1
+                ? "now"
+                : $"{secsAgo:N0}s ago";
+        }
         public RectangularSection[] Section { get; set; }
         private double xi { get; set; } = -10;
         private double xj { get; set; } = -10;
@@ -133,11 +129,15 @@ namespace MAUI_IOT.ViewModels
         private Color colorButtonStop = InActive;
 
         public LessonnViewModel() { }
-        public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber)
+        public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
         {
+
+            Debug.WriteLine("Hello hello");
+
             _connect = connect;
             _publisher = publisher;
             _subscriber = subscriber;
+            _disconnect = disconnect;
 
             //Summarize chart
             new_Series = new ObservableCollection<ISeries>()
@@ -219,15 +219,14 @@ namespace MAUI_IOT.ViewModels
             };
 
             //XAxes
-            _xAxes = new Axis
+            _customAxis = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
             {
-                Name = "Time",
-                Labeler = value => Formatter(value),
-                SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100)),
-                MinStep = TimeSpan.FromSeconds(5).Ticks,
+                CustomSeparators = GetSeparators(),
+                AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+                SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
             };
 
-            XAxes = new Axis[] { _xAxes };
+            XAxes = new Axis[] { _customAxis };
 
             //Sections
             Section = new RectangularSection[]
@@ -244,7 +243,7 @@ namespace MAUI_IOT.ViewModels
             mqttFactory = new MqttFactory();
             _mqttClient = mqttFactory.CreateMqttClient();
         }
-        private async Task newStart()
+        private async Task Connect()
         {
             //Clean
             _accX.Clear();
@@ -255,35 +254,41 @@ namespace MAUI_IOT.ViewModels
 
             _mqttClient = mqttFactory.CreateMqttClient();
             _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
-            //_mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
-            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/adxl345/data");
+            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
+
+            Config config = new Config(5000, 50);
+            string config_json = JsonSerializer.Serialize(config);
+
+            _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "ABCD/control/config/req");  
+            _mqttClient = await _publisher.IPublisher(_mqttClient, "start", "/ABCD/control/start/req");
 
             _mqttClient.ApplicationMessageReceivedAsync += async e =>
             {
 
-                var josn = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-                Packet packet = JsonSerializer.Deserialize<Packet>(josn);
+                var json = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
+                Packet packet = JsonSerializer.Deserialize<Packet>(json);
 
                 if (packet != null)
                 {
                     lock (Sync)
                     {
-                        foreach(Data data in packet.data)
+                        foreach (Data data in packet.data)
                         {
                             //chart
                             _accX.Add(data.accX);
                             _accY.Add(data.accY);
                             _accZ.Add(data.accZ);
                             _force.Add(data.force);
-                            
+
                             //table
                             Datas.Add(data);
-                               
+
                             if (_accX.Count > 250) _accX.RemoveAt(0);
                             if (_accY.Count > 250) _accY.RemoveAt(0);
                             if (_accZ.Count > 250) _accZ.RemoveAt(0);
                             if (_force.Count > 250) _force.RemoveAt(0);
 
+                            _customAxis.CustomSeparators = GetSeparators();
                         }
                     }
 
@@ -306,8 +311,10 @@ namespace MAUI_IOT.ViewModels
         }
         private async Task Disconnect()
         {
-           await _connect.IDisconnect(_mqttClient);
+           await _publisher.IPublisher(_mqttClient, "stop", "/ABCD/control/stop/req");
+           await _disconnect.IDisconnect(_mqttClient);
         }
+
         [RelayCommand]
         public async Task Zoom(ObservableCollection<ISeries> series)
         {
@@ -339,7 +346,7 @@ namespace MAUI_IOT.ViewModels
             if (!IsValidEntryWeight) return;
 
             Debug.WriteLine("Start button was clicked");
-            Task.Run(async () => { await newStart(); });
+            Task.Run(async () => { await Connect(); });
 
             ColorButtonStart = InActive;
             ColorButtonStop = Active; 

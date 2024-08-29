@@ -12,6 +12,5 @@ namespace MAUI_IOT.Services.Interfaces.MQTT
     {
         Task<IMqttClient> IConnect(MqttFactory mqttFactory, string tcpServer, int port, string username, string password);
         Task<IMqttClient> IConnect(MqttFactory mqttFactory, string tcpServer, int port);
-        Task<IMqttClient> IDisconnect(IMqttClient mqttClient);
     }
 }

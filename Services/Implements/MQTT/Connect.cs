@@ -32,14 +32,5 @@ namespace MauiApp1.Services.Implements
             Debug.WriteLine("Connection to the Broker successful");
             return mqttClient;
         }
-
-
-
-        public async Task<IMqttClient> IDisconnect(IMqttClient mqttClient)
-        {
-            await mqttClient.DisconnectAsync(MqttClientDisconnectOptionsReason.ImplementationSpecificError);
-            Debug.WriteLine("Disconnection to the Broker successful");
-            return mqttClient;
-        }
     }
 }
