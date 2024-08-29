@@ -95,12 +95,13 @@ namespace MAUI_IOT.ViewModels
                 : $"{secsAgo:N0}s ago";
         }
         public RectangularSection[] Section { get; set; }
-        private double xi { get; set; } = -10;
-        private double xj { get; set; } = -10;
+        private double Xi { get; set; } = -10;
+        private double Xj { get; set; } = -10;
 
         //Colors
         public static Color InActive = Color.FromRgb(214, 214, 214);
         public static Color Active = Color.FromRgb(2, 126, 111);
+        public static Color Default = Color.FromRgb(178, 215, 239);
 
         //State
         [ObservableProperty]
@@ -127,6 +128,13 @@ namespace MAUI_IOT.ViewModels
         private Color colorButtonSave = InActive;
         [ObservableProperty]
         private Color colorButtonStop = InActive;
+        [ObservableProperty]
+        private Color colorButtonSelectRange = Default;
+
+
+        //Text
+        [ObservableProperty]
+        private string textSelectRangeButton = "Select Range";
 
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
@@ -235,7 +243,7 @@ namespace MAUI_IOT.ViewModels
                 {
                     Xi = 0,
                     Xj = 0,
-                    Fill = new SolidColorPaint(new SKColor(83, 137, 71))
+                    Fill = new SolidColorPaint(new SKColor(83, 137, 71).WithAlpha(20))
                 }
             };
 
@@ -259,7 +267,7 @@ namespace MAUI_IOT.ViewModels
             Config config = new Config(5000, 50);
             string config_json = JsonSerializer.Serialize(config);
 
-            _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "ABCD/control/config/req");  
+            _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "ABCD/control/config/req");
             _mqttClient = await _publisher.IPublisher(_mqttClient, "start", "/ABCD/control/start/req");
 
             _mqttClient.ApplicationMessageReceivedAsync += async e =>
@@ -311,8 +319,8 @@ namespace MAUI_IOT.ViewModels
         }
         private async Task Disconnect()
         {
-           await _publisher.IPublisher(_mqttClient, "stop", "/ABCD/control/stop/req");
-           await _disconnect.IDisconnect(_mqttClient);
+            await _publisher.IPublisher(_mqttClient, "stop", "/ABCD/control/stop/req");
+            await _disconnect.IDisconnect(_mqttClient);
         }
 
         [RelayCommand]
@@ -349,7 +357,7 @@ namespace MAUI_IOT.ViewModels
             Task.Run(async () => { await Connect(); });
 
             ColorButtonStart = InActive;
-            ColorButtonStop = Active; 
+            ColorButtonStop = Active;
             ColorButtonSave = InActive;
 
             IsEnableButtonStop = true;
@@ -379,35 +387,66 @@ namespace MAUI_IOT.ViewModels
         }
 
         [RelayCommand]
+        private void OnSelectRangeButton()
+        {
+            IsButtonSelectActive = !IsButtonSelectActive;
+
+            if (IsButtonSelectActive)
+            {
+                TextSelectRangeButton = "Selecting";
+                ColorButtonSelectRange = Active;
+            }
+            else
+            {
+                TextSelectRangeButton = "Select Range";
+                ColorButtonSelectRange = Default;
+                //_customAxis.MaxLimit = null;
+                //_customAxis.MinLimit = null;
+            }
+        }
+
+        [RelayCommand]
         public void PointerDown(PointerCommandArgs args)
         {
-            var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
-            var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
-            Section[0].Xi = Section[0].Xj = xi = xj = scaledPoint.X;
+            if (IsButtonSelectActive)
+            {
+                var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
+                var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
+                Section[0].Xi = Section[0].Xj = Xi = Xj = scaledPoint.X;
+            }
         }
 
         [RelayCommand]
         public void PointerUp(PointerCommandArgs args)
         {
-            Debug.WriteLine("Pointer Up");
+            if (IsButtonSelectActive)
+            {
+                Debug.WriteLine("Pointer Up");
 
 
-            this.SelectedDatas.Clear();
+                this.SelectedDatas.Clear();
 
-           // var xValues = ((LineSeries<ObservableValue>)new_Series[0]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-           // var yValues = ((LineSeries<ObservableValue>)new_Series[1]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-           // var zValues = ((LineSeries<ObservableValue>)new_Series[2]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-            
+
+                _customAxis.MinLimit = Xi;
+                _customAxis.MaxLimit = Xj;
+                // var xValues = ((LineSeries<ObservableValue>)new_Series[0]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
+                // var yValues = ((LineSeries<ObservableValue>)new_Series[1]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
+                // var zValues = ((LineSeries<ObservableValue>)new_Series[2]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
+
+            }
         }
 
         [RelayCommand]
         public void PointerMove(PointerCommandArgs args)
         {
-            var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
-            var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
+            if (IsButtonSelectActive)
+            {
+                var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
+                var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
 
-            Section[0].Xj = xj = scaledPoint.X;
-            Debug.WriteLine("scaledPointMove" + scaledPoint.ToString());
+                Section[0].Xj = Xj = scaledPoint.X;
+                Debug.WriteLine("scaledPointMove" + scaledPoint.ToString());
+            }
         }
 
         //private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)

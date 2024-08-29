@@ -177,7 +177,7 @@
                                     Series="{Binding new_Series}"
                                     TooltipPosition="Hidden"
                                     XAxes="{Binding XAxes}"
-                                    ZoomMode="None"
+                                    ZoomMode="X"
                                     Sections="{Binding Section}"
                                     MovedCommand="{Binding PointerMoveCommand}"
                                     PressedCommand="{Binding PointerDownCommand}"
@@ -185,7 +185,10 @@
 
                 <Button Grid.Row="1"
                         x:Name="selectChartAll"
-                        Text="{Binding TextButtonSelect}"/>
+                        Text="{Binding TextSelectRangeButton}"
+                        BackgroundColor="{Binding ColorButtonSelectRange}"
+                        Command="{Binding SelectRangeButtonCommand}"
+                        />
                         <!--Command="{Binding SelectingChartCommand}"-->
                 <!--Command="{Binding SelectRangeCommand}"/>
                         Clicked="OnClick"-->
