@@ -12,7 +12,6 @@
 
     <FlyoutItem Title="Home" Icon="home.png">
         <ShellContent Route="HomeView">
-
             <ContentPage Title="Home" />
         </ShellContent>
     </FlyoutItem>
@@ -34,6 +33,11 @@
             <ContentPage Title="Assignment" />
         </ShellContent>
     </FlyoutItem>
+
+
+
+
+
 
     <FlyoutItem Title="Lab" Icon="lab.png">
         <Tab Title="Lab">

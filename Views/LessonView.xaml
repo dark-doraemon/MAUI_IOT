@@ -6,19 +6,55 @@
     xmlns:local="clr-namespace:MAUI_IOT.Views"
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
     xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
     xmlns:model="clr-namespace:MAUI_IOT.Models"
     xmlns:data="clr-namespace:MAUI_IOT.Models.Data"
     Title="LessonView"
     x:DataType="viewmodel:LessonnViewModel">
-    
-    
+
     <ContentPage.BindingContext>
         <viewmodel:LessonnViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Thứ nghiệm lần thứ 1" 
+                 Clicked="OnAddClicked"
+                 Order="Secondary"
+                 />
+        <ToolbarItem Text="Thứ nghiệm lần thứ 2" 
+              Clicked="OnAddClicked1"
+              Order="Secondary"
+              />
 
+    </ContentPage.ToolbarItems>
     <material:TabView x:Name="tab_View">
 
+        <material:TabItem Title="Config" x:Name="inputParameters">
+            <ScrollView Orientation="Both">
+                <VerticalStackLayout>
+                    <HorizontalStackLayout Padding="5">
+                        <Label FontAttributes="Bold"
+                  FontSize="Medium"
+                  Text="m: "
+                  VerticalTextAlignment="Center"
+                  WidthRequest="50" />
+                        <Entry x:Name="weight_entry" 
+                  Text="0" 
+                  Placeholder="Nhập khối lượng: " 
+                  TextColor="Red"
+                  Keyboard="Numeric"/>
+                    </HorizontalStackLayout>
+                    <Button x:Name="weight"
+                      FontAttributes="Bold"
+                      Text="Set"                                  
+                      WidthRequest="60"/>
+                    <HorizontalStackLayout>
+                    </HorizontalStackLayout>
+                    <!--Command="{Binding SetWeightCommand}"/>-->
+                    <!--Clicked="Handle_Set"/>-->
+                </VerticalStackLayout>
+            </ScrollView>
+        </material:TabItem>
         <material:TabItem Title="Experiment" x:Name="Experiment" >
             <ScrollView Orientation="Vertical" Padding="10">
                 <Grid>
@@ -30,7 +66,6 @@
                         <RowDefinition Height="300" />
                         <RowDefinition Height="50" />
                     </Grid.RowDefinitions>
-
                     <!--<Label Grid.Row="0" FontSize="Large" HorizontalOptions="Center" Text="{Binding Lesson.LessonName}" />-->
 
                     <!--<VerticalStackLayout Grid.Row="1" Margin="10,0,0,0">
@@ -56,7 +91,6 @@
                             <ColumnDefinition Width="10*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
                         <lvc:CartesianChart x:Name="chart_1"
                                        
                                         Grid.Column="0"
@@ -186,46 +220,16 @@
                 <Button Grid.Row="1"
                         x:Name="selectChartAll"
                         Text="{Binding TextButtonSelect}"/>
-                        <!--Command="{Binding SelectingChartCommand}"-->
+                <!--Command="{Binding SelectingChartCommand}"-->
                 <!--Command="{Binding SelectRangeCommand}"/>
                         Clicked="OnClick"-->
             </Grid>
 
 
-           
-        </material:TabItem>
-
-        <material:TabItem Title="Input Parameters" x:Name="inputParameters">
-
-            <ScrollView Orientation="Both">
-                <VerticalStackLayout>
-                    <HorizontalStackLayout Padding="5">
-                        <Label FontAttributes="Bold"
-                        FontSize="Medium"
-                        Text="m: "
-                        VerticalTextAlignment="Center"
-                        WidthRequest="50" />
-                        
-                        <Entry x:Name="weight_entry" 
-                        Text="0" 
-                        Placeholder="Nhập khối lượng: " 
-                        TextColor="Red"
-                        Keyboard="Numeric"/>
-                    </HorizontalStackLayout>
-
-
-
-                    <Button x:Name="weight"
-                            FontAttributes="Bold"
-                            Text="Set"                                  
-                            WidthRequest="60"/>
-                    <!--Command="{Binding SetWeightCommand}"/>-->
-                    <!--Clicked="Handle_Set"/>-->
-                </VerticalStackLayout>
-            </ScrollView>
-
 
         </material:TabItem>
+
+
 
         <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
             <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">

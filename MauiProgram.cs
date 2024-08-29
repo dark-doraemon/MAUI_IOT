@@ -8,6 +8,7 @@ using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using UraniumUI;
+using CommunityToolkit.Maui;
 namespace MAUI_IOT
 {
     public static class MauiProgram
@@ -21,6 +22,7 @@ namespace MAUI_IOT
                 .UseMicrocharts()
                 .UseUraniumUI()
                 .UseUraniumUIMaterial()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -29,10 +31,10 @@ namespace MAUI_IOT
                 .RegisterServices();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
-            builder.Services.AddTransient<IAuthService,AuthService>();
-            builder.Services.AddTransient<ILessionService,LessionService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddTransient<ILessionService, LessionService>();
 
             builder.Services.AddTransient<LoadingView>();
 

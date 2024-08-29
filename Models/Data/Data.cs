@@ -12,6 +12,6 @@ namespace MAUI_IOT.Models.Data
         public double accX { get; set; }
         public double accY { get; set; }
         public double accZ { get; set; }
-        public double force { get => Math.Sqrt(accX * accX + accY * accY + accZ * accZ); }
+        public double force { get; set; }
     }
 }

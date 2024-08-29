@@ -13,6 +13,7 @@ using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.Drawing;
 using SkiaSharp;
 using MAUI_IOT.Services.Interfaces;
+using CommunityToolkit.Maui;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
@@ -87,6 +88,19 @@ public partial class LessonView : ContentPage
 
     }
 
+
+
+
+    private void OnAddClicked(object sender, EventArgs e)
+    {
+        DisplayAlert("test", "đây là thông báo  ", "Thoát ");
+    }
+    private void OnAddClicked1(object sender, EventArgs e)
+    {
+        DisplayAlert("test", "đây là thông báo 1   ", "Thoát ");
+    }
+
+
     private void FormatWeightEntry()
     {
         double temp = 0;
@@ -95,7 +109,7 @@ public partial class LessonView : ContentPage
             string entryAfterFormatted = weight_entry.Text.Replace(",", ".");
             if (double.TryParse(entryAfterFormatted, NumberStyles.Any, CultureInfo.InvariantCulture, out temp))
             {
-                _lessonnViewModel.M= temp;
+                _lessonnViewModel.M = temp;
 
                 if (temp < 0)
                 {

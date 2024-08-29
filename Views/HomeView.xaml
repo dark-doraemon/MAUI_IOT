@@ -7,8 +7,6 @@
              xmlns:lessonType="clr-namespace:MAUI_IOT.Models"
              FlyoutItem.IsVisible="True"
              Title="Lab">
-
-
     <CollectionView ItemsSource="{Binding Lessons}"
                     >
         <CollectionView.ItemTemplate>
@@ -23,9 +21,7 @@
                             <Label FontSize="Large" Text="{Binding LessonName}" HorizontalOptions="StartAndExpand"/>
                             <Label FontSize="Large" Text="{Binding LessonStatus}" HorizontalOptions="EndAndExpand"/>
                         </StackLayout>
-
                         <Image Source="{Binding LessonImage}" />
-
                         <StackLayout Orientation="Horizontal">
                             <Label FontSize="Large" Text="{Binding LessonPoint,StringFormat='0/{0} điểm'}" HorizontalOptions="EndAndExpand"/>
                         </StackLayout>
