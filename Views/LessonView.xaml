@@ -25,10 +25,12 @@
               Clicked="OnAddClicked1"
               Order="Secondary"
               />
-
+        <ToolbarItem Text="Thêm thí nghiệm ... "
+        Clicked="OnAddClicked1"
+        Order="Secondary"
+        />
     </ContentPage.ToolbarItems>
     <material:TabView x:Name="tab_View">
-
         <material:TabItem Title="Config" x:Name="inputParameters">
             <ScrollView Orientation="Both">
                 <VerticalStackLayout>

@@ -34,6 +34,34 @@ public partial class LessonView : ContentPage
             weight_entry.Focus();
         };
 
+
+
+
+
+        var experiments = new List<string> { "Thí nghiệm 1", "Thí nghiệm 2", "Thí nghiệm 3" };
+        foreach (var experiment in experiments)
+        {
+            var toolbarItem = new ToolbarItem
+            {
+                Text = experiment,
+                Order = ToolbarItemOrder.Secondary
+            };
+
+            toolbarItem.Clicked += (sender, e) => HandleExperimentClicked(experiment);
+
+            ToolbarItems.Add(toolbarItem);
+        }
+
+
+
+
+
+
+
+
+
+
+
         weight_entry.Unfocused += async (sender, e) =>
         {
             if (string.IsNullOrEmpty(weight_entry.Text))
@@ -89,7 +117,11 @@ public partial class LessonView : ContentPage
     }
 
 
-
+    private void HandleExperimentClicked(string experimentName)
+    {
+        // Xử lý sự kiện khi một ToolbarItem được nhấp vào
+        DisplayAlert("Thông báo", $"Bạn vừa nhấp vào thí nghiệm: {experimentName}", "OK");
+    }
 
     private void OnAddClicked(object sender, EventArgs e)
     {
