@@ -9,9 +9,15 @@
     xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
     xmlns:model="clr-namespace:MAUI_IOT.Models"
     xmlns:data="clr-namespace:MAUI_IOT.Models.Data"
+    xmlns:services="clr-namespace:MAUI_IOT.Services.Implements"
     Title="LessonView"
     x:DataType="viewmodel:LessonnViewModel">
-    
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <services:Converter x:Key="ConverterTimestamp"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     
     <ContentPage.BindingContext>
         <viewmodel:LessonnViewModel />
@@ -172,26 +178,20 @@
 
                 <lvc:CartesianChart Grid.Row="0"
                                     x:Name="chart_All"
+                                    Padding="0"
+                                    Margin="0"
+                                    TooltipPosition="Auto"
                                     SyncContext="{Binding Sync}"
                                     DrawMarginFrame="{Binding Frame}"
-                                    Series="{Binding new_Series}"
-                                    TooltipPosition="Hidden"
+                                    Series="{Binding Series}"
                                     XAxes="{Binding XAxes}"
-                                    ZoomMode="X"
+                                    YAxes="{Binding YAxes}"
+                                    ZoomMode="{Binding ZoomAndPanningMode}"
+                                    AnimationsSpeed="00:00:00.010"
                                     Sections="{Binding Section}"
                                     MovedCommand="{Binding PointerMoveCommand}"
                                     PressedCommand="{Binding PointerDownCommand}"
                                     ReleasedCommand="{Binding PointerUpCommand}"/>
-
-                <Button Grid.Row="1"
-                        x:Name="selectChartAll"
-                        Text="{Binding TextSelectRangeButton}"
-                        BackgroundColor="{Binding ColorButtonSelectRange}"
-                        Command="{Binding SelectRangeButtonCommand}"
-                        />
-                        <!--Command="{Binding SelectingChartCommand}"-->
-                <!--Command="{Binding SelectRangeCommand}"/>
-                        Clicked="OnClick"-->
             </Grid>
 
 
@@ -275,7 +275,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" Text="{Binding timetamp, StringFormat='{0:ss} s'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
                                 <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
                                 <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
                                 <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>

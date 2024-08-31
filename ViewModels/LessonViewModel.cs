@@ -147,7 +147,7 @@ namespace MAUI_IOT.ViewModels
                     Console.WriteLine($"Name: {packet.name} \n Packet number: {packet.packetNumber} \n data: {packet.data}");
                     foreach (Data data in packet.data)
                     {
-                        Console.WriteLine($"timetamp: {data.timetamp}\naccX: {data.accX}\naccY: {data.accX}\naccZ: {data.accZ}");
+                        Console.WriteLine($"timetamp: {data.timestamp}\naccX: {data.accX}\naccY: {data.accY}\naccZ: {data.accZ}");
                     }
                 }
 
