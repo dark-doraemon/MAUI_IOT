@@ -13,6 +13,7 @@ using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.Drawing;
 using SkiaSharp;
 using MAUI_IOT.Services.Interfaces;
+using UraniumUI.Controls;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
@@ -26,7 +27,6 @@ public partial class LessonView : ContentPage
         this._lessonnViewModel = lessonnViewModel;
         BindingContext = lessonnViewModel;
         Tabinit();
-
         weight_entry.Focused += (sender, e) =>
         {
             weight_entry.Text = "";
@@ -58,7 +58,7 @@ public partial class LessonView : ContentPage
                 {
                     await DisplayAlert("Thông báo!", "Vui lòng nhập khối lượng hợp lệ", "OK");
                     lessonnViewModel.IsValidEntryWeight = false;
-                    tab_View.SelectedTab = inputParameters;
+                    tab_View.SelectedTab = Config;
                     return;
                 }
                 weight_entry.Unfocus();
@@ -81,24 +81,59 @@ public partial class LessonView : ContentPage
             {
                 await DisplayAlert("Thông báo!", "Vui lòng nhập khối lượng hợp lệ", "OK");
                 lessonnViewModel.IsValidEntryWeight = false;
-                tab_View.SelectedTab = inputParameters;
+                tab_View.SelectedTab = Config;
             }
         };
 
-        int n = 1;
-
-
-
-
-        var toolbarItemLast = new ToolbarItem
+        Button myButton = this.FindByName<Button>("myButton");
+        if (myButton != null)
         {
-            Text = "Thêm thí nghiệm ...",
-            Order = ToolbarItemOrder.Secondary,
+            myButton.Clicked += MyButton_Clicked;
+        }
+
+
+
+
+        Picker myPicker = this.FindByName<Picker>("myPicker");
+        if (myPicker != null)
+        {
+            myPicker.Title = "Chọn 1 mục ";
+        }
+        List<string> packetName = new List<string>();
+        for (int i = 0; i < lessonnViewModel.FileCount; i++)
+        {
+            packetName.Add($"Experiment{i}");
+        }
+        myPicker.ItemsSource = packetName;
+        myPicker.SelectedIndexChanged += (sender, e) =>
+        {
+            var selectedItem = (sender as Picker)?.SelectedItem;
+            getdata(selectedItem);
         };
-        ToolbarItems.Add(toolbarItemLast);
-        toolbarItemLast.Clicked += (sender, e) => createToolbar(++n);
-        createToolbar(n);
     }
+
+    private void MyButton_Clicked(object sender, EventArgs e)
+    {
+        var selectedItem = myPicker.SelectedItem;
+        if (selectedItem != null)
+        {
+            _lessonnViewModel.Save(selectedItem.ToString());
+
+        }
+
+    }
+
+    private void addPickerItem(object sender, EventArgs e)
+    {
+        List<string> packetName = new List<string>();
+        for (int i = 0; i < _lessonnViewModel.FileCount; i++)
+        {
+            packetName.Add($"Experiment{i}");
+        }
+        myPicker.ItemsSource = packetName;
+
+    }
+
 
 
     private void createToolbar(int n)
@@ -110,19 +145,14 @@ public partial class LessonView : ContentPage
         }
         var toolbarItem = new ToolbarItem
         {
-            Text = $"thí nghiệm thứ {n}",
+            Text = $" save  {n}",
             Order = ToolbarItemOrder.Secondary,
-            Command = ((LessonnViewModel)BindingContext).LoadCommand, // Gán Command
+            Command = ((LessonnViewModel)BindingContext).SaveCommand, // Gán Command
             CommandParameter = n,
-
-
         };
 
         ToolbarItems.Add(toolbarItem);
     }
-
-
-
     private void FormatWeightEntry()
     {
         double temp = 0;
@@ -148,6 +178,48 @@ public partial class LessonView : ContentPage
 
     private void Tabinit()
     {
-        tab_View.SelectedTab = inputParameters;
+        tab_View.SelectedTab = Config;
     }
+
+
+    //load dữ liệu 
+
+    private async Task getdata(object selectedItem)
+    {
+        try
+        {
+
+
+            await _lessonnViewModel.Load(selectedItem.ToString());
+            if (_lessonnViewModel.FileContent.Length != 0)
+            {
+                await DisplayAlert("Tiêu đề", _lessonnViewModel.FileContent, "Thoát");
+            }
+            else
+            {
+                await DisplayAlert("Tiêu đề", $"file chưa lưu  ", "thoát");
+
+            }
+        }
+        catch (Exception ex)
+        {
+
+            Debug.WriteLine("======================================Try catch Lessonview.xaml.cs===================================================");
+            Debug.WriteLine(ex.Message.ToString());
+            Debug.WriteLine("=======================================================================================================");
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
 }

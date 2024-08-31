@@ -72,6 +72,11 @@ namespace MAUI_IOT.ViewModels
         //Weight (input)
         [ObservableProperty]
         private double m = 0;
+        [ObservableProperty]
+        private string fileContent = "";
+        [ObservableProperty]
+        private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
+
 
         private double[] GetSeparators()
         {
@@ -243,6 +248,23 @@ namespace MAUI_IOT.ViewModels
             //MQTT connect
             mqttFactory = new MqttFactory();
             _mqttClient = mqttFactory.CreateMqttClient();
+
+
+
+            string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
+            if (filePaths.Contains("/data/user/0/com.companyname.maui_iot/files/profileInstalled")) // file hệ thống tự tạo 
+            {
+                fileCount--;
+            }
+            Debug.WriteLine("=======================================================================================================");
+            foreach (var a in filePaths)
+            {
+                Debug.WriteLine(a);
+            }
+            Debug.WriteLine("=======================================================================================================");
+
+
+
         }
         private async Task Connect()
         {
@@ -254,8 +276,9 @@ namespace MAUI_IOT.ViewModels
             Datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
-            _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
-            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
+            _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
+            //   _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
+            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/dataa");
 
             Config config = new Config(5000, 50);
             string config_json = System.Text.Json.JsonSerializer.Serialize(config);
@@ -268,7 +291,6 @@ namespace MAUI_IOT.ViewModels
 
                 var json = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
                 Packet packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
-
                 if (packet != null)
                 {
                     lock (Sync)
@@ -441,38 +463,151 @@ namespace MAUI_IOT.ViewModels
         //    Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
 
         //}
-
         [RelayCommand]
-        public void Save()
+        public void addFile()
         {
-            var filePath = Path.Combine(FileSystem.AppDataDirectory, "data_table.json");
-            // string jsonData = JsonConvert.SerializeObject(datas, Formatting.Indented);
-            string a = "Võ Minh Quân 123 ";
-            string jsonData = JsonConvert.SerializeObject(a, Formatting.Indented);
-            File.WriteAllText(filePath, jsonData);
-            Debug.WriteLine(filePath);
-
-        }
-        [RelayCommand]
-        public void Load()
-        {
-            var filePath = Path.Combine(FileSystem.AppDataDirectory, "data_table.json");
-            if (File.Exists(filePath))
-            {
-                string jsonData = File.ReadAllText(filePath);
-                // datas = JsonConvert.DeserializeObject<ObservableCollection<Data>>(jsonData); 
-                string b = JsonConvert.DeserializeObject<string>(jsonData);
-                int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
-                Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
-            }
-            else
-            {
-
-                Debug.WriteLine("khong tồn tại file ");
-            }
-
+            fileCount++;
         }
 
+
+
+
+        [RelayCommand]
+        public async Task Save(string name)
+        {
+            FileSave fileSave = new FileSave();
+            fileSave.m = m;
+            fileSave.datafile = datas;
+            string fileName = $"{name}.json";
+
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
+            string jsonData = System.Text.Json.JsonSerializer.Serialize<FileSave>(fileSave);
+            File.WriteAllTextAsync(filePath, jsonData);
+            Debug.WriteLine($"===============================FILE PATH {filePath} =================================================== ");
+
+            Debug.WriteLine("========================================ĐÃ lưu file ===============================================================");
+        }
+
+        [RelayCommand]
+        public async Task Load(string fileName)
+        {
+            try
+            {
+                FileSave fileSave = new FileSave();
+
+
+
+
+                var filePath = Path.Combine(FileSystem.AppDataDirectory, $"{fileName}.json");
+                if (File.Exists(filePath))
+                {
+
+
+
+                    var jsonData = await File.ReadAllTextAsync(filePath);
+                    FileSave file = System.Text.Json.JsonSerializer.Deserialize<FileSave>(jsonData);
+                    m = file.m;
+                    fileSave.datafile = datas;
+                    Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
+                    Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {m}");
+
+                    Debug.WriteLine($"========================================ĐÃ đọc  file {fileName} ===============================================================");
+                }
+                else
+                {
+                    Debug.WriteLine("=======================================================================================================");
+                    Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
+                    Debug.WriteLine("khong tồn tại file ");
+                    Debug.WriteLine($"Tên của file cần tìm : {fileName}");
+
+                    Debug.WriteLine("=======================================================================================================");
+                    string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
+                    foreach (var a in filePaths)
+                    {
+                        Debug.WriteLine(a);
+                    }
+                    Debug.WriteLine("=======================================================================================================");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("============================================Try catch ====================================================");
+                Debug.WriteLine(ex.Message.ToString());
+                Debug.WriteLine("=======================================================================================================");
+
+            }
+
+        }
+
+
+        public List<ObservableCollection<Data>> listData = new List<ObservableCollection<Data>>();
+
+        public void loadData(List<ObservableCollection<Data>> listData)
+        {
+            int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
+            for (int i = 0; i < fileCount; i++)
+            {
+
+            }
+        }
+        [RelayCommand]
+        public void deleteAllFile()
+        {
+            string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
+            foreach (string filePath in filePaths)
+            {
+                File.Delete(filePath);
+            }
+
+        }
+
+        public static int fileCounter()
+        {
+            string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
+            int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
+            if (filePaths.Contains("profileInstalled")) // file hệ thống tự tạo 
+            {
+                fileCount--;
+            }
+            return fileCount;
+        }
+
+
+
+
+
+
+
+
+        public ObservableCollection<string> packetNumber { get; set; } = new ObservableCollection<string>
+            {
+                         "packetNumber_1",
+                         "packetNumber_2",
+                         "packetNumber_3",
+                         "packetNumber_4",
+                         "packetNumber_5",
+                         "packetNumber_6",
+                         "packetNumber_7",
+                         "packetNumber_8",
+                         "packetNumber_9",
+                         "packetNumber_10",
+
+
+                    };
+
+
+
+
+
+
+        public ObservableCollection<string> Options { get; set; } = new ObservableCollection<string>
+            {
+                         "ADXL345",
+                         "CDHCM1975",
+                         "CDĐPB1945"
+                    };
 
     }
 }
