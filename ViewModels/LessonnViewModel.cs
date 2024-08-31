@@ -223,7 +223,9 @@ namespace MAUI_IOT.ViewModels
                     Labeler = value => (value).ToString("0.00 s"),
                     Name = "Time",
                     TextSize = 10,
-                    SubseparatorsCount= 9
+                    SubseparatorsCount= 9,
+                    NameTextSize = 10,
+                    InLineNamePlacement = true,
                 }
             };
             YAxes = new[] {
@@ -231,6 +233,9 @@ namespace MAUI_IOT.ViewModels
                 {
                     //MinLimit= 0.5,
                     //MaxLimit= 1.5,
+                    Name = "Value",
+                    NameTextSize = 10,
+                    InLineNamePlacement= true,
                     Labeler = value => value.ToString("0.00"),
                     NamePaint = new SolidColorPaint(SKColors.Gray),
                     TextSize = 10,
@@ -292,8 +297,8 @@ namespace MAUI_IOT.ViewModels
             Datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
-            _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
-            //_mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
+            //_mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
+            _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
             _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
 
             Config config = new Config(5000, 50);
@@ -323,7 +328,6 @@ namespace MAUI_IOT.ViewModels
                             _timetamp.Add(time);
                             //table
                             Datas.Add(data);
-
                             //if (_accX.Count > 250) _accX.RemoveAt(0);
                             //if (_accY.Count > 250) _accY.RemoveAt(0);
                             //if (_accZ.Count > 250) _accZ.RemoveAt(0);
@@ -331,15 +335,12 @@ namespace MAUI_IOT.ViewModels
                             //if (_timetamp.Count > 250) _timetamp.RemoveAt(0);
                         }
                     }
-
-
-
-
                     Debug.WriteLine($"Name: {packet.name} \n Packet number: {packet.packetNumber} \n data: {packet.data}");
                     foreach (Data data in packet.data)
                     {
                         Debug.WriteLine($"timetamp: {data.timestamp}\naccX: {data.accX}\naccY: {data.accX}\naccZ: {data.accZ}");
                     }
+                    SelectedDatas = Datas;
                 }
 
                 else
@@ -416,6 +417,8 @@ namespace MAUI_IOT.ViewModels
 
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
+
+            SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
         [RelayCommand]
@@ -454,37 +457,11 @@ namespace MAUI_IOT.ViewModels
         }
 
         [RelayCommand]
-        public void PointerUp(PointerCommandArgs args)
-        {
-
+        public async void PointerUp(PointerCommandArgs args)
+        { 
             if (OnReleased && isDoubleClickedChart)
             {
                 Debug.WriteLine("Pointer Up");
-
-                this.SelectedDatas.Clear();
-
-                // Get values from the LineSeries
-                //var xValues = ((LineSeries<ObservablePoint>)Series[0]).Values
-                //    .Select(x => x.X)
-                //    .ToList()
-                //    .Skip((int)Xi)
-                //    .Take((int)(Xj - Xi) + 1)
-                //    .ToList();
-
-                //var yValues = ((LineSeries<ObservablePoint>)Series[1]).Values
-                //    .Select(x => x.X)
-                //    .ToList()
-                //     .Skip((int)Xi)
-                //    .Take((int)(Xj - Xi) + 1)
-                //    .ToList();
-
-                //var zValues = ((LineSeries<ObservablePoint>)Series[2]).Values
-                //    .Select(x => x.X)
-                //    .ToList()
-                //     .Skip((int)Xi)
-                //    .Take((int)(Xj - Xi) + 1)
-                //    .ToList();
-
                 Debug.WriteLine(Xi + " " + Xj);
                 OnPressed = OnReleased = OnMoving = false;
                 isDoubleClickedChart = false;
@@ -497,6 +474,8 @@ namespace MAUI_IOT.ViewModels
                 XAxes[0].MinLimit = Xi;
                 XAxes[0].MaxLimit = Xj;
                 ZoomAndPanningMode = LiveChartsCore.Measure.ZoomAndPanMode.X;
+                Debug.WriteLine("Datas: " + Datas.Count);
+                GetData(Datas, Xi, Xj);
             }
         }
 
@@ -516,6 +495,23 @@ namespace MAUI_IOT.ViewModels
             }
             Debug.WriteLine("Double click: false");
             isDoubleClickedChart = false;
+        }
+        
+        public void GetData(ObservableCollection<Data> datas, double Xi, double Xj)
+        {
+            Debug.WriteLine("Datas: " + Datas.Count);
+            double start = Xi * 1000; // Chỉ số bắt đầu
+            double end = Xj * 1000;   // Chỉ số kết thúc
+            SelectedDatas.Clear();
+            Debug.WriteLine("Datas: " + Datas.Count);
+            Debug.WriteLine("Before load data" + SelectedDatas.Count);
+            foreach(Data i in datas) {
+                if (i.timestamp > start && i.timestamp < end)
+                {
+                    SelectedDatas.Add(i);
+                }
+            }
+            Debug.WriteLine("After load data" + SelectedDatas.Count);
         }
 
         //private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)

@@ -67,6 +67,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Fonts\Font Awesome 6 Free-Solid-900.otf" />
 	  <None Remove="Resources\Icon\assignment.png" />
 	  <None Remove="Resources\Icon\chat.png" />
 	  <None Remove="Resources\Icon\group.png" />
