@@ -11,6 +11,7 @@ using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using MAUI_IOT.Models.Data;
+using MAUI_IOT.Services.Implements;
 using MAUI_IOT.Services.Interfaces.MQTT;
 using MAUI_IOT.Views;
 using MQTTnet;
@@ -41,7 +42,7 @@ namespace MAUI_IOT.ViewModels
         private readonly ObservableCollection<ObservablePoint> _accX = new ObservableCollection<ObservablePoint>();
         private readonly ObservableCollection<ObservablePoint> _accY = new ObservableCollection<ObservablePoint>();
         private readonly ObservableCollection<ObservablePoint> _accZ = new ObservableCollection<ObservablePoint>();
-        private readonly ObservableCollection<ObservablePoint> _force = new ObservableCollection<ObservablePoint>();
+        private ObservableCollection<ObservablePoint> _force { get; set; } = new ObservableCollection<ObservablePoint>();
         private readonly ObservableCollection<double> _timetamp = new ObservableCollection<double>();
 
         [ObservableProperty]
@@ -55,7 +56,9 @@ namespace MAUI_IOT.ViewModels
 
         //Chart
         public Axis[] XAxes { get; set; }
-        public Axis[] YAxes { get; set; }
+        public Axis[] YAxes { get; set; }   
+        public Axis[] XAxesSummarize { get; set; }
+        public Axis[] YAxesSummarize { get; set; }
         public object Sync { get; } = new object();
         public RectangularSection[] Section { get; set; }
         private double Xi { get; set; } = -10;
@@ -128,6 +131,34 @@ namespace MAUI_IOT.ViewModels
         [ObservableProperty]
         private string textSelectRangeButton = "Select Range";
 
+
+        //Test
+        private ObservableCollection<ObservablePoint> ff = new ObservableCollection<ObservablePoint>
+        {
+             new ObservablePoint(2.2, 5.4),
+                        new ObservablePoint(4.5, 2.5),
+                        new ObservablePoint(4.2, 7.4),
+                        new ObservablePoint(6.4, 9.9),
+                        new ObservablePoint(4.2, 9.2),
+                        new ObservablePoint(5.8, 3.5),
+                        new ObservablePoint(7.3, 5.8),
+                        new ObservablePoint(8.9, 3.9),
+                        new ObservablePoint(6.1, 4.6),
+                        new ObservablePoint(9.4, 7.7),
+                        new ObservablePoint(8.4, 8.5),
+                        new ObservablePoint(3.6, 9.6),
+                        new ObservablePoint(4.4, 6.3),
+                        new ObservablePoint(5.8, 4.8),
+                        new ObservablePoint(6.9, 3.4),
+                        new ObservablePoint(7.6, 1.8),
+                        new ObservablePoint(8.3, 8.3),
+                        new ObservablePoint(9.9, 5.2),
+                        new ObservablePoint(8.1, 4.7),
+                        new ObservablePoint(7.4, 3.9),
+                        new ObservablePoint(6.8, 2.3),
+                        new ObservablePoint(5.3, 7.1),
+        };
+
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
         {
@@ -142,38 +173,30 @@ namespace MAUI_IOT.ViewModels
             //Summarize chart
             Series = new ObservableCollection<ISeries>()
             {
-                //new LineSeries<ObservablePoint>
-                //{
-                //    Values = _accX,
-                //    Fill = null,
-                //    GeometryFill = null,
-                //    GeometryStroke = null,
-                //    Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = StrokeThickness }
-                //},
-                //new LineSeries<ObservablePoint>
-                //{
-                //    Values = _accY,
-                //    Fill = null,
-                //    GeometryFill = null,
-                //    GeometryStroke = null,
-                //    Stroke = new SolidColorPaint(SKColors.Black){StrokeThickness = StrokeThickness }
-                //},
-                //new LineSeries<ObservablePoint>
-                //{
-                //    Values= _accZ,
-                //    Fill = null,
-                //    GeometryFill = null,
-                //    GeometryStroke = null,
-                //    Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = StrokeThickness }
-                //},
                 new LineSeries<ObservablePoint>
                 {
                     Values = _force,
                     Fill = null,
-                    GeometryFill = null,
-                    GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Green){StrokeThickness = StrokeThickness_All},
-                }
+                    GeometryFill = null, // Màu cho điểm dữ liệu
+                    GeometryStroke = null, // Đường viền cho điểm dữ liệu
+                    Stroke = new SolidColorPaint(SKColors.Red) // Màu đường
+                    {
+                        StrokeThickness = StrokeThickness_All, // Độ dày đường
+                    },
+
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Values = new ObservableCollection<ObservablePoint>(),
+                    //Values = new ObservableCollection<ObservablePoint>(),
+                    Fill = null,
+                    GeometryFill = null, // Màu cho điểm dữ liệu
+                    GeometryStroke = null, // Đường viền cho điểm dữ liệu
+                    Stroke = new SolidColorPaint(SKColors.MediumPurple) // Màu đường
+                    {
+                        StrokeThickness = StrokeThickness*2f, // Độ dày đường
+                    },
+                },
             };
 
             //X
@@ -226,8 +249,10 @@ namespace MAUI_IOT.ViewModels
                     SubseparatorsCount= 9,
                     NameTextSize = 10,
                     InLineNamePlacement = true,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray),
                 }
             };
+
             YAxes = new[] {
                 new Axis
                 {
@@ -268,6 +293,33 @@ namespace MAUI_IOT.ViewModels
                     //    Color = SKColors.Gray,
                     //    StrokeThickness = 1
                     //}
+                }
+            };
+            
+            XAxesSummarize = new[] {
+                new Axis
+                {
+                    Labeler = value => (value).ToString("0.00"),
+                    TextSize = 10,
+                    SubseparatorsCount= 0,
+                    NameTextSize = 10,
+                    InLineNamePlacement = true,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray),
+                }
+            };
+
+            YAxesSummarize = new[] {
+                new Axis
+                {
+
+                    //MinLimit=-0.05,
+                    //MaxLimit=0.15,
+                    NameTextSize = 5,
+                    InLineNamePlacement= true,
+                    Labeler = value => value.ToString("0.000"),
+                    NamePaint = new SolidColorPaint(SKColors.Gray),
+                    TextSize = 10,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray),
                 }
             };
             //Sections
@@ -324,7 +376,9 @@ namespace MAUI_IOT.ViewModels
                             _accX.Add(new ObservablePoint(time, data.accX));
                             _accY.Add(new ObservablePoint(time, data.accY));
                             _accZ.Add(new ObservablePoint(time, data.accZ));
-                            _force.Add(new ObservablePoint(time, data.force));
+                            //_force.Add(new ObservablePoint(Math.Sqrt(data.accX * data.accX + data.accY * data.accY + data.accZ * data.accZ) * M,
+                                                         //  Math.Sqrt(data.accX * data.accX + data.accY * data.accY + data.accZ * data.accZ)));
+                            _force.Add(new ObservablePoint(data.accX, data.accY));
                             _timetamp.Add(time);
                             //table
                             Datas.Add(data);
@@ -419,6 +473,7 @@ namespace MAUI_IOT.ViewModels
             ColorButtonStop = InActive;
 
             SelectedDatas = new ObservableCollection<Data>(Datas);
+            Forcee_CollectionChanged();
         }
 
         [RelayCommand]
@@ -514,35 +569,10 @@ namespace MAUI_IOT.ViewModels
             Debug.WriteLine("After load data" + SelectedDatas.Count);
         }
 
-        //private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)
-        //{
-        //    if (x.Count != y.Count || x.Count != z.Count) return;
-        //    // Chuyển một list có thể có giá trị null sang một list không có giá trị null
-        //    var nonNullxValue = x.Where(value => value.HasValue).Select(value => value.Value).ToList();
-        //    var nonNullyValue = y.Where(value => value.HasValue).Select(value => value.Value).ToList();
-        //    var nonNullzValue = z.Where(value => value.HasValue).Select(value => value.Value).ToList();
-
-        //    this.Series_X = new ObservableCollection<double>(nonNullxValue);
-        //    this.Series_Y = new ObservableCollection<double>(nonNullyValue);
-        //    this.Series_Z = new ObservableCollection<double>(nonNullzValue);
-
-        //    afterSelected_F = new ObservableCollection<double>();
-        //    afterSelected_a = new ObservableCollection<double>();
-
-        //    for (int i = 0; i < xValues.Count; i++)
-        //    {
-        //        afterSelected_a.Add(Math.Sqrt(xValues[i] * xValues[i] + yValues[i] * yValues[i] + zValues[i] * zValues[i]));
-        //    }
-
-        //    if (afterSelected_a.Count != xValues.Count) return;
-
-        //    foreach (var value in afterSelected_a)
-        //    {
-        //        afterSelected_F.Add(this.M * value);
-        //    }
-
-        //    Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
-
-        //}
+        private void Forcee_CollectionChanged()
+        {
+            var regression = CaculateRegression.Regression(_force);
+            Series[1].Values = regression;
+        }
     }
 }
