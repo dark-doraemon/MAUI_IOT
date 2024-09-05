@@ -27,6 +27,7 @@ public partial class LessonView : ContentPage
         this._lessonnViewModel = lessonnViewModel;
         BindingContext = lessonnViewModel;
         Tabinit();
+        weight_entry.Text = lessonnViewModel.M.ToString();
         weight_entry.Focused += (sender, e) =>
         {
             weight_entry.Text = "";
@@ -42,7 +43,6 @@ public partial class LessonView : ContentPage
                 weight_entry.Focus();
             }
         };
-
         weight.Clicked += async (sender, e) =>
         {
             if (string.IsNullOrEmpty(weight_entry.Text))
@@ -65,7 +65,7 @@ public partial class LessonView : ContentPage
                 weight_entry.IsEnabled = false;
                 weight_entry.IsEnabled = true;
                 FormatWeightEntry();
-                tab_View.SelectedTab = Experiment;
+                //    tab_View.SelectedTab = Experiment;
                 lessonnViewModel.IsValidEntryWeight = true;
             }
             else
@@ -188,8 +188,6 @@ public partial class LessonView : ContentPage
     {
         try
         {
-
-
             await _lessonnViewModel.Load(selectedItem.ToString());
             if (_lessonnViewModel.FileContent.Length != 0)
             {

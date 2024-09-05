@@ -9,6 +9,7 @@ using LiveChartsCore.SkiaSharpView.Drawing;
 using LiveChartsCore.SkiaSharpView.Painting;
 using MAUI_IOT.Models.Data;
 using MAUI_IOT.Services.Interfaces.MQTT;
+using MAUI_IOT.Services.Interfaces.LineChart;
 using MAUI_IOT.Views;
 using MQTTnet;
 using MQTTnet.Client;
@@ -25,6 +26,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Newtonsoft.Json;
 using System.IO;
+using Microcharts;
+using MAUI_IOT.Services.Implements.LineChart;
 namespace MAUI_IOT.ViewModels
 {
     public partial class LessonnViewModel : ObservableObject
@@ -71,7 +74,7 @@ namespace MAUI_IOT.ViewModels
 
         //Weight (input)
         [ObservableProperty]
-        private double m = 0;
+        private double m = 1100;
         [ObservableProperty]
         private string fileContent = "";
         [ObservableProperty]
@@ -273,11 +276,11 @@ namespace MAUI_IOT.ViewModels
             _accY.Clear();
             _accZ.Clear();
             _force.Clear();
-            Datas.Clear();
+            //    datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
             _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
-            //   _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
+            //_mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
             _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/dataa");
 
             Config config = new Config(5000, 50);
@@ -285,7 +288,6 @@ namespace MAUI_IOT.ViewModels
 
             _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "ABCD/control/config/req");
             _mqttClient = await _publisher.IPublisher(_mqttClient, "start", "/ABCD/control/start/req");
-
             _mqttClient.ApplicationMessageReceivedAsync += async e =>
             {
 
@@ -293,38 +295,9 @@ namespace MAUI_IOT.ViewModels
                 Packet packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
                 if (packet != null)
                 {
-                    lock (Sync)
-                    {
-                        foreach (Data data in packet.data)
-                        {
-                            //chart
-                            _accX.Add(data.accX);
-                            _accY.Add(data.accY);
-                            _accZ.Add(data.accZ);
-                            _force.Add(data.force);
-
-                            //table
-                            Datas.Add(data);
-
-                            if (_accX.Count > 250) _accX.RemoveAt(0);
-                            if (_accY.Count > 250) _accY.RemoveAt(0);
-                            if (_accZ.Count > 250) _accZ.RemoveAt(0);
-                            if (_force.Count > 250) _force.RemoveAt(0);
-
-                            _customAxis.CustomSeparators = GetSeparators();
-                        }
-                    }
-
-
-
-
-                    Debug.WriteLine($"Name: {packet.name} \n Packet number: {packet.packetNumber} \n data: {packet.data}");
-                    foreach (Data data in packet.data)
-                    {
-                        Debug.WriteLine($"timetamp: {data.timetamp}\naccX: {data.accX}\naccY: {data.accX}\naccZ: {data.accZ}");
-                    }
+                    Draw draw = new Draw();
+                    draw.DrawChart(packet, _accX, _accY, _accZ, _force, datas, _customAxis, Sync);
                 }
-
                 else
                 {
                     Debug.WriteLine($"Null");
@@ -484,7 +457,7 @@ namespace MAUI_IOT.ViewModels
             string jsonData = System.Text.Json.JsonSerializer.Serialize<FileSave>(fileSave);
             File.WriteAllTextAsync(filePath, jsonData);
             Debug.WriteLine($"===============================FILE PATH {filePath} =================================================== ");
-
+            Debug.WriteLine($"Data file  :  {jsonData}  ");
             Debug.WriteLine("========================================ĐÃ lưu file ===============================================================");
         }
 
@@ -494,23 +467,19 @@ namespace MAUI_IOT.ViewModels
             try
             {
                 FileSave fileSave = new FileSave();
-
-
-
-
                 var filePath = Path.Combine(FileSystem.AppDataDirectory, $"{fileName}.json");
                 if (File.Exists(filePath))
                 {
-
-
-
                     var jsonData = await File.ReadAllTextAsync(filePath);
                     FileSave file = System.Text.Json.JsonSerializer.Deserialize<FileSave>(jsonData);
                     m = file.m;
-                    fileSave.datafile = datas;
+                    datas = file.datafile;
+                    Draw draw = new Draw();
+                    draw.DrawChart(datas, _accX, _accY, _accZ, _force, datas, _customAxis, Sync);
                     Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
-                    Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {m}");
-
+                    Debug.WriteLine($"khối lượng : {m}");
+                    Debug.WriteLine($" nội dung :  " + datas.ToString());
+                    Debug.WriteLine($"filePath : {filePath}");
                     Debug.WriteLine($"========================================ĐÃ đọc  file {fileName} ===============================================================");
                 }
                 else
@@ -518,8 +487,7 @@ namespace MAUI_IOT.ViewModels
                     Debug.WriteLine("=======================================================================================================");
                     Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
                     Debug.WriteLine("khong tồn tại file ");
-                    Debug.WriteLine($"Tên của file cần tìm : {fileName}");
-
+                    Debug.WriteLine($"Tên của file cần tìm : {filePath}");
                     Debug.WriteLine("=======================================================================================================");
                     string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
                     foreach (var a in filePaths)
@@ -529,7 +497,6 @@ namespace MAUI_IOT.ViewModels
                     Debug.WriteLine("=======================================================================================================");
 
                 }
-
             }
             catch (Exception ex)
             {

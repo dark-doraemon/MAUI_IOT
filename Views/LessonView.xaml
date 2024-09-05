@@ -29,7 +29,6 @@
                         <Picker x:Name="myPicker"
                                 TextColor="Black"/>
                         <HorizontalStackLayout>
-
                             <Button x:Name="myButton" Text="save" />
                             <Button
                          Text="Add "
@@ -39,10 +38,8 @@
                             <Button
                                 Text="Delete All"
                         Command="{Binding deleteAllFileCommand}">
-
                             </Button>
                         </HorizontalStackLayout>
-
                     </VerticalStackLayout>
                     <HorizontalStackLayout Padding="5">
                         <Label FontAttributes="Bold"
