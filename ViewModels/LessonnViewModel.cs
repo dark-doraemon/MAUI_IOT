@@ -276,7 +276,7 @@ namespace MAUI_IOT.ViewModels
             _accY.Clear();
             _accZ.Clear();
             _force.Clear();
-            //    datas.Clear();
+            datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
             _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
@@ -452,7 +452,6 @@ namespace MAUI_IOT.ViewModels
             fileSave.m = m;
             fileSave.datafile = datas;
             string fileName = $"{name}.json";
-
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
             string jsonData = System.Text.Json.JsonSerializer.Serialize<FileSave>(fileSave);
             File.WriteAllTextAsync(filePath, jsonData);

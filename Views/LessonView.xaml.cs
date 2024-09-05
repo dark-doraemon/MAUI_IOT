@@ -191,11 +191,12 @@ public partial class LessonView : ContentPage
             await _lessonnViewModel.Load(selectedItem.ToString());
             if (_lessonnViewModel.FileContent.Length != 0)
             {
-                await DisplayAlert("Tiêu đề", _lessonnViewModel.FileContent, "Thoát");
+                //     await DisplayAlert("Tiêu đề", _lessonnViewModel.FileContent, "Thoát");
+                weight_entry.Text = _lessonnViewModel.M.ToString();
             }
             else
             {
-                await DisplayAlert("Tiêu đề", $"file chưa lưu  ", "thoát");
+                //     await DisplayAlert("Tiêu đề", $"file chưa lưu  ", "thoát");
 
             }
         }
