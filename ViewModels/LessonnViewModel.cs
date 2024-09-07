@@ -2,12 +2,16 @@
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
+using LiveChartsCore.Drawing;
 using LiveChartsCore.Kernel.Events;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Drawing;
+using LiveChartsCore.SkiaSharpView.Maui;
 using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using MAUI_IOT.Models.Data;
+using MAUI_IOT.Services.Implements;
 using MAUI_IOT.Services.Interfaces.MQTT;
 using MAUI_IOT.Services.Interfaces.LineChart;
 using MAUI_IOT.Views;
@@ -33,16 +37,17 @@ namespace MAUI_IOT.ViewModels
     public partial class LessonnViewModel : ObservableObject
     {
         //Services
-        private IConnect _connect;
-        private IPublish _publisher;
-        private ISubscribe _subscriber;
-        private IDisconnect _disconnect;
+        private readonly IConnect _connect;
+        private readonly IPublish _publisher;
+        private readonly ISubscribe _subscriber;
+        private readonly IDisconnect _disconnect;
 
         //Data
-        private readonly List<double> _accX = new List<double>();
-        private readonly List<double> _accY = new List<double>();
-        private readonly List<double> _accZ = new List<double>();
-        private readonly List<double> _force = new List<double>();
+        private readonly ObservableCollection<ObservablePoint> _accX = new ObservableCollection<ObservablePoint>();
+        private readonly ObservableCollection<ObservablePoint> _accY = new ObservableCollection<ObservablePoint>();
+        private readonly ObservableCollection<ObservablePoint> _accZ = new ObservableCollection<ObservablePoint>();
+        private ObservableCollection<ObservablePoint> _force { get; set; } = new ObservableCollection<ObservablePoint>();
+        private readonly ObservableCollection<double> _timetamp = new ObservableCollection<double>();
 
         [ObservableProperty]
         public ObservableCollection<Data> datas = new ObservableCollection<Data>();
@@ -55,8 +60,13 @@ namespace MAUI_IOT.ViewModels
 
         //Chart
         public Axis[] XAxes { get; set; }
-        private readonly DateTimeAxis _customAxis;
+        public Axis[] YAxes { get; set; }   
+        public Axis[] XAxesSummarize { get; set; }
+        public Axis[] YAxesSummarize { get; set; }
         public object Sync { get; } = new object();
+        public RectangularSection[] Section { get; set; }
+        private double Xi { get; set; } = -10;
+        private double Xj { get; set; } = -10;
         public DrawMarginFrame Frame { get; set; } = new()
         {
             Fill = new SolidColorPaint(),
@@ -66,11 +76,14 @@ namespace MAUI_IOT.ViewModels
                 StrokeThickness = 1
             }
         };
-        public ObservableCollection<ISeries> new_Series { get; set; }
+        public ObservableCollection<ISeries> Series { get; set; }
         public ObservableCollection<ISeries> Series_X { get; set; }
         public ObservableCollection<ISeries> Series_Y { get; set; }
         public ObservableCollection<ISeries> Series_Z { get; set; }
-        private DateTime startTime = new DateTime();
+        private DateTime lastTimeTap = new DateTime();
+        private const float StrokeThickness = 1.1f;
+        private const float StrokeThickness_All = 1.5f;
+        //private static DateTime startTime = new DateTime();
 
         //Weight (input)
         [ObservableProperty]
@@ -81,28 +94,8 @@ namespace MAUI_IOT.ViewModels
         private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
 
 
-        private double[] GetSeparators()
-        {
-            var now = DateTime.Now;
-
-            return new double[]
-            {
-            now.AddSeconds(-25).Ticks,
-            now.AddSeconds(-20).Ticks,
-            now.AddSeconds(-15).Ticks,
-            now.AddSeconds(-10).Ticks,
-            now.AddSeconds(-5).Ticks,
-            now.Ticks
-            };
-        }
-        private static string Formatter(DateTime date)
-        {
-            var secsAgo = (DateTime.Now - date).TotalSeconds;
-
-            return secsAgo < 1
-                ? "now"
-                : $"{secsAgo:N0}s ago";
-        }
+        
+       
         public RectangularSection[] Section { get; set; }
         private double xi { get; set; } = -10;
         private double xj { get; set; } = -10;
@@ -110,6 +103,7 @@ namespace MAUI_IOT.ViewModels
         //Colors
         public static Color InActive = Color.FromRgb(214, 214, 214);
         public static Color Active = Color.FromRgb(2, 126, 111);
+        public static Color Default = Color.FromRgb(178, 215, 239);
 
         //State
         [ObservableProperty]
@@ -128,6 +122,14 @@ namespace MAUI_IOT.ViewModels
         private bool isValidEntryWeight = false;
         [ObservableProperty]
         private bool isButtonSelectActive = false;
+        [ObservableProperty]
+        private object zoomAndPanningMode = LiveChartsCore.Measure.ZoomAndPanMode.X;
+
+        private bool isDoubleClickedChart = false;
+        private bool OnPressed = false;
+        private bool OnMoving = false;
+        private bool OnReleased = false;
+
 
         //Color
         [ObservableProperty]
@@ -136,6 +138,41 @@ namespace MAUI_IOT.ViewModels
         private Color colorButtonSave = InActive;
         [ObservableProperty]
         private Color colorButtonStop = InActive;
+        [ObservableProperty]
+        private Color colorButtonSelectRange = Default;
+
+
+        //Text
+        [ObservableProperty]
+        private string textSelectRangeButton = "Select Range";
+
+
+        //Test
+        private ObservableCollection<ObservablePoint> ff = new ObservableCollection<ObservablePoint>
+        {
+             new ObservablePoint(2.2, 5.4),
+                        new ObservablePoint(4.5, 2.5),
+                        new ObservablePoint(4.2, 7.4),
+                        new ObservablePoint(6.4, 9.9),
+                        new ObservablePoint(4.2, 9.2),
+                        new ObservablePoint(5.8, 3.5),
+                        new ObservablePoint(7.3, 5.8),
+                        new ObservablePoint(8.9, 3.9),
+                        new ObservablePoint(6.1, 4.6),
+                        new ObservablePoint(9.4, 7.7),
+                        new ObservablePoint(8.4, 8.5),
+                        new ObservablePoint(3.6, 9.6),
+                        new ObservablePoint(4.4, 6.3),
+                        new ObservablePoint(5.8, 4.8),
+                        new ObservablePoint(6.9, 3.4),
+                        new ObservablePoint(7.6, 1.8),
+                        new ObservablePoint(8.3, 8.3),
+                        new ObservablePoint(9.9, 5.2),
+                        new ObservablePoint(8.1, 4.7),
+                        new ObservablePoint(7.4, 3.9),
+                        new ObservablePoint(6.8, 2.3),
+                        new ObservablePoint(5.3, 7.1),
+        };
 
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
@@ -149,52 +186,44 @@ namespace MAUI_IOT.ViewModels
             _disconnect = disconnect;
 
             //Summarize chart
-            new_Series = new ObservableCollection<ISeries>()
+            Series = new ObservableCollection<ISeries>()
             {
-                new LineSeries<double>
-                {
-                    Values = _accX,
-                    Fill = null,
-                    GeometryFill = null,
-                    GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Green){StrokeThickness = 1 }
-                },
-                new LineSeries<double>
-                {
-                    Values = _accY,
-                    Fill = null,
-                    GeometryFill = null,
-                    GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Yellow){StrokeThickness =1 }
-                },
-                new LineSeries<double>
-                {
-                    Values= _accZ,
-                    Fill = null,
-                    GeometryFill = null,
-                    GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = 1 }
-                },
-                new LineSeries<double>
+                new LineSeries<ObservablePoint>
                 {
                     Values = _force,
                     Fill = null,
-                    GeometryFill = null,
-                    GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = 1},
-                }
+                    GeometryFill = null, // Màu cho điểm dữ liệu
+                    GeometryStroke = null, // Đường viền cho điểm dữ liệu
+                    Stroke = new SolidColorPaint(SKColors.Red) // Màu đường
+                    {
+                        StrokeThickness = StrokeThickness_All, // Độ dày đường
+                    },
+
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Values = new ObservableCollection<ObservablePoint>(),
+                    //Values = new ObservableCollection<ObservablePoint>(),
+                    Fill = null,
+                    GeometryFill = null, // Màu cho điểm dữ liệu
+                    GeometryStroke = null, // Đường viền cho điểm dữ liệu
+                    Stroke = new SolidColorPaint(SKColors.MediumPurple) // Màu đường
+                    {
+                        StrokeThickness = StrokeThickness*2f, // Độ dày đường
+                    },
+                },
             };
 
             //X
             Series_X = new ObservableCollection<ISeries>()
             {
-                new LineSeries<double>
+                new LineSeries<ObservablePoint>
                 {
                     Values = _accX,
                     Fill = null,
                     GeometryFill = null,
                     GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Green){StrokeThickness = 1 }
+                    Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = StrokeThickness }
 
                 },
             };
@@ -202,13 +231,13 @@ namespace MAUI_IOT.ViewModels
             //Y
             Series_Y = new ObservableCollection<ISeries>()
             {
-                new LineSeries<double>
+                new LineSeries<ObservablePoint>
                 {
                     Values = _accY,
                     Fill = null,
                     GeometryFill = null,
                     GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Yellow){StrokeThickness = 1 }
+                    Stroke = new SolidColorPaint(SKColors.Black){StrokeThickness = StrokeThickness }
 
                 },
             };
@@ -216,27 +245,98 @@ namespace MAUI_IOT.ViewModels
             //Z
             Series_Z = new ObservableCollection<ISeries>()
             {
-                new LineSeries<double>
+                new LineSeries<ObservablePoint>
                 {
                     Values = _accZ,
                     Fill = null,
                     GeometryFill = null,
                     GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = 1 }
-
+                    Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = StrokeThickness }
                 },
             };
 
-            //XAxes
-            _customAxis = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
-            {
-                CustomSeparators = GetSeparators(),
-                AnimationsSpeed = TimeSpan.FromMilliseconds(0),
-                SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
+            XAxes = new[] {
+                new Axis
+                {
+                    Labeler = value => (value).ToString("0.00 s"),
+                    Name = "Time",
+                    TextSize = 10,
+                    SubseparatorsCount= 9,
+                    NameTextSize = 10,
+                    InLineNamePlacement = true,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray),
+                }
             };
 
-            XAxes = new Axis[] { _customAxis };
+            YAxes = new[] {
+                new Axis
+                {
+                    //MinLimit= 0.5,
+                    //MaxLimit= 1.5,
+                    Name = "Value",
+                    NameTextSize = 10,
+                    InLineNamePlacement= true,
+                    Labeler = value => value.ToString("0.00"),
+                    NamePaint = new SolidColorPaint(SKColors.Gray),
+                    TextSize = 10,
+                    Padding = new Padding(5, 0, 15, 0),
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray),
+                    //SeparatorsPaint = new SolidColorPaint
+                    //{
+                    //    Color = SKColors.Gray,
+                    //    StrokeThickness = 1,
+                    //    PathEffect = new DashEffect(new float[] { 3, 3 })
+                    //},
+                    //SubseparatorsPaint = new SolidColorPaint
+                    //{
+                    //    Color = SKColors.DarkGray,
+                    //    StrokeThickness = 0.5f
+                    //},
+                    SubseparatorsCount = 9,
+                    //ZeroPaint = new SolidColorPaint
+                    //{
+                    //    Color = SKColors.DarkSlateGray,
+                    //    StrokeThickness = 2
+                    //},
+                    //TicksPaint = new SolidColorPaint
+                    //{
+                    //    Color = SKColors.Gray,
+                    //    StrokeThickness = 1.5f
+                    //},
+                    //SubticksPaint = new SolidColorPaint
+                    //{
+                    //    Color = SKColors.Gray,
+                    //    StrokeThickness = 1
+                    //}
+                }
+            };
+            
+            XAxesSummarize = new[] {
+                new Axis
+                {
+                    Labeler = value => (value).ToString("0.00"),
+                    TextSize = 10,
+                    SubseparatorsCount= 0,
+                    NameTextSize = 10,
+                    InLineNamePlacement = true,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray),
+                }
+            };
 
+            YAxesSummarize = new[] {
+                new Axis
+                {
+
+                    //MinLimit=-0.05,
+                    //MaxLimit=0.15,
+                    NameTextSize = 5,
+                    InLineNamePlacement= true,
+                    Labeler = value => value.ToString("0.000"),
+                    NamePaint = new SolidColorPaint(SKColors.Gray),
+                    TextSize = 10,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray),
+                }
+            };
             //Sections
             Section = new RectangularSection[]
             {
@@ -244,7 +344,7 @@ namespace MAUI_IOT.ViewModels
                 {
                     Xi = 0,
                     Xj = 0,
-                    Fill = new SolidColorPaint(new SKColor(83, 137, 71))
+                    Fill = new SolidColorPaint(new SKColor(83, 137, 71).WithAlpha(20))
                 }
             };
 
@@ -276,7 +376,9 @@ namespace MAUI_IOT.ViewModels
             _accY.Clear();
             _accZ.Clear();
             _force.Clear();
-            datas.Clear();
+            _timetamp.Clear();
+
+            Datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
             _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
@@ -372,68 +474,103 @@ namespace MAUI_IOT.ViewModels
 
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
+
+            SelectedDatas = new ObservableCollection<Data>(Datas);
+            Forcee_CollectionChanged();
         }
 
         [RelayCommand]
         public void PointerDown(PointerCommandArgs args)
         {
-            var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
-            var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
-            Section[0].Xi = Section[0].Xj = xi = xj = scaledPoint.X;
-        }
+            checkDoubleClicked(); //true
+            if (!isDoubleClickedChart)
+            {
+                ZoomAndPanningMode = LiveChartsCore.Measure.ZoomAndPanMode.X;
+                return;
+            }
+            OnPressed = true;
+            ZoomAndPanningMode = LiveChartsCore.Measure.ZoomAndPanMode.None;
 
-        [RelayCommand]
-        public void PointerUp(PointerCommandArgs args)
-        {
-            Debug.WriteLine("Pointer Up");
-
-
-            this.SelectedDatas.Clear();
-
-            // var xValues = ((LineSeries<ObservableValue>)new_Series[0]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-            // var yValues = ((LineSeries<ObservableValue>)new_Series[1]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-            // var zValues = ((LineSeries<ObservableValue>)new_Series[2]).Values.Select(x => x.Value).ToList().Skip((int)Section[0].Xi).Take((int)Section[0].Xj - (int)Section[0].Xi + 1).ToList();
-
+            if (OnPressed)
+            {
+                var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
+                var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
+                Section[0].Xi = Section[0].Xj = Xi = Xj = scaledPoint.X;
+                OnMoving = true;
+            }
         }
 
         [RelayCommand]
         public void PointerMove(PointerCommandArgs args)
         {
-            var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
-            var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
+            if (OnMoving && isDoubleClickedChart)
+            {
+                var chart = (ICartesianChartView<SkiaSharpDrawingContext>)args.Chart;
+                var scaledPoint = chart.ScalePixelsToData(args.PointerPosition);
 
-            Section[0].Xj = xj = scaledPoint.X;
-            Debug.WriteLine("scaledPointMove" + scaledPoint.ToString());
+                Section[0].Xj = Xj = scaledPoint.X;
+                Debug.WriteLine("scaledPointMove" + scaledPoint.ToString());
+                OnReleased = true;
+            }
         }
 
-        //private void getXYZ_range(List<double?> x, List<double?> y, List<double?> z)
-        //{
-        //    if (x.Count != y.Count || x.Count != z.Count) return;
-        //    // Chuyển một list có thể có giá trị null sang một list không có giá trị null
-        //    var nonNullxValue = x.Where(value => value.HasValue).Select(value => value.Value).ToList();
-        //    var nonNullyValue = y.Where(value => value.HasValue).Select(value => value.Value).ToList();
-        //    var nonNullzValue = z.Where(value => value.HasValue).Select(value => value.Value).ToList();
+        [RelayCommand]
+        public async void PointerUp(PointerCommandArgs args)
+        { 
+            if (OnReleased && isDoubleClickedChart)
+            {
+                Debug.WriteLine("Pointer Up");
+                Debug.WriteLine(Xi + " " + Xj);
+                OnPressed = OnReleased = OnMoving = false;
+                isDoubleClickedChart = false;
+                if (Xi > Xj)
+                {
+                    double temp = Xi;
+                    Xi = Xj;
+                    Xj = temp;
+                }
+                XAxes[0].MinLimit = Xi;
+                XAxes[0].MaxLimit = Xj;
+                ZoomAndPanningMode = LiveChartsCore.Measure.ZoomAndPanMode.X;
+                Debug.WriteLine("Datas: " + Datas.Count);
+                GetData(Datas, Xi, Xj);
+            }
+        }
 
-        //    this.Series_X = new ObservableCollection<double>(nonNullxValue);
-        //    this.Series_Y = new ObservableCollection<double>(nonNullyValue);
-        //    this.Series_Z = new ObservableCollection<double>(nonNullzValue);
-
-        //    afterSelected_F = new ObservableCollection<double>();
-        //    afterSelected_a = new ObservableCollection<double>();
-
-        //    for (int i = 0; i < xValues.Count; i++)
-        //    {
-        //        afterSelected_a.Add(Math.Sqrt(xValues[i] * xValues[i] + yValues[i] * yValues[i] + zValues[i] * zValues[i]));
-        //    }
-
-        //    if (afterSelected_a.Count != xValues.Count) return;
-
-        //    foreach (var value in afterSelected_a)
-        //    {
-        //        afterSelected_F.Add(this.M * value);
-        //    }
-
-        //    Debug.WriteLine("after select" + afterSelected_a.Count + " " + afterSelected_F.Count);
+        private void checkDoubleClicked()
+        {
+            DateTime currentTime = DateTime.Now;
+            Debug.WriteLine("currentTime: " + currentTime);
+            Debug.WriteLine("lastTimeTap" + lastTimeTap);
+            TimeSpan timeSinceLastTap = currentTime - lastTimeTap;
+            Debug.WriteLine("timeSinceLastTap " + timeSinceLastTap.TotalMilliseconds);
+            lastTimeTap = currentTime;
+            if(timeSinceLastTap.TotalMilliseconds < 300)
+            {
+                Debug.WriteLine("Double click: true");
+                isDoubleClickedChart = true;
+                return;
+            }
+            Debug.WriteLine("Double click: false");
+            isDoubleClickedChart = false;
+        }
+        
+        public void GetData(ObservableCollection<Data> datas, double Xi, double Xj)
+        {
+            Debug.WriteLine("Datas: " + Datas.Count);
+            double start = Xi * 1000; // Chỉ số bắt đầu
+            double end = Xj * 1000;   // Chỉ số kết thúc
+            SelectedDatas.Clear();
+            Debug.WriteLine("Datas: " + Datas.Count);
+            Debug.WriteLine("Before load data" + SelectedDatas.Count);
+            foreach(Data i in datas) {
+                if (i.timestamp > start && i.timestamp < end)
+                {
+                    SelectedDatas.Add(i);
+                }
+            }
+            Debug.WriteLine("After load data" + SelectedDatas.Count);
+        }
 
         //}
         [RelayCommand]
