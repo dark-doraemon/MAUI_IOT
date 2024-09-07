@@ -1,4 +1,5 @@
-﻿using LiveChartsCore.SkiaSharpView;
+﻿using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
 using MAUI_IOT.Models.Data;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace MAUI_IOT.Services.Interfaces.LineChart
 {
     public interface IDraw
     {
-        void DrawChart(Packet packet, List<double> _accX, List<double> _accY, List<double> _accZ, List<double> _force, ObservableCollection<Data> Datas, DateTimeAxis _customAxis, object Sync);
-
+        public void DrawChart(ObservableCollection<Data> data, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, object Sync);
+        public void DrawChart(Packet packet, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, ObservableCollection<Data> Datas, object Sync);
 
     }
 }

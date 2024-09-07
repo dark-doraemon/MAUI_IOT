@@ -28,7 +28,7 @@ public partial class LessonView : ContentPage
         InitializeComponent();
         this._lessonnViewModel = lessonnViewModel;
         BindingContext = lessonnViewModel;
-        Tabinit();
+        //   Tabinit();
         weight_entry.Text = lessonnViewModel.M.ToString();
         weight_entry.Focused += (sender, e) =>
         {
@@ -66,7 +66,7 @@ public partial class LessonView : ContentPage
                 weight_entry.Unfocus();
                 weight_entry.IsEnabled = false;
                 weight_entry.IsEnabled = true;
-                FormatWeightEntry();
+                //   FormatWeightEntry();
                 //    tab_View.SelectedTab = Experiment;
                 lessonnViewModel.IsValidEntryWeight = true;
             }
@@ -75,30 +75,10 @@ public partial class LessonView : ContentPage
                 weight_entry.Focus();
             }
         };
-
-        btn_Start.Clicked += async (sender, e) =>
-        {
-            double weight = double.Parse(weight_entry.Text);
-            if (string.IsNullOrEmpty(weight_entry.Text) || weight <= 0)
-            {
-                await DisplayAlert("Thông báo!", "Vui lòng nhập khối lượng hợp lệ", "OK");
-                lessonnViewModel.IsValidEntryWeight = false;
-                tab_View.SelectedTab = Config;
-            }
-        };
         GenarateGridWithCharts(Series, Series.Count, true);
-    }
-
-        Button myButton = this.FindByName<Button>("myButton");
-        if (myButton != null)
-        {
-            myButton.Clicked += MyButton_Clicked;
-        }
-
-
-
 
         Picker myPicker = this.FindByName<Picker>("myPicker");
+
         if (myPicker != null)
         {
             myPicker.Title = "Chọn 1 mục ";
@@ -114,7 +94,13 @@ public partial class LessonView : ContentPage
             var selectedItem = (sender as Picker)?.SelectedItem;
             getdata(selectedItem);
         };
+        Button myButton = this.FindByName<Button>("myButton");
+        if (myButton != null)
+        {
+            myButton.Clicked += MyButton_Clicked;
+        }
     }
+
 
     private void MyButton_Clicked(object sender, EventArgs e)
     {
@@ -182,7 +168,7 @@ public partial class LessonView : ContentPage
 
     private void Tabinit()
     {
-        tab_View.SelectedTab = Config;
+        // tab_View.SelectedTab = Config;
     }
 
 
@@ -222,9 +208,9 @@ public partial class LessonView : ContentPage
     {
         //Restart grid
         charts.Clear();
-        
+
         //Create a row in grid
-        for(int i = 0; i < listSeries.Count; i++)
+        for (int i = 0; i < listSeries.Count; i++)
         {
             charts.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         }
@@ -301,7 +287,7 @@ public partial class LessonView : ContentPage
             var chartGrid = GenerateChart(listSeries, listSeries.Count, i, isMaximize); // Tạo một Grid chứa Chart và nút
 
             charts.Children.Add(chartGrid);
-          
+
             charts.SetRow(chartGrid, i);
         }
 
@@ -320,7 +306,7 @@ public partial class LessonView : ContentPage
                 new RowDefinition { Height = new GridLength(10) },
                 new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
             },
-                ColumnDefinitions =
+            ColumnDefinitions =
             {
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
@@ -333,7 +319,7 @@ public partial class LessonView : ContentPage
         //Toggle maximize and minimize
         if (isMaximize)
         {
-             button = new Button
+            button = new Button
             {
                 FontFamily = "FaBrands",
                 TextColor = Colors.Black,
@@ -401,21 +387,21 @@ public partial class LessonView : ContentPage
         {
             Padding = new Thickness(0, 0, 0, 0),
             Margin = new Thickness(0, 0, 0, 0),
-            ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,         
+            ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,
             MinimumHeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.7 / (rowNumber),
         };
 
         // Set up binding for chart
-        cartesianChart.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = listSeries[chartIndex], Mode = BindingMode.OneWay});
-        cartesianChart.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay});
-        cartesianChart.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay});
-        cartesianChart.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay});
-        cartesianChart.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay});
+        cartesianChart.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = listSeries[chartIndex], Mode = BindingMode.OneWay });
+        cartesianChart.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
+        cartesianChart.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
+        cartesianChart.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
+        cartesianChart.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
 
         //Set up binding for button
         //maximize.SetBinding(Button.CommandProperty, new Binding { Path = "ZoomCommand", Mode = BindingMode.OneWay });
         //maximize.SetBinding(Button.CommandParameterProperty, new Binding { Path = listSeries[chartIndex], Mode = BindingMode.OneWay 
-        
+
         //Handel event
         xmarks.Clicked += (sender, e) =>
         {

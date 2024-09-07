@@ -1,4 +1,5 @@
-﻿using LiveChartsCore.SkiaSharpView;
+﻿using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
 using MAUI_IOT.Models.Data;
 using MAUI_IOT.Services.Interfaces.LineChart;
 using System;
@@ -11,7 +12,7 @@ namespace MAUI_IOT.Services.Implements.LineChart
 {
     public class Draw : IDraw
     {
-        public void DrawChart(ObservableCollection<Data> data, List<double> _accX, List<double> _accY, List<double> _accZ, List<double> _force, ObservableCollection<Data> Datas, DateTimeAxis _customAxis, object Sync)
+        public void DrawChart(ObservableCollection<Data> data, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, object Sync)
         {
             if (data != null)
             {
@@ -24,66 +25,47 @@ namespace MAUI_IOT.Services.Implements.LineChart
                     foreach (var a in data)
                     {
                         //chart
-                        _accX.Add(a.accX);
-                        _accY.Add(a.accY);
-                        _accZ.Add(a.accZ);
-                        _force.Add(a.force);
+                        double time = a.timestamp / 1000.0;
+                        //chart
+                        _accX.Add(new ObservablePoint(time, a.accX));
+                        _accY.Add(new ObservablePoint(time, a.accY));
+                        _accZ.Add(new ObservablePoint(time, a.accZ));
+                        _force.Add(new ObservablePoint(a.accX, a.accY));
                         //table
-                        //  Datas.Add(a);
-
-                        if (_accX.Count > 250) _accX.RemoveAt(0);
-                        if (_accY.Count > 250) _accY.RemoveAt(0);
-                        if (_accZ.Count > 250) _accZ.RemoveAt(0);
-                        if (_force.Count > 250) _force.RemoveAt(0);
+                        // Datas.Add(a);
 
 
-                        _customAxis.CustomSeparators = GetSeparators();
                     }
                 }
             }
         }
-
-        public void DrawChart(Packet packet, List<double> _accX, List<double> _accY, List<double> _accZ, List<double> _force, ObservableCollection<Data> Datas, DateTimeAxis _customAxis, object Sync)
+        public void DrawChart(Packet packet, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, ObservableCollection<Data> Datas, object Sync)
         {
             if (packet != null)
             {
                 lock (Sync)
                 {
+                    _accX.Clear();
+                    _accY.Clear();
+                    _accZ.Clear();
+                    _force.Clear();
                     foreach (Data data in packet.data)
                     {
                         //chart
-                        _accX.Add(data.accX);
-                        _accY.Add(data.accY);
-                        _accZ.Add(data.accZ);
-                        _force.Add(data.force);
+                        double time = data.timestamp / 1000.0;
+                        //chart
+                        _accX.Add(new ObservablePoint(time, data.accX));
+                        _accY.Add(new ObservablePoint(time, data.accY));
+                        _accZ.Add(new ObservablePoint(time, data.accZ));
+                        _force.Add(new ObservablePoint(data.accX, data.accY));
                         //table
                         Datas.Add(data);
 
-                        if (_accX.Count > 250) _accX.RemoveAt(0);
-                        if (_accY.Count > 250) _accY.RemoveAt(0);
-                        if (_accZ.Count > 250) _accZ.RemoveAt(0);
-                        if (_force.Count > 250) _force.RemoveAt(0);
-
-
-                        _customAxis.CustomSeparators = GetSeparators();
                     }
                 }
             }
         }
-        private double[] GetSeparators()
-        {
-            var now = DateTime.Now;
 
-            return new double[]
-            {
-            now.AddSeconds(-25).Ticks,
-            now.AddSeconds(-20).Ticks,
-            now.AddSeconds(-15).Ticks,
-            now.AddSeconds(-10).Ticks,
-            now.AddSeconds(-5).Ticks,
-            now.Ticks
-            };
-        }
 
     }
 }

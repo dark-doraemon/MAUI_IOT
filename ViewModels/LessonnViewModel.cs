@@ -60,7 +60,7 @@ namespace MAUI_IOT.ViewModels
 
         //Chart
         public Axis[] XAxes { get; set; }
-        public Axis[] YAxes { get; set; }   
+        public Axis[] YAxes { get; set; }
         public Axis[] XAxesSummarize { get; set; }
         public Axis[] YAxesSummarize { get; set; }
         public object Sync { get; } = new object();
@@ -94,11 +94,7 @@ namespace MAUI_IOT.ViewModels
         private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
 
 
-        
-       
-        public RectangularSection[] Section { get; set; }
-        private double xi { get; set; } = -10;
-        private double xj { get; set; } = -10;
+
 
         //Colors
         public static Color InActive = Color.FromRgb(214, 214, 214);
@@ -119,7 +115,7 @@ namespace MAUI_IOT.ViewModels
         [ObservableProperty]
         private bool isNull = false;
         [ObservableProperty]
-        private bool isValidEntryWeight = false;
+        private bool isValidEntryWeight = true;
         [ObservableProperty]
         private bool isButtonSelectActive = false;
         [ObservableProperty]
@@ -146,40 +142,12 @@ namespace MAUI_IOT.ViewModels
         [ObservableProperty]
         private string textSelectRangeButton = "Select Range";
 
-
-        //Test
-        private ObservableCollection<ObservablePoint> ff = new ObservableCollection<ObservablePoint>
-        {
-             new ObservablePoint(2.2, 5.4),
-                        new ObservablePoint(4.5, 2.5),
-                        new ObservablePoint(4.2, 7.4),
-                        new ObservablePoint(6.4, 9.9),
-                        new ObservablePoint(4.2, 9.2),
-                        new ObservablePoint(5.8, 3.5),
-                        new ObservablePoint(7.3, 5.8),
-                        new ObservablePoint(8.9, 3.9),
-                        new ObservablePoint(6.1, 4.6),
-                        new ObservablePoint(9.4, 7.7),
-                        new ObservablePoint(8.4, 8.5),
-                        new ObservablePoint(3.6, 9.6),
-                        new ObservablePoint(4.4, 6.3),
-                        new ObservablePoint(5.8, 4.8),
-                        new ObservablePoint(6.9, 3.4),
-                        new ObservablePoint(7.6, 1.8),
-                        new ObservablePoint(8.3, 8.3),
-                        new ObservablePoint(9.9, 5.2),
-                        new ObservablePoint(8.1, 4.7),
-                        new ObservablePoint(7.4, 3.9),
-                        new ObservablePoint(6.8, 2.3),
-                        new ObservablePoint(5.3, 7.1),
-        };
+        private List<Packet> packetList = new List<Packet>();
 
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
         {
-
             Debug.WriteLine("Hello hello");
-
             _connect = connect;
             _publisher = publisher;
             _subscriber = subscriber;
@@ -310,7 +278,7 @@ namespace MAUI_IOT.ViewModels
                     //}
                 }
             };
-            
+
             XAxesSummarize = new[] {
                 new Axis
                 {
@@ -395,10 +363,11 @@ namespace MAUI_IOT.ViewModels
 
                 var json = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
                 Packet packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
+
                 if (packet != null)
                 {
                     Draw draw = new Draw();
-                    draw.DrawChart(packet, _accX, _accY, _accZ, _force, datas, _customAxis, Sync);
+                    draw.DrawChart(packet, _accX, _accY, _accZ, _force, Datas, Sync);
                 }
                 else
                 {
@@ -437,11 +406,11 @@ namespace MAUI_IOT.ViewModels
         private void OnStart()
         {
             Debug.Write("OnStart");
-            if (!IsEnableButtonStart) return;
+            //if (!IsEnableButtonStart) return;
 
-            if (!IsEnableEntryWeight) return;
+            //if (!IsEnableEntryWeight) return;
 
-            if (!IsValidEntryWeight) return;
+            //if (!IsValidEntryWeight) return;
 
             Debug.WriteLine("Start button was clicked");
             Task.Run(async () => { await Connect(); });
@@ -476,7 +445,6 @@ namespace MAUI_IOT.ViewModels
             ColorButtonStop = InActive;
 
             SelectedDatas = new ObservableCollection<Data>(Datas);
-            Forcee_CollectionChanged();
         }
 
         [RelayCommand]
@@ -516,7 +484,7 @@ namespace MAUI_IOT.ViewModels
 
         [RelayCommand]
         public async void PointerUp(PointerCommandArgs args)
-        { 
+        {
             if (OnReleased && isDoubleClickedChart)
             {
                 Debug.WriteLine("Pointer Up");
@@ -545,7 +513,7 @@ namespace MAUI_IOT.ViewModels
             TimeSpan timeSinceLastTap = currentTime - lastTimeTap;
             Debug.WriteLine("timeSinceLastTap " + timeSinceLastTap.TotalMilliseconds);
             lastTimeTap = currentTime;
-            if(timeSinceLastTap.TotalMilliseconds < 300)
+            if (timeSinceLastTap.TotalMilliseconds < 300)
             {
                 Debug.WriteLine("Double click: true");
                 isDoubleClickedChart = true;
@@ -554,7 +522,7 @@ namespace MAUI_IOT.ViewModels
             Debug.WriteLine("Double click: false");
             isDoubleClickedChart = false;
         }
-        
+
         public void GetData(ObservableCollection<Data> datas, double Xi, double Xj)
         {
             Debug.WriteLine("Datas: " + Datas.Count);
@@ -563,7 +531,8 @@ namespace MAUI_IOT.ViewModels
             SelectedDatas.Clear();
             Debug.WriteLine("Datas: " + Datas.Count);
             Debug.WriteLine("Before load data" + SelectedDatas.Count);
-            foreach(Data i in datas) {
+            foreach (Data i in datas)
+            {
                 if (i.timestamp > start && i.timestamp < end)
                 {
                     SelectedDatas.Add(i);
@@ -587,11 +556,11 @@ namespace MAUI_IOT.ViewModels
         {
             FileSave fileSave = new FileSave();
             fileSave.m = m;
-            fileSave.datafile = datas;
+            fileSave.datafile = Datas; ;
             string fileName = $"{name}.json";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
             string jsonData = System.Text.Json.JsonSerializer.Serialize<FileSave>(fileSave);
-            File.WriteAllTextAsync(filePath, jsonData);
+            await File.WriteAllTextAsync(filePath, jsonData);
             Debug.WriteLine($"===============================FILE PATH {filePath} =================================================== ");
             Debug.WriteLine($"Data file  :  {jsonData}  ");
             Debug.WriteLine("========================================ĐÃ lưu file ===============================================================");
@@ -608,13 +577,13 @@ namespace MAUI_IOT.ViewModels
                 {
                     var jsonData = await File.ReadAllTextAsync(filePath);
                     FileSave file = System.Text.Json.JsonSerializer.Deserialize<FileSave>(jsonData);
-                    m = file.m;
-                    datas = file.datafile;
+                    M = file.m;
+                    Datas = file.datafile;
                     Draw draw = new Draw();
-                    draw.DrawChart(datas, _accX, _accY, _accZ, _force, datas, _customAxis, Sync);
+                    draw.DrawChart(Datas, _accX, _accY, _accZ, _force, Sync);
                     Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
                     Debug.WriteLine($"khối lượng : {m}");
-                    Debug.WriteLine($" nội dung :  " + datas.ToString());
+                    Debug.WriteLine($" nội dung :  " + Datas.ToString());
                     Debug.WriteLine($"filePath : {filePath}");
                     Debug.WriteLine($"========================================ĐÃ đọc  file {fileName} ===============================================================");
                 }
@@ -709,7 +678,9 @@ namespace MAUI_IOT.ViewModels
             {
                          "ADXL345",
                          "CDHCM1975",
-                         "CDĐPB1945"
+                         "CDĐPB1945",
+                         "Test",
+                         "Đức ANh "
                     };
 
     }

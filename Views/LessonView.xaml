@@ -19,7 +19,7 @@
             <services:Converter x:Key="ConverterTimestamp"/>
         </ResourceDictionary>
     </ContentPage.Resources>
-    
+
     <ContentPage.BindingContext>
         <viewmodel:LessonnViewModel />
     </ContentPage.BindingContext>
@@ -31,7 +31,6 @@
                         Margin="20"
                         WidthRequest="300"
                         >
-
                         <Picker x:Name="myPicker"
                                 TextColor="Black"/>
                         <HorizontalStackLayout>
@@ -75,21 +74,19 @@
                             FontSize="Medium"
                             VerticalTextAlignment="Center"
                             Text="Select Device"/>
-                        <material:MultiplePickerField Title="Select Device ">
-                            <material:MultiplePickerField.ItemsSource>
+                        <material:MultiplePickerField Title="Select Device "
+                                                      ItemsSource="{Binding Options}">
+                            <!--<material:MultiplePickerField.ItemsSource>
+
                                 <x:Array Type="{x:Type x:String}">
                                     <x:String>ADXL345</x:String>
-                                    <x:String>CDHCM1975</x:String>
+                                    <x:String>CDHCM1    975</x:String>
                                     <x:String>CDĐPB1945</x:String>
                                 </x:Array>
-                            </material:MultiplePickerField.ItemsSource>
+                            </material:MultiplePickerField.ItemsSource>-->
                         </material:MultiplePickerField>
 
-                        <Entry x:Name="time_entry" 
-                                Text="0" 
-                                Placeholder="Nhập khối lượng: " 
-                                 TextColor="Red"
-                                Keyboard="Numeric"/>
+
 
 
                     </VerticalStackLayout>
@@ -98,151 +95,13 @@
                 </VerticalStackLayout>
             </ScrollView>
 
-
         </material:TabItem>
-
-
         <material:TabItem Title="Experiment" x:Name="Experiment" >
             <ScrollView Orientation="Vertical" Padding="10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="60" />
-                        <RowDefinition Height="300" />
-                        <RowDefinition Height="300" />
-                        <RowDefinition Height="300" />
-                        <RowDefinition Height="50" />
-                    </Grid.RowDefinitions>
-
-                    <!--<Label Grid.Row="0" FontSize="Large" HorizontalOptions="Center" Text="{Binding Lesson.LessonName}" />-->
-
-                    <!--<VerticalStackLayout Grid.Row="1" Margin="10,0,0,0">
-                        <HorizontalStackLayout>
-                            <Label Text="x" WidthRequest="150" />
-                            <Label x:Name="lbl_x" Text="{Binding ADXL345Axis.x}" WidthRequest="150" />
-                        </HorizontalStackLayout>
-
-                        <HorizontalStackLayout>
-                            <Label Text="y" WidthRequest="150" />
-                            <Label x:Name="lbl_y" Text="{Binding ADXL345Axis.y}" WidthRequest="150" />
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout>
-                            <Label Text="z" WidthRequest="150" />
-                            <Label x:Name="lbl_z" Text="{Binding ADXL345Axis.z}" WidthRequest="150" />
-                        </HorizontalStackLayout>
-                    </VerticalStackLayout>-->
-
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <lvc:CartesianChart x:Name="chart_1"
-                                        Grid.Column="0"
-                                        SyncContext="{Binding Sync}"
-                                        Series="{Binding Series_X}"
-                                        XAxes="{Binding XAxes}"
-                                        DrawMarginFrame="{Binding Frame }"
-                                        ZoomMode="None" />
-                        <Button Grid.Column="1"
-                                        HeightRequest="50"
-                                        WidthRequest="50"
-                                        Command="{Binding ZoomCommand}"
-                                        CommandParameter="{Binding Series_X}">
-                            <Button.ImageSource>
-                                <FontImageSource FontFamily="FontAwesome"
-                                                        Glyph="&#x1F50D;"
-                                                        Size="30" />
-                            </Button.ImageSource>
-                        </Button>
-                    </Grid>
-
-
-                    <Grid Grid.Row="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <lvc:CartesianChart x:Name="chart_2"
-                                        Grid.Column="0"
-                                        SyncContext="{Binding Sync}"
-                                        Series="{Binding Series_Y}"
-                                        XAxes="{Binding XAxes}"
-                                        DrawMarginFrame="{Binding Frame}"
-                                        ZoomMode="None" />
-
-
-
-                        <Button Grid.Column="1"
-                            HeightRequest="50"
-                            WidthRequest="50"
-                            CommandParameter="{Binding Series_Y}"
-                            Command="{Binding ZoomCommand}">
-                            <Button.ImageSource>
-                                <FontImageSource
-                                    FontFamily="FontAwesome"
-                                    Glyph="&#x1F50D;"
-                                    Size="30" />
-                            </Button.ImageSource>
-                        </Button>
-                    </Grid>
-
-
-                    <Grid Grid.Row="4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <lvc:CartesianChart  x:Name="chart_3"
-                                             Grid.Column="0"
-                                             SyncContext="{Binding Sync}"
-                                             Series="{Binding Series_Z}"
-                                             XAxes="{Binding XAxes}"
-                                             DrawMarginFrame="{Binding Frame}"
-                                             ZoomMode="None" />
-
-                        <Button Grid.Column="1"
-                                    HeightRequest="50"
-                                    WidthRequest="50"
-                                    CommandParameter="{Binding Series_Z}"
-                                    Command="{Binding ZoomCommand}">
-                            <Button.ImageSource>
-                                <FontImageSource
-                                    FontFamily="FontAwesome"
-                                    Glyph="&#x1F50D;"
-                                    Size="30" />
-                            </Button.ImageSource>
-                        </Button>
-                    </Grid>
-
-                    <StackLayout
-                        Grid.Row="5"
-                        HorizontalOptions="CenterAndExpand"
-                        Orientation="Horizontal"
-                        Spacing="30"
-                        VerticalOptions="EndAndExpand">
-
-                        <Button Command="{Binding StartCommand}" x:Name="btn_Start"
-                                Text="Start" IsEnabled="{Binding IsEnableButtonStart}"
-                                BackgroundColor="{Binding ColorButtonStart}"/>
-
-                        <Button Command="{Binding StopCommand }" x:Name="btn_Stop"
-                                Text="Stop" IsEnabled="{Binding IsEnableButtonStop}" 
-                                BackgroundColor="{Binding ColorButtonStop}"/>
-
-                        <!--<Button Command="{Binding OnSaveCommand}" x:Name="btn_Save"
-                                    Text="Save" IsEnabled="{Binding IsEnableButtonSave}"
-                                    BackgroundColor="{Binding ColorButtonSave}"/>-->
-                    </StackLayout>
-                </Grid>
-                                    Text="Save" IsEnabled="{Binding IsEnableButtonSave}"
-                                    BackgroundColor="{Binding ColorButtonSave}"/>-->
-                    </StackLayout>
+                <Grid x:Name="charts">
                 </Grid>
             </ScrollView>
+
         </material:TabItem>
 
         <material:TabItem Title="All" x:Name="All">
@@ -264,9 +123,9 @@
                                     YAxes="{Binding YAxesSummarize}"
                                     ReleasedCommand="{Binding PointerUpCommand}"
                                     SyncContext="{Binding Sync}"/>
-                                    <!--DrawMarginFrame="{Binding Frame}"-->
-                        Text="{Binding TextButtonSelect}"/>
-                        <!--Command="{Binding SelectingChartCommand}"-->
+                <!--DrawMarginFrame="{Binding Frame}"-->
+                <!--Text="{Binding TextButtonSelect}"/>-->
+                <!--Command="{Binding SelectingChartCommand}"-->
                 <!--Command="{Binding SelectRangeCommand}"/>
                         Clicked="OnClick"-->
             </Grid>

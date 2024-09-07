@@ -11,6 +11,7 @@ namespace MAUI_IOT.Models.Data
     {
         public double m { get; set; }
         public ObservableCollection<Data> datafile { get; set; }
+        //public List<Packet> datafile { get; set; }
 
     }
 }

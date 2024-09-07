@@ -31,10 +31,10 @@ namespace MAUI_IOT
                 .RegisterServices();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
-            builder.Services.AddTransient<IAuthService,AuthService>();
-            builder.Services.AddTransient<ILessionService,LessionService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddTransient<ILessionService, LessionService>();
 
             builder.Services.AddTransient<LoadingView>();
 
@@ -48,7 +48,6 @@ namespace MAUI_IOT
             builder.Services.AddTransient<ProfileViewModel>();
 
             builder.Services.AddTransient<LessonView>();
-            builder.Services.AddTransient<LessonViewModel>();
             builder.Services.AddTransient<LessonnViewModel>();
             //builder.Services.AddViewModel<LessonViewModel, LessonView>();
 
