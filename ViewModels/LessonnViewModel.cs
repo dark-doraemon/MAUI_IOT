@@ -32,6 +32,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Microcharts;
 using MAUI_IOT.Services.Implements.LineChart;
+using MAUI_IOT.Services.Implements.DataManagement;
 namespace MAUI_IOT.ViewModels
 {
     public partial class LessonnViewModel : ObservableObject
@@ -87,9 +88,8 @@ namespace MAUI_IOT.ViewModels
 
         //Weight (input)
         [ObservableProperty]
-        private double m = 1100;
-        [ObservableProperty]
-        private string fileContent = "";
+        private double m = 0;
+
         [ObservableProperty]
         private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
 
@@ -546,6 +546,8 @@ namespace MAUI_IOT.ViewModels
         public void addFile()
         {
             fileCount++;
+            m = 0;
+            datas = new ObservableCollection<Data>();
         }
 
 
@@ -569,48 +571,10 @@ namespace MAUI_IOT.ViewModels
         [RelayCommand]
         public async Task Load(string fileName)
         {
-            try
-            {
-                FileSave fileSave = new FileSave();
-                var filePath = Path.Combine(FileSystem.AppDataDirectory, $"{fileName}.json");
-                if (File.Exists(filePath))
-                {
-                    var jsonData = await File.ReadAllTextAsync(filePath);
-                    FileSave file = System.Text.Json.JsonSerializer.Deserialize<FileSave>(jsonData);
-                    M = file.m;
-                    Datas = file.datafile;
-                    Draw draw = new Draw();
-                    draw.DrawChart(Datas, _accX, _accY, _accZ, _force, Sync);
-                    Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
-                    Debug.WriteLine($"khối lượng : {m}");
-                    Debug.WriteLine($" nội dung :  " + Datas.ToString());
-                    Debug.WriteLine($"filePath : {filePath}");
-                    Debug.WriteLine($"========================================ĐÃ đọc  file {fileName} ===============================================================");
-                }
-                else
-                {
-                    Debug.WriteLine("=======================================================================================================");
-                    Debug.WriteLine($"Số lượng tệp trong AppDataDirectory: {fileCount}");
-                    Debug.WriteLine("khong tồn tại file ");
-                    Debug.WriteLine($"Tên của file cần tìm : {filePath}");
-                    Debug.WriteLine("=======================================================================================================");
-                    string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
-                    foreach (var a in filePaths)
-                    {
-                        Debug.WriteLine(a);
-                    }
-                    Debug.WriteLine("=======================================================================================================");
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("============================================Try catch ====================================================");
-                Debug.WriteLine(ex.Message.ToString());
-                Debug.WriteLine("=======================================================================================================");
-
-            }
-
+            LoadData loader = new LoadData();
+            Draw drawer = new Draw();
+            loader.Load(fileName, m, datas);
+            drawer.DrawChart(datas, _accX, _accY, _accZ, _force, Sync);
         }
 
 

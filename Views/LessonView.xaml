@@ -31,6 +31,7 @@
                         Margin="20"
                         WidthRequest="300"
                         >
+                        <Label Text="config này không còn dùng nữa  "></Label>
                         <Picker x:Name="myPicker"
                                 TextColor="Black"/>
                         <HorizontalStackLayout>
@@ -53,7 +54,7 @@
                         VerticalTextAlignment="Center"
                         WidthRequest="50" />
                         <Entry x:Name="weight_entry" 
-                        Text="0" 
+                        Text="{Binding M}" 
                         Placeholder="Nhập khối lượng: " 
                         TextColor="Red"
                         Keyboard="Numeric"/>
@@ -61,11 +62,6 @@
                          FontAttributes="Bold"
                          Text="Set"                                  
                          WidthRequest="60"/>
-                        <VerticalStackLayout>
-                            <Label
-                                Text="{Binding M}"
-                                FontSize="Medium"></Label>
-                        </VerticalStackLayout>
                     </HorizontalStackLayout>
                     <VerticalStackLayout
                         Margin="20">

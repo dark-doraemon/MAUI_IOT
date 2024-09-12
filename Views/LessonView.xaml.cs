@@ -53,27 +53,7 @@ public partial class LessonView : ContentPage
                 await DisplayAlert("Thông báo", "Vui lòng nhập giá trị", "Nhập lại");
                 return;
             }
-            if (await DisplayAlert("Thông báo", $"Xác nhận giá trị m = {weight_entry.Text.ToString()} kg", "Lưu", "Nhập lại"))
-            {
-                double weight = double.Parse(weight_entry.Text);
-                if (string.IsNullOrEmpty(weight_entry.Text) || weight <= 0)
-                {
-                    await DisplayAlert("Thông báo!", "Vui lòng nhập khối lượng hợp lệ", "OK");
-                    lessonnViewModel.IsValidEntryWeight = false;
-                    tab_View.SelectedTab = Config;
-                    return;
-                }
-                weight_entry.Unfocus();
-                weight_entry.IsEnabled = false;
-                weight_entry.IsEnabled = true;
-                //   FormatWeightEntry();
-                //    tab_View.SelectedTab = Experiment;
-                lessonnViewModel.IsValidEntryWeight = true;
-            }
-            else
-            {
-                weight_entry.Focus();
-            }
+
         };
         GenarateGridWithCharts(Series, Series.Count, true);
 
@@ -93,6 +73,7 @@ public partial class LessonView : ContentPage
         {
             var selectedItem = (sender as Picker)?.SelectedItem;
             getdata(selectedItem);
+            weight_entry.Text = _lessonnViewModel.M.ToString();
         };
         Button myButton = this.FindByName<Button>("myButton");
         if (myButton != null)
@@ -179,16 +160,6 @@ public partial class LessonView : ContentPage
         try
         {
             await _lessonnViewModel.Load(selectedItem.ToString());
-            if (_lessonnViewModel.FileContent.Length != 0)
-            {
-                //     await DisplayAlert("Tiêu đề", _lessonnViewModel.FileContent, "Thoát");
-                weight_entry.Text = _lessonnViewModel.M.ToString();
-            }
-            else
-            {
-                //     await DisplayAlert("Tiêu đề", $"file chưa lưu  ", "thoát");
-
-            }
         }
         catch (Exception ex)
         {
