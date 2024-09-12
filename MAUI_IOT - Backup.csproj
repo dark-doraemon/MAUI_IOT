@@ -58,39 +58,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<AndroidResource Remove="Data\**" />
 		<AndroidResource Remove="Hubs\**" />
-		<Compile Remove="Data\**" />
 		<Compile Remove="Hubs\**" />
-		<EmbeddedResource Remove="Data\**" />
 		<EmbeddedResource Remove="Hubs\**" />
-		<MauiCss Remove="Data\**" />
 		<MauiCss Remove="Hubs\**" />
-		<MauiXaml Remove="Data\**" />
 		<MauiXaml Remove="Hubs\**" />
-		<None Remove="Data\**" />
 		<None Remove="Hubs\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Fonts\Font Awesome 6 Free-Solid-900.otf" />
-	  <None Remove="Resources\Icon\assignment.png" />
-	  <None Remove="Resources\Icon\chat.png" />
-	  <None Remove="Resources\Icon\group.png" />
-	  <None Remove="Resources\Icon\home.png" />
-	  <None Remove="Resources\Icon\lab.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiImage Include="Resources\Icon\assignment.png" />
-	  <MauiImage Include="Resources\Icon\chat.png" />
-	  <MauiImage Include="Resources\Icon\group.png" />
-	  <MauiImage Include="Resources\Icon\home.png" />
-	  <MauiImage Include="Resources\Icon\lab.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-rc2" />
 		<PackageReference Include="Microcharts.Maui" Version="1.0.0" />
@@ -98,10 +74,8 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-		<PackageReference Include="MQTTnet" Version="4.3.6.1152" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
-		<PackageReference Include="UraniumUI" Version="2.9.1" />
 		<PackageReference Include="UraniumUI.Material" Version="2.9.1" />
 	</ItemGroup>
 
@@ -121,10 +95,16 @@
 		<MauiXaml Update="Views\ADXL345View.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Views\DHT11View.xaml">
+		<MauiXaml Update="Views\CustomTabbedPage\Example\Tab1.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Views\FullScreenChartView.xaml">
+		<MauiXaml Update="Views\CustomTabbedPage\Example\Tab2.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\CustomTabbedPage\Example\TabbedPageExample.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\DHT11View.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\HomeView.xaml">

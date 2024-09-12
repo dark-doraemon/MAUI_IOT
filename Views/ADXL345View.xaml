@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI_IOT.Views.ADXL345View"
+             xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels.SensorViewModels"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             x:DataType="viewmodel:ADXL345ViewModel"
+             Title="ADXL345View">
+    
+    
+    <ContentPage.BindingContext>
+        <viewmodel:ADXL345ViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Text="Connect" Clicked="Button_Clicked" />
+
+            <VerticalStackLayout  Grid.Row="1">
+                <HorizontalStackLayout>
+                    <Label Text="x" WidthRequest="150"/>
+                    <Label x:Name="lbl_x" WidthRequest="150" Text="{Binding ADXL345Axis.x}" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout>
+                    <Label Text="y" WidthRequest="150"/>
+                    <Label x:Name="lbl_y" WidthRequest="150" Text="{Binding ADXL345Axis.y}"/>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout>
+                    <Label Text="z" WidthRequest="150"/>
+                    <Label x:Name="lbl_z" WidthRequest="150" Text="{Binding ADXL345Axis.z}"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+
+            <lvc:CartesianChart Grid.Row="2" Series="{Binding Series1}" ZoomMode="Both" ></lvc:CartesianChart>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

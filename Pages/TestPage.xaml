@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI_IOT.Pages.TestPage"
+             xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             Title="TestPage">
+    <VerticalStackLayout>
+        <!--<Button Text="Connect to node-red" Clicked="Button_Clicked"/>-->
+
+        <VerticalStackLayout >
+            <HorizontalStackLayout>
+                <Label Text="Nhiệt độ" WidthRequest="150"/>
+                <Label x:Name="lbl_temperature" WidthRequest="150" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <Label Text="Độ ẩm" WidthRequest="150"/>
+                <Label x:Name="lbl_humidity" WidthRequest="150"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+        
+
+    </VerticalStackLayout>
+
+</ContentPage>

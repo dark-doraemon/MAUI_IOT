@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI_IOT.Views.LoginView"
+             xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
+             x:DataType="viewmodel:LoginViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource PrimaryColor}">
+
+    <ContentPage.BindingContext>
+        <viewmodel:LoginViewModel/>
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Resources>
+        <Style x:Key="entryStyle" TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="TextColor" Value="White"/>
+            <Setter Property="CharacterSpacing" Value="1"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="PlaceholderColor" Value="LightGray"/>
+        </Style>
+    </ContentPage.Resources>
+    
+    
+    <Grid>
+        <StackLayout Margin="20">
+            <StackLayout Margin="0,80">
+                <Label FontSize="32" Text="Welcome back" TextColor="{StaticResource SecondaryColor}"></Label>
+                <Label Text="Sign to continue" TextColor="{StaticResource SecondaryColor}"></Label>
+            </StackLayout>
+
+            <StackLayout>
+                <Label FontSize="16" Text="Username" TextColor="{StaticResource SecondaryColor}"></Label>
+                <Grid>
+                    <Frame Opacity="0.3" BackgroundColor="White" CornerRadius="10" ></Frame>
+                    <Entry Style="{StaticResource entryStyle}"
+                           Text="{Binding Account.Username}"
+                           />
+                </Grid>
+            </StackLayout>
+
+            <StackLayout>
+                <Label FontSize="16" Text="Password" TextColor="{StaticResource SecondaryColor}"></Label>
+                <Grid >
+                    <Frame Opacity="0.3" BackgroundColor="White" CornerRadius="10" ></Frame>
+                    <Entry Style="{StaticResource entryStyle}"
+                           Text="{Binding Account.Password}"
+                           IsPassword="True"
+                           />
+                </Grid>
+            </StackLayout>
+
+            <Button Margin="0,15" BackgroundColor="{StaticResource SecondaryColor}"
+                    Text="Sign in" 
+                    CornerRadius="10"
+                    TextColor="{StaticResource PrimaryColor}"
+                    Command="{Binding LoginCommand}"
+                    />
+
+            <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
+                <Label TextColor="{StaticResource SecondaryColor}"
+                   HorizontalOptions="StartAndExpand"
+                   >Forget password ?</Label>
+
+                <Label TextColor="{StaticResource SecondaryColor}"
+                   HorizontalOptions="EndAndExpand"
+                   >Sign up</Label>
+            </StackLayout>
+        </StackLayout>
+
+    </Grid>
+</ContentPage>

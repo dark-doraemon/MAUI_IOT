@@ -4,12 +4,57 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MAUI_IOT"
-    Shell.FlyoutBehavior="Disabled"
-    Title="MAUI_IOT">
+    xmlns:pages="clr-namespace:MAUI_IOT.Pages"
+    xmlns:views="clr-namespace:MAUI_IOT.Views"
+    xmlns:temp ="clr-namespace:MAUI_IOT.Views"
+    Title="MAUI_IOT"
+    Shell.FlyoutBehavior="Flyout">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <FlyoutItem Title="Home" Icon="home.png">
+        <ShellContent Route="HomeView">
+            <ContentPage Title="Home" />
+        </ShellContent>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Chat" Icon="chat.png">
+        <ShellContent Title="Chat">
+            <ContentPage Title="Chat" />
+        </ShellContent>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Group" Icon="group.png">
+        <ShellContent Title="Group">
+            <ContentPage Title="Group"/>
+        </ShellContent>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Assignment" Icon="assignment">
+        <ShellContent>
+            <ContentPage Title="Assignment" />
+        </ShellContent>
+    </FlyoutItem>
+
+
+
+
+
+
+    <FlyoutItem Title="Lab" Icon="lab.png">
+        <Tab Title="Lab">
+            <ShellContent Title="Class 10" ContentTemplate="{DataTemplate views:HomeView}" Route="HomeView" />
+            <ShellContent Title="Class 11">
+                <ContentPage Title="Lab"/>
+            </ShellContent>
+
+            <ShellContent Title="Class 12">
+                <ContentPage Title="Lab"/>
+            </ShellContent>
+        </Tab>
+    </FlyoutItem>
+
+    <!--<ShellContent
+     ContentTemplate="{DataTemplate views:ADXL345View}"
+     Shell.FlyoutBehavior="Disabled"
+     Shell.FlyoutItemIsVisible="False" />-->
 
 </Shell>
