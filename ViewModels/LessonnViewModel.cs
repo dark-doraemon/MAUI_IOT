@@ -416,7 +416,7 @@ namespace MAUI_IOT.ViewModels
             Task.Run(async () => { await Connect(); });
 
             ColorButtonStart = InActive;
-            ColorButtonStop = Active;
+            ColorButtonStop = Active; 
             ColorButtonSave = InActive;
 
             IsEnableButtonStop = true;
