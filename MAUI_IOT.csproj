@@ -58,11 +58,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<AndroidResource Remove="Data\**" />
 		<AndroidResource Remove="Hubs\**" />
+		<Compile Remove="Data\**" />
 		<Compile Remove="Hubs\**" />
+		<EmbeddedResource Remove="Data\**" />
 		<EmbeddedResource Remove="Hubs\**" />
+		<MauiCss Remove="Data\**" />
 		<MauiCss Remove="Hubs\**" />
+		<MauiXaml Remove="Data\**" />
 		<MauiXaml Remove="Hubs\**" />
+		<None Remove="Data\**" />
 		<None Remove="Hubs\**" />
 	</ItemGroup>
 
@@ -136,10 +142,6 @@
 		<MauiXaml Update="Views\ProfileView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Data\" />
 	</ItemGroup>
 
 </Project>

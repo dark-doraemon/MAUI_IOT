@@ -40,23 +40,6 @@ public partial class LessonView : ContentPage
 
 
 
-        var experiments = new List<string> { "Thí nghiệm 1", "Thí nghiệm 2", "Thí nghiệm 3" };
-        foreach (var experiment in experiments)
-        {
-            var toolbarItem = new ToolbarItem
-            {
-                Text = experiment,
-                Order = ToolbarItemOrder.Secondary
-            };
-
-            toolbarItem.Clicked += (sender, e) => HandleExperimentClicked(experiment);
-
-            ToolbarItems.Add(toolbarItem);
-        }
-
-
-
-
 
 
 

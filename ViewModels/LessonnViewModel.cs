@@ -101,7 +101,6 @@ namespace MAUI_IOT.ViewModels
         //}
         private double xi { get; set; } = -10;
         private double xj { get; set; } = -10;
-        private double xj { get; set; } = -10;
 
         //Colors
         public static Color InActive = Color.FromRgb(214, 214, 214);
@@ -450,7 +449,7 @@ namespace MAUI_IOT.ViewModels
             Task.Run(async () => { await Connect(); });
 
             ColorButtonStart = InActive;
-            ColorButtonStop = Active; 
+            ColorButtonStop = Active;
             ColorButtonSave = InActive;
 
             IsEnableButtonStop = true;
