@@ -77,6 +77,9 @@ namespace MAUI_IOT.ViewModels
                 StrokeThickness = 1
             }
         };
+
+
+
         public ObservableCollection<ISeries> Series { get; set; }
         public ObservableCollection<ISeries> Series_X { get; set; }
         public ObservableCollection<ISeries> Series_Y { get; set; }
@@ -89,19 +92,20 @@ namespace MAUI_IOT.ViewModels
         //Weight (input)
         [ObservableProperty]
         private double m = 0;
-
+        //file 
         [ObservableProperty]
         private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
-
-
-
-        //    return secsAgo < 1
-        //        ? "now"
-        //        : $"{secsAgo:N0}s ago";
-        //}
+        Draw draw = new Draw();
         private double xi { get; set; } = -10;
         private double xj { get; set; } = -10;
-
+        //IsViewVisible
+        [ObservableProperty]
+        private bool isCheckedDetail = false;
+        [ObservableProperty]
+        private bool isCheckedSummary = false;
+        [ObservableProperty]
+        private bool isCheckedChart = false;
+        public ICommand ToggleVisibilityCommand { get; }
         //Colors
         public static Color InActive = Color.FromRgb(214, 214, 214);
         public static Color Active = Color.FromRgb(2, 126, 111);
@@ -126,7 +130,6 @@ namespace MAUI_IOT.ViewModels
         private bool isButtonSelectActive = false;
         [ObservableProperty]
         private object zoomAndPanningMode = LiveChartsCore.Measure.ZoomAndPanMode.X;
-
         private bool isDoubleClickedChart = false;
         private bool OnPressed = false;
         private bool OnMoving = false;
@@ -399,7 +402,6 @@ namespace MAUI_IOT.ViewModels
 
                 if (packet != null)
                 {
-                    Draw draw = new Draw();
                     draw.DrawChart(packet, _accX, _accY, _accZ, _force, Datas, Sync);
                 }
                 else
@@ -605,9 +607,8 @@ namespace MAUI_IOT.ViewModels
         public async Task Load(string fileName)
         {
             LoadData loader = new LoadData();
-            Draw drawer = new Draw();
-            loader.Load(fileName, m, datas);
-            drawer.DrawChart(datas, _accX, _accY, _accZ, _force, Sync);
+            await loader.Load(fileName, m, datas);
+            draw.DrawChart(datas, _accX, _accY, _accZ, _force, Sync);
         }
 
 

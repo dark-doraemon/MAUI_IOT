@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace MAUI_IOT.ViewModels
 {
     public partial class HomeViewModel : ObservableObject
-    { 
+    {
         private readonly ILessionService lessionService;
         [ObservableProperty]
         ObservableCollection<Lesson> lessons;
@@ -45,5 +45,12 @@ namespace MAUI_IOT.ViewModels
                 Debug.WriteLine("Move to lession" + ex.Message.ToString());
             }
         }
+
+
+
+
+
+
+
     }
 }

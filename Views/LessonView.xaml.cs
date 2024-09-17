@@ -16,6 +16,7 @@ using MAUI_IOT.Services.Interfaces;
 using System.Drawing;
 using System.Runtime.ConstrainedExecution;
 using LiveChartsCore.SkiaSharpView;
+using CommunityToolkit.Maui.Views;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
@@ -35,8 +36,6 @@ public partial class LessonView : ContentPage
             weight_entry.Text = "";
             weight_entry.Focus();
         };
-
-
 
 
 
@@ -94,6 +93,18 @@ public partial class LessonView : ContentPage
     }
 
 
+
+
+    private void OnButtonClicked(object sender, EventArgs e)
+    {
+        // Xử lý sự kiện click của Button
+        DisplayAlert("Button Clicked", "You clicked the button!", "OK");
+    }
+
+
+
+
+
     private void MyButton_Clicked(object sender, EventArgs e)
     {
         var selectedItem = myPicker.SelectedItem;
@@ -115,6 +126,8 @@ public partial class LessonView : ContentPage
         myPicker.ItemsSource = packetName;
 
     }
+
+
 
 
 
@@ -162,6 +175,23 @@ public partial class LessonView : ContentPage
     {
         // tab_View.SelectedTab = Config;
     }
+
+
+    private void OnShowPopupClicked(object sender, EventArgs e)
+    {
+        var popup = new AnalyzePopup(_lessonnViewModel);  // Tạo một instance của popup
+        this.ShowPopup(popup);           // Hiển thị popup
+    }
+
+
+
+
+
+
+
+
+
+
 
 
     //load dữ liệu 
@@ -407,6 +437,20 @@ public partial class LessonView : ContentPage
 
         return grid;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void swapAxes()
     {

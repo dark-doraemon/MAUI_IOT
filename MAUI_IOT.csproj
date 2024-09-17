@@ -121,6 +121,9 @@
 		<MauiXaml Update="Views\ADXL345View.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Views\AnalyzePopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Views\DHT11View.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

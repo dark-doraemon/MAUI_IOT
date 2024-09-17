@@ -10,6 +10,10 @@ using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using UraniumUI;
 using CommunityToolkit.Maui;
+using MAUI_IOT.Services.Interfaces.DataManagement;
+using MAUI_IOT.Services.Implements.DataManagement;
+using MAUI_IOT.Services.Interfaces.SaveData;
+using MAUI_IOT.Services.Implements.SaveData;
 namespace MAUI_IOT
 {
     public static class MauiProgram
@@ -57,6 +61,10 @@ namespace MAUI_IOT
             builder.Services.AddTransient<FullScreenChartView>();
             builder.Services.AddTransient<FullScreenChartViewModel>();
 
+
+
+
+
             return builder.Build();
         }
 
@@ -74,6 +82,8 @@ namespace MAUI_IOT
             builder.Services.AddTransient<IPublish, Publisher>();
             builder.Services.AddTransient<ISubscribe, Subscriber>();
             builder.Services.AddTransient<IDisconnect, Disconnect>();
+            builder.Services.AddTransient<ILoadData, LoadData>();
+            builder.Services.AddTransient<ISaveData, SaveData>();
             return builder;
         }
     }
