@@ -1,4 +1,5 @@
-﻿using MAUI_IOT.ViewModels;
+﻿
+using MAUI_IOT.ViewModels;
 using Microsoft.Maui.Layouts;
 using System.Diagnostics;
 using MAUI_IOT.Models;
@@ -17,6 +18,8 @@ using System.Drawing;
 using System.Runtime.ConstrainedExecution;
 using LiveChartsCore.SkiaSharpView;
 using CommunityToolkit.Maui.Views;
+using LiveChartsCore.SkiaSharpView.SKCharts;
+using Microcharts;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
@@ -30,12 +33,37 @@ public partial class LessonView : ContentPage
         this._lessonnViewModel = lessonnViewModel;
         BindingContext = lessonnViewModel;
         //   Tabinit();
-        weight_entry.Text = lessonnViewModel.M.ToString();
-        weight_entry.Focused += (sender, e) =>
-        {
-            weight_entry.Text = "";
-            weight_entry.Focus();
-        };
+        //weight_entry.Text = lessonnViewModel.M.ToString();
+        //weight_entry.Focused += (sender, e) =>
+        //{
+        //    weight_entry.Text = "";
+        //    weight_entry.Focus();
+        //};
+
+        // chart table 
+
+        //CartesianChart cartesianChart2 = new CartesianChart
+        //{
+        //    Padding = new Thickness(0, 0, 0, 0),
+        //    Margin = new Thickness(0, 0, 0, 0),
+        //    ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,
+        //    MinimumHeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.7
+        //};
+
+        //// Set up binding for chart
+        //cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series", Mode = BindingMode.OneWay });
+        //cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
+        //cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
+        //cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
+        //cartesianChart2.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
+
+
+
+
+        //charts2.Children.Add(cartesianChart2);
+        //charts2.SetRow(cartesianChart2, 1);
+        //charts2.SetColumnSpan(cartesianChart2, 2);
+        //charts2.SetColumn(cartesianChart2, 0);
 
 
 
@@ -46,25 +74,29 @@ public partial class LessonView : ContentPage
 
 
 
-        weight_entry.Unfocused += async (sender, e) =>
-        {
-            if (string.IsNullOrEmpty(weight_entry.Text))
-            {
-                weight_entry.Text = "0";
-                await DisplayAlert("Thông báo", "Vui lòng nhập giá trị", "Nhập lại");
-                weight_entry.Focus();
-            }
-        };
-        weight.Clicked += async (sender, e) =>
-        {
-            if (string.IsNullOrEmpty(weight_entry.Text))
-            {
-                weight_entry.Text = "0";
-                await DisplayAlert("Thông báo", "Vui lòng nhập giá trị", "Nhập lại");
-                return;
-            }
 
-        };
+
+
+
+        //weight_entry.Unfocused += async (sender, e) =>
+        //{
+        //    if (string.IsNullOrEmpty(weight_entry.Text))
+        //    {
+        //        weight_entry.Text = "0";
+        //        await DisplayAlert("Thông báo", "Vui lòng nhập giá trị", "Nhập lại");
+        //        weight_entry.Focus();
+        //    }
+        //};
+        //weight.Clicked += async (sender, e) =>
+        //{
+        //    if (string.IsNullOrEmpty(weight_entry.Text))
+        //    {
+        //        weight_entry.Text = "0";
+        //        await DisplayAlert("Thông báo", "Vui lòng nhập giá trị", "Nhập lại");
+        //        return;
+        //    }
+
+        //};
         GenarateGridWithCharts(Series, Series.Count, true);
 
         Picker myPicker = this.FindByName<Picker>("myPicker");
@@ -74,22 +106,22 @@ public partial class LessonView : ContentPage
             myPicker.Title = "Chọn 1 mục ";
         }
         List<string> packetName = new List<string>();
-        for (int i = 0; i < lessonnViewModel.FileCount; i++)
-        {
-            packetName.Add($"Experiment{i}");
-        }
-        myPicker.ItemsSource = packetName;
-        myPicker.SelectedIndexChanged += (sender, e) =>
-        {
-            var selectedItem = (sender as Picker)?.SelectedItem;
-            getdata(selectedItem);
-            weight_entry.Text = _lessonnViewModel.M.ToString();
-        };
-        Button myButton = this.FindByName<Button>("myButton");
-        if (myButton != null)
-        {
-            myButton.Clicked += MyButton_Clicked;
-        }
+        //for (int i = 0; i < lessonnViewModel.FileCount; i++)
+        //{
+        //    packetName.Add($"Experiment{i}");
+        //}
+        //myPicker.ItemsSource = packetName;
+        //myPicker.SelectedIndexChanged += (sender, e) =>
+        //{
+        //    var selectedItem = (sender as Picker)?.SelectedItem;
+        //    getdata(selectedItem);
+        //    weight_entry.Text = _lessonnViewModel.M.ToString();
+        //};
+        //Button myButton = this.FindByName<Button>("myButton");
+        //if (myButton != null)
+        //{
+        //    myButton.Clicked += MyButton_Clicked;
+        //}
     }
 
 
@@ -105,71 +137,52 @@ public partial class LessonView : ContentPage
 
 
 
-    private void MyButton_Clicked(object sender, EventArgs e)
-    {
-        var selectedItem = myPicker.SelectedItem;
-        if (selectedItem != null)
-        {
-            _lessonnViewModel.Save(selectedItem.ToString());
+    //private void MyButton_Clicked(object sender, EventArgs e)
+    //{
+    //    var selectedItem = myPicker.SelectedItem;
+    //    if (selectedItem != null)
+    //    {
+    //        _lessonnViewModel.Save(selectedItem.ToString());
 
-        }
+    //    }
 
-    }
+    //}
 
-    private void addPickerItem(object sender, EventArgs e)
-    {
-        List<string> packetName = new List<string>();
-        for (int i = 0; i < _lessonnViewModel.FileCount; i++)
-        {
-            packetName.Add($"Experiment{i}");
-        }
-        myPicker.ItemsSource = packetName;
+    //private void addPickerItem(object sender, EventArgs e)
+    //{
+    //    List<string> packetName = new List<string>();
+    //    for (int i = 0; i < _lessonnViewModel.FileCount; i++)
+    //    {
+    //        packetName.Add($"Experiment{i}");
+    //    }
+    //    myPicker.ItemsSource = packetName;
 
-    }
-
-
+    //}
 
 
 
-    private void createToolbar(int n)
-    {
-        if (n > 10)
-        {
-            DisplayAlert("Warming", "Đã đạt giới hạn", "Thoát");
-            return;
-        }
-        var toolbarItem = new ToolbarItem
-        {
-            Text = $" save  {n}",
-            Order = ToolbarItemOrder.Secondary,
-            Command = ((LessonnViewModel)BindingContext).SaveCommand, // Gán Command
-            CommandParameter = n,
-        };
+    //private void FormatWeightEntry()
+    //{
+    //    double temp = 0;
+    //    try
+    //    {
+    //        string entryAfterFormatted = weight_entry.Text.Replace(",", ".");
+    //        if (double.TryParse(entryAfterFormatted, NumberStyles.Any, CultureInfo.InvariantCulture, out temp))
+    //        {
+    //            _lessonnViewModel.M = temp;
 
-    }
-
-    private void FormatWeightEntry()
-    {
-        double temp = 0;
-        try
-        {
-            string entryAfterFormatted = weight_entry.Text.Replace(",", ".");
-            if (double.TryParse(entryAfterFormatted, NumberStyles.Any, CultureInfo.InvariantCulture, out temp))
-            {
-                _lessonnViewModel.M = temp;
-
-                if (temp < 0)
-                {
-                    _lessonnViewModel.M = 0;
-                    weight_entry.Text = "0";
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.ToString() + "Format entry");
-        }
-    }
+    //            if (temp < 0)
+    //            {
+    //                _lessonnViewModel.M = 0;
+    //                weight_entry.Text = "0";
+    //            }
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.WriteLine(ex.ToString() + "Format entry");
+    //    }
+    //}
 
     private void Tabinit()
     {
