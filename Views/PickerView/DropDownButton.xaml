@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       x:Class="MAUI_IOT.Views.PickerView.DropDownButton"
+       Padding="20"
+       BackgroundColor="Transparent">
+    
+    <Grid RowDefinitions="Auto" ColumnDefinitions="*, 20">
+        <Label Text="Select Item" 
+           Grid.Row="0" 
+           Grid.Column="0"
+           x:Name="lblDropDown"/>
+
+        <Image Source="dotnet_bot.png" Grid.Row="0"
+           Grid.Column="1"
+           HeightRequest="20"
+           WidthRequest="20"/>
+
+        <ActivityIndicator Grid.Row="0" Grid.Column="1" HeightRequest="20" WidthRequest="20"
+                           x:Name="loading"
+                           IsVisible="{Binding IsLoading, Source={StaticResource LessonViewModel}}"
+                           IsRunning="True"/>
+    </Grid>
+
+
+    <Frame.GestureRecognizers>
+        <TapGestureRecognizer Tapped="TabGestureRecognizer_Tapped" />
+    </Frame.GestureRecognizers>
+
+</Frame>

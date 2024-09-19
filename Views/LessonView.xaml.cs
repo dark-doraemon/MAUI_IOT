@@ -17,12 +17,14 @@ using System.Drawing;
 using System.Runtime.ConstrainedExecution;
 using LiveChartsCore.SkiaSharpView;
 using CommunityToolkit.Maui.Views;
+using LiveChartsCore.SkiaSharpView.SKCharts;
+using Microcharts;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
 {
     private LessonnViewModel _lessonnViewModel;
-    private List<String> Series = new List<string>() { "Series_X", "Series_Y", "Series_Z" };
+    private List<String> Series = new List<string>() { "Series_X", "Series_Y"};
 
     public LessonView(LessonnViewModel lessonnViewModel)
     {
@@ -37,13 +39,30 @@ public partial class LessonView : ContentPage
             weight_entry.Focus();
         };
 
+        // chart tabke 
+
+        CartesianChart cartesianChart2 = new CartesianChart
+        {
+            Padding = new Thickness(0, 0, 0, 0),
+            Margin = new Thickness(0, 0, 0, 0),
+            ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,
+            MinimumHeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.7
+        };
+
+        // Set up binding for chart
+        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
 
 
 
 
-
-
-
+        charts2.Children.Add(cartesianChart2);
+        charts2.SetRow(cartesianChart2, 1);
+        charts2.SetColumnSpan(cartesianChart2, 2);
+        charts2.SetColumn(cartesianChart2, 0);
 
 
         weight_entry.Unfocused += async (sender, e) =>
@@ -65,6 +84,7 @@ public partial class LessonView : ContentPage
             }
 
         };
+
         GenarateGridWithCharts(Series, Series.Count, true);
 
         Picker myPicker = this.FindByName<Picker>("myPicker");
@@ -437,17 +457,6 @@ public partial class LessonView : ContentPage
 
         return grid;
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

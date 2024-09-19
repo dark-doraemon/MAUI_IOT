@@ -33,6 +33,7 @@ using System.IO;
 using Microcharts;
 using MAUI_IOT.Services.Implements.LineChart;
 using MAUI_IOT.Services.Implements.DataManagement;
+using MAUI_IOT.Models;
 namespace MAUI_IOT.ViewModels
 {
     public partial class LessonnViewModel : ObservableObject
@@ -152,33 +153,39 @@ namespace MAUI_IOT.ViewModels
         private string textSelectRangeButton = "Select Range";
 
         private List<Packet> packetList = new List<Packet>();
-        //Test
-        private ObservableCollection<ObservablePoint> ff = new ObservableCollection<ObservablePoint>
-        {
-             new ObservablePoint(2.2, 5.4),
-                        new ObservablePoint(4.5, 2.5),
-                        new ObservablePoint(4.2, 7.4),
-                        new ObservablePoint(6.4, 9.9),
-                        new ObservablePoint(4.2, 9.2),
-                        new ObservablePoint(5.8, 3.5),
-                        new ObservablePoint(7.3, 5.8),
-                        new ObservablePoint(8.9, 3.9),
-                        new ObservablePoint(6.1, 4.6),
-                        new ObservablePoint(9.4, 7.7),
-                        new ObservablePoint(8.4, 8.5),
-                        new ObservablePoint(3.6, 9.6),
-                        new ObservablePoint(4.4, 6.3),
-                        new ObservablePoint(5.8, 4.8),
-                        new ObservablePoint(6.9, 3.4),
-                        new ObservablePoint(7.6, 1.8),
-                        new ObservablePoint(8.3, 8.3),
-                        new ObservablePoint(9.9, 5.2),
-                        new ObservablePoint(8.1, 4.7),
-                        new ObservablePoint(7.4, 3.9),
-                        new ObservablePoint(6.8, 2.3),
-                        new ObservablePoint(5.3, 7.1),
-        };
 
+        //Popup Items
+        [ObservableProperty]
+        public ObservableCollection<Models.Device> devices = new ObservableCollection<Models.Device>();
+
+        [ObservableProperty]
+        public bool isLoadingPopup;
+
+        [ObservableProperty]
+        public bool isActiveLoad;
+
+        [ObservableProperty]
+        public bool isDisplayPicker;
+
+        [ObservableProperty]
+        public Models.Device currentItems = new Models.Device() { Name = "ADXL345", Address = "ABCD/data" };
+
+        [RelayCommand]
+        public void OpenPicker()
+        {
+            IsLoadingPopup = true;
+            IsActiveLoad = true;
+            Devices.Clear();
+
+            Devices.Add(new Models.Device() { Name = "ADXL345", Address = "ABCD/data" });
+            Devices.Add(new Models.Device() { Name = "ESP32", Address = "ABCD/data" });
+            Devices.Add(new Models.Device() { Name = "Humidity", Address = "ABCD/data" });
+            Devices.Add(new Models.Device() { Name = "Temperature", Address = "ABCD/data" });
+
+            Task.Delay(1000);
+            IsActiveLoad = false;
+            IsLoadingPopup = false;
+        }
 
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
@@ -643,43 +650,5 @@ namespace MAUI_IOT.ViewModels
             }
             return fileCount;
         }
-
-
-
-
-
-
-
-
-        public ObservableCollection<string> packetNumber { get; set; } = new ObservableCollection<string>
-            {
-                         "packetNumber_1",
-                         "packetNumber_2",
-                         "packetNumber_3",
-                         "packetNumber_4",
-                         "packetNumber_5",
-                         "packetNumber_6",
-                         "packetNumber_7",
-                         "packetNumber_8",
-                         "packetNumber_9",
-                         "packetNumber_10",
-
-
-                    };
-
-
-
-
-
-
-        public ObservableCollection<string> Options { get; set; } = new ObservableCollection<string>
-            {
-                         "ADXL345",
-                         "CDHCM1975",
-                         "CDĐPB1945",
-                         "Test",
-                         "Đức ANh "
-                    };
-
     }
 }
