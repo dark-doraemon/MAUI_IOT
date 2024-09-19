@@ -99,6 +99,17 @@ namespace MAUI_IOT.ViewModels
         Draw draw = new Draw();
         private double xi { get; set; } = -10;
         private double xj { get; set; } = -10;
+
+
+
+
+        [ObservableProperty]
+        private bool isCheckedDetail2 = false;
+        [ObservableProperty]
+        private bool isCheckedSummary2 = false;
+        [ObservableProperty]
+        private bool isCheckedChart2 = false;
+
         //IsViewVisible
         [ObservableProperty]
         private bool isCheckedDetail = false;
@@ -486,7 +497,7 @@ namespace MAUI_IOT.ViewModels
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
 
-            SelectedDatas = new ObservableCollection<Data>(Datas);
+            // SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
         [RelayCommand]
@@ -619,16 +630,8 @@ namespace MAUI_IOT.ViewModels
         }
 
 
-        public List<ObservableCollection<Data>> listData = new List<ObservableCollection<Data>>();
 
-        public void loadData(List<ObservableCollection<Data>> listData)
-        {
-            int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
-            for (int i = 0; i < fileCount; i++)
-            {
 
-            }
-        }
         [RelayCommand]
         public void deleteAllFile()
         {
@@ -650,5 +653,27 @@ namespace MAUI_IOT.ViewModels
             }
             return fileCount;
         }
+
+
+
+        public void addData()
+        {
+
+            Debug.WriteLine("ADD data vào table ");
+            SelectedDatas = new ObservableCollection<Data>(Datas);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

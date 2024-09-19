@@ -154,127 +154,128 @@
 
 
         <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
-            <AbsoluteLayout>
-                <ScrollView>
-                    <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
-                 AbsoluteLayout.LayoutBounds="0,0,1,1" 
-        AbsoluteLayout.LayoutFlags="All">
+            <!--<AbsoluteLayout>-->
+            <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+      >
 
-                        <Grid  x:Name="TongHop" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedSummary}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid Grid.Row="0" ColumnSpan="3" BackgroundColor="LightGray" Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center"   FontAttributes="Bold" />
-                                <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
+                <Grid  x:Name="TongHop" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedSummary}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0" ColumnSpan="3" BackgroundColor="LightGray" Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                        <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                        <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                        <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center"   FontAttributes="Bold" />
+                        <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
 
-                            </Grid>
-                            <CollectionView Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding SelectedDatas}" x:Name="table_data" ItemsUpdatingScrollMode="KeepScrollOffset">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="data:Data">
-                                        <Grid Padding="10">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                            <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
-                                            <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                            <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                            <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </Grid>
-                        <Grid   x:Name="Chitiet" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedDetail}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                    </Grid>
+                    <CollectionView Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding SelectedDatas}" x:Name="table_data" ItemsUpdatingScrollMode="KeepScrollOffset">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="data:Data">
+                                <Grid Padding="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
-                            <Grid Grid.Row="0" ColumnSpan="3" BackgroundColor="LightGray" Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center"   FontAttributes="Bold" />
-                                <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
-                                <Label Grid.Column="5" Text="Chi tiết " HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
+                </Grid>
+                <!--<Grid   x:Name="Chitiet" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedDetail}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                            </Grid>
-                            <CollectionView Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding SelectedDatas}" x:Name="table_data1" ItemsUpdatingScrollMode="KeepScrollOffset">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="data:Data">
-                                        <Grid Padding="10">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                            <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
-                                            <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                            <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                            <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </Grid>
-                        <Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}">
+                    <Grid Grid.Row="0" ColumnSpan="3" BackgroundColor="LightGray" Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                        <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                        <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                        <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center"   FontAttributes="Bold" />
+                        <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
+                        <Label Grid.Column="5" Text="Chi tiết " HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
 
+                    </Grid>
+                    <CollectionView Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding SelectedDatas}" x:Name="table_data1" ItemsUpdatingScrollMode="KeepScrollOffset">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="data:Data">
+                                <Grid Padding="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>-->
+                <!--<Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}">
+                </Grid>-->
+                <Button  Text="popup" Clicked="OnShowPopupClicked" WidthRequest="75" HeightRequest="75" CornerRadius="37"  AbsoluteLayout.LayoutBounds="1,1,AutoSize,AutoSize"
+AbsoluteLayout.LayoutFlags="PositionProportional"  />
+            </VerticalStackLayout>
 
-                        </Grid>
-
-                    </VerticalStackLayout>
+            <!--</AbsoluteLayout>-->
 
                 </ScrollView>
                 <Button  Text="popup"  Clicked="OnShowPopupClicked" WidthRequest="75" HeightRequest="75" CornerRadius="37"  AbsoluteLayout.LayoutBounds="1,1,AutoSize,AutoSize"
@@ -283,4 +284,5 @@ AbsoluteLayout.LayoutFlags="PositionProportional"  />
         </material:TabItem>
 
     </material:TabView>
+
 </ContentPage>
