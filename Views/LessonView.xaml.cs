@@ -60,11 +60,6 @@ public partial class LessonView : ContentPage
         //charts2.SetColumnSpan(cartesianChart2, 2);
         //charts2.SetColumn(cartesianChart2, 0);
 
-        charts2.Children.Add(cartesianChart2);
-        charts2.SetRow(cartesianChart2, 1);
-        charts2.SetColumnSpan(cartesianChart2, 2);
-        charts2.SetColumn(cartesianChart2, 0);
-
 
 
 
