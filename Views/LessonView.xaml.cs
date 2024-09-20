@@ -23,7 +23,7 @@ using Microcharts;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
-{
+{   
     private LessonnViewModel _lessonnViewModel;
     private List<String> Series = new List<string>() { "Series_X", "Series_Y"};
 
