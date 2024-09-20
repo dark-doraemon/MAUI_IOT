@@ -680,12 +680,6 @@ namespace MAUI_IOT.ViewModels
                     sumOfSquares += Math.Pow(item - AvgA, 2);
                 }
 
-                StandardDeviationA = Math.Sqrt(sumOfSquares / listA.Count);
-            }
-            else
-            {
-                return;
-            }
 
 
 
