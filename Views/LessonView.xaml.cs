@@ -32,6 +32,8 @@ public partial class LessonView : ContentPage
         InitializeComponent();
         this._lessonnViewModel = lessonnViewModel;
         BindingContext = lessonnViewModel;
+        editBtn.ViewModel = lessonnViewModel;
+
         //   Tabinit();
        
 

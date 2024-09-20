@@ -1,3 +1,4 @@
+using MAUI_IOT.ViewModels;
 using MauiPopup;
 using MauiPopup.Views;
 using System.Collections;
@@ -7,25 +8,35 @@ namespace MAUI_IOT.Views.PickerView;
 
 public partial class PickerControl : BasePopupPage
 {
-	public PickerControl(IEnumerable itemSource, DataTemplate itemTemplate, double pickerControlHeight = 200)
+    private LessonnViewModel lessonnViewModel;
+	public PickerControl(IEnumerable itemSource, DataTemplate itemTemplate, LessonnViewModel viewModel, double pickerControlHeight = 200)
     {
         InitializeComponent();
 
         clPickerView.ItemsSource = itemSource;
         clPickerView.ItemTemplate = itemTemplate;
         clPickerView.HeightRequest = pickerControlHeight;
+        this.lessonnViewModel = viewModel;
     }
 
     private async void clPickerView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        var currentItem = e.CurrentSelection.FirstOrDefault();
         try
         {
-            var currentItem = e.CurrentSelection.FirstOrDefault();
+            
+            Models.Device selectedDevice = currentItem as Models.Device;
 
-            await PopupAction.ClosePopup(currentItem);
+           
+            if (selectedDevice != null)
+            {
+                lessonnViewModel.Device = selectedDevice.Name;
+            }
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Debug.WriteLine(ex.ToString());
         }
+
     }
 }

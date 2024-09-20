@@ -1,13 +1,29 @@
 using MAUI_IOT.Models;
+using MAUI_IOT.ViewModels;
 using MauiPopup;
 using System.Collections;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace MAUI_IOT.Views.PickerView;
 
 public partial class EditViewButton : Frame
 {
+    public static readonly BindableProperty ViewModelProperty = BindableProperty.Create(
+        propertyName: nameof(ViewModel),
+        returnType: typeof(LessonnViewModel),
+        declaringType: typeof(EditViewButton),
+        defaultBindingMode: BindingMode.OneWay
+    );
+
+    public LessonnViewModel ViewModel
+    {
+        get => (LessonnViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
+
+
 
     public static readonly BindableProperty ItemSourceProperty = BindableProperty.Create(
            propertyName: nameof(ItemSource),
@@ -124,7 +140,7 @@ public partial class EditViewButton : Frame
             {
                 if ((bool)newValue)
                 {
-                    var respone = await PopupAction.DisplayPopup<object>(new EditDevice());
+                    var respone = await PopupAction.DisplayPopup<object>(new EditDevice(controls.ViewModel));
                     if (respone != null)
                     {
                         controls.CurrentItems = respone;
@@ -148,7 +164,7 @@ public partial class EditViewButton : Frame
 
     public double PickerHeightRequest { get; set; }
     public string DisplayMember { get; set; }
-
+   
     public EditViewButton()
 	{
 		InitializeComponent();

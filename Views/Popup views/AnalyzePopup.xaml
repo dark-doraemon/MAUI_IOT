@@ -7,24 +7,39 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"  />
-            <RowDefinition Height="50"  />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="50 " />
+            <RowDefinition Height="50 " />
+            <RowDefinition Height="50 " />
+            <RowDefinition Height="50 " />
+            <RowDefinition Height="40 " />
+            <RowDefinition Height="100 " />
         </Grid.RowDefinitions>
-        <CheckBox Grid.Row="4" IsChecked="{Binding IsChecked, Mode=TwoWay}"   />
-        <Label Text="Tuỳ chọn" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"  FontAttributes="Bold" FontSize="Medium" />
-        <Label Text="Tổng Hợp" Grid.Row="1" Grid.Column="0" VerticalOptions="Center"  Margin="10,10"  FontAttributes="Bold" FontSize="Medium"/>
-        <CheckBox  Grid.Row="1" Grid.Column="1" Margin="0"  HorizontalOptions="End" IsChecked="{Binding IsCheckedSummary, Mode=TwoWay}"  CheckedChanged="OnButtonClicked" />
-        <Label Text="Chi tiết" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" Margin="10,10" FontAttributes="Bold" FontSize="Medium"/>
-        <CheckBox Grid.Row="2" Grid.Column="1" Margin="0" VerticalOptions="Center"   HorizontalOptions="End"  IsChecked="{Binding IsCheckedDetail, Mode=TwoWay}"/>
-        <Label Text="Biểu đồ" Grid.Row="3" Grid.Column="0" VerticalOptions="Center"  Margin="10,10" FontAttributes="Bold" FontSize="Medium" />
-        <CheckBox  Grid.Row="3" Grid.Column="1" Margin="0" VerticalOptions="Center" HorizontalOptions="End"  IsChecked="{Binding IsCheckedChart, Mode=TwoWay}"/>
 
+        <CheckBox Grid.Row="4" IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+
+        <Label Text="Tuỳ chọn" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" FontAttributes="Bold" FontSize="Medium" />
+
+        <Label Text="Tổng Hợp" Grid.Row="1" Grid.Column="0" VerticalOptions="Center" Margin="10,10" FontAttributes="Bold" FontSize="Medium" />
+        <CheckBox Grid.Row="1" Grid.Column="1" Margin="0" HorizontalOptions="End" IsChecked="{Binding IsCheckedSummary, Mode=TwoWay}" CheckedChanged="OnButtonClicked" />
+
+        <Label Text="Chi tiết" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" Margin="10,10" FontAttributes="Bold" FontSize="Medium" />
+        <CheckBox Grid.Row="2" Grid.Column="1" Margin="0" VerticalOptions="Center" HorizontalOptions="End" IsChecked="{Binding IsCheckedDetail, Mode=TwoWay}" />
+
+        <Label Text="Biểu đồ" Grid.Row="3" Grid.Column="0" VerticalOptions="Center" Margin="10,10" FontAttributes="Bold" FontSize="Medium" />
+        <CheckBox Grid.Row="3" Grid.Column="1" Margin="0" VerticalOptions="Center" HorizontalOptions="End" IsChecked="{Binding IsCheckedChart, Mode=TwoWay}" />
+
+        <ScrollView Grid.Row="5" Grid.ColumnSpan="2" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout Padding="20" >
+                <Label Text="Select a RadioButton"/>
+                <Label x:Name="DataDisplayLabel" />
+                <StackLayout x:Name="RadioButtonContainer" />
+            </StackLayout>
+        </ScrollView>
+
+        <Button Text="Add RadioButton" Grid.Row="5" Grid.Column="1" Margin="0" VerticalOptions="End" HorizontalOptions="End" Clicked="onRadioBTNCheck" />
     </Grid>
 
 </mct:Popup>

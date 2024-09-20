@@ -8,6 +8,18 @@ namespace MAUI_IOT.Views.PickerView;
 
 public partial class DropDownButton : Frame
 {
+    public static readonly BindableProperty ViewModelProperty = BindableProperty.Create(
+        propertyName: nameof(ViewModel),
+        returnType: typeof(LessonnViewModel),
+        declaringType: typeof(DropDownButton),
+        defaultBindingMode: BindingMode.OneWay
+    );
+
+    public LessonnViewModel ViewModel
+    {
+        get => (LessonnViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
+    }
 
     public static readonly BindableProperty ItemSourceProperty = BindableProperty.Create(
             propertyName: nameof(ItemSource),
@@ -123,7 +135,7 @@ public partial class DropDownButton : Frame
             {
                 if ((bool)newValue)
                 {
-                    var respone = await PopupAction.DisplayPopup<object>(new PickerControl(controls.ItemSource, controls.ItemTemplate, controls.PickerHeightRequest));
+                    var respone = await PopupAction.DisplayPopup<object>(new PickerControl(controls.ItemSource, controls.ItemTemplate, controls.ViewModel, controls.PickerHeightRequest));
                     if (respone != null)
                     {
                         controls.CurrentItems = respone;

@@ -90,9 +90,29 @@ namespace MAUI_IOT.ViewModels
         private const float StrokeThickness_All = 1.5f;
         //private static DateTime startTime = new DateTime();
 
-        //Weight (input)
+
+        //Các thông số khi bắt đầu dữ liệu
         [ObservableProperty]
-        private double m = 0;
+        private ExperimentInfo experimentInfo = new ExperimentInfo()
+        {
+            Weight = 0,
+            Device = "ABCD",
+            SamplingDuration = 5000,
+            SamplingRate = 50
+        };
+
+        [ObservableProperty]
+        private string device;
+
+        [ObservableProperty]
+        private double weight;
+
+        [ObservableProperty]
+        private int samplingDuration;
+
+        [ObservableProperty]
+        private int samplingRate;
+
         //file 
         [ObservableProperty]
         private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
@@ -459,6 +479,9 @@ namespace MAUI_IOT.ViewModels
         private void OnStart()
         {
             Debug.Write("OnStart");
+
+
+            Debug.WriteLine("Khối lượng" + Weight + "\n Tốc độ lấy mẫu: " + SamplingRate + "\n Thời gian lấy mẫu: " + SamplingDuration + ")");
             //if (!IsEnableButtonStart) return;
 
             //if (!IsEnableEntryWeight) return;
@@ -599,7 +622,7 @@ namespace MAUI_IOT.ViewModels
         public void addFile()
         {
             fileCount++;
-            m = 0;
+            ExperimentInfo.Weight = 0;
             datas = new ObservableCollection<Data>();
         }
 
@@ -610,7 +633,7 @@ namespace MAUI_IOT.ViewModels
         public async Task Save(string name)
         {
             FileSave fileSave = new FileSave();
-            fileSave.m = m;
+            fileSave.m = ExperimentInfo.Weight;
             fileSave.datafile = Datas; ;
             string fileName = $"{name}.json";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
@@ -625,7 +648,7 @@ namespace MAUI_IOT.ViewModels
         public async Task Load(string fileName)
         {
             LoadData loader = new LoadData();
-            await loader.Load(fileName, m, datas);
+            await loader.Load(fileName, ExperimentInfo.Weight, datas);
             draw.DrawChart(datas, _accX, _accY, _accZ, _force, Sync);
         }
 
