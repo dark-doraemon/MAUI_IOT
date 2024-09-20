@@ -510,7 +510,7 @@ namespace MAUI_IOT.ViewModels
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
 
-            // SelectedDatas = new ObservableCollection<Data>(Datas);
+            //SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
         [RelayCommand]
@@ -674,7 +674,10 @@ namespace MAUI_IOT.ViewModels
         {
 
             Debug.WriteLine("ADD data vào table ");
-            SelectedDatas = new ObservableCollection<Data>(Datas);
+            //SelectedDatas = new ObservableCollection<Data>(Datas);
+            foreach (var a in Datas)
+            {
+                SelectedDatas.Add(a);
 
         }
 

@@ -100,24 +100,7 @@ public partial class LessonView : ContentPage
 
 
 
-
-        //weight_entry.Unfocused += async (sender, e) =>
-        //{
-        //    if (string.IsNullOrEmpty(weight_entry.Text))
-        //    {
-        //        weight_entry.Text = "0";
-        //        await DisplayAlert("Thông báo", "Vui lòng nhập giá trị", "Nhập lại");
-        //        weight_entry.Focus();
-        //    }
-        //};
-        //weight.Clicked += async (sender, e) =>
-        //{
-        //    if (string.IsNullOrEmpty(weight_entry.Text))
-        //    {
-        //        weight_entry.Text = "0";
-        //        await DisplayAlert("Thông báo", "Vui lòng nhập giá trị", "Nhập lại");
-        //        return;
-        //    }
+      
 
         //};
         GenarateGridWithCharts(Series, Series.Count, true);
