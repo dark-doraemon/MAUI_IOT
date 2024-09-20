@@ -11,6 +11,7 @@
     xmlns:model="clr-namespace:MAUI_IOT.Models"
     xmlns:data="clr-namespace:MAUI_IOT.Models.Data"
     xmlns:services="clr-namespace:MAUI_IOT.Services.Implements"
+    xmlns:customPopup="clr-namespace:MAUI_IOT.Views.PickerView"
     Title="LessonView"
     x:DataType="viewmodel:LessonnViewModel">
 
@@ -24,10 +25,47 @@
         <viewmodel:LessonnViewModel />
     </ContentPage.BindingContext>
     <material:TabView x:Name="tab_View">
+
         <material:TabItem Title="Experiment" x:Name="Experiment" >
             <ScrollView Orientation="Vertical" Padding="10">
-                <Grid x:Name="charts">
+
+                <Grid RowDefinitions="*, *" ColumnDefinitions="*" Grid.Row="0" Grid.Column="0">
+
+                    <Grid RowDefinitions="Auto,*, *, *, *, *, *" ColumnDefinitions="*, *" Margin="40, 0, 10, 0" HorizontalOptions="FillAndExpand">
+
+                        <Label Text="Thông tin thí nghiệm" FontAttributes="Bold" FontSize="24" Grid.ColumnSpan="2" HorizontalOptions="Start"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Số lần thí nghiệm"/>
+                        <Label Grid.Row="2" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Thiết bị"/>
+                        <Label Grid.Row="3" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Khối lượng"/>
+                        <Label Grid.Row="4" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Tốc độ lấy mẫu"/>
+                        <Label Grid.Row="5" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Thời gian lấy mẫu"/>
+
+                        <Label Grid.Row="1" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="1"/>
+                        <Label Grid.Row="2" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Device}"/>
+                        <Label Grid.Row="3" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Weight}"/>
+                        <Label Grid.Row="4" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding SamplingRate}"/>
+                        <Label Grid.Row="5" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding SamplingDuration, Converter={StaticResource ConverterTimestamp}}"/>
+
+                        <customPopup:EditViewButton 
+                                                    x:Name="editBtn"
+                                                    Grid.Column="2" Grid.Row="0"
+                                                    VerticalOptions="Center" 
+                                                    HeightRequest="30" 
+                                                    MinimumWidthRequest="30" 
+                                                    HorizontalOptions="EndAndExpand"
+                                                    CornerRadius="50"
+                                                    BackgroundColor="White"
+                                                    BorderColor="White"
+                                                    ZIndex="2"/>
+                    </Grid>
+
+                    <Grid x:Name="charts" Grid.Row="2" Grid.ColumnSpan="2"/>
+
                 </Grid>
+
+
+
             </ScrollView>
 
         </material:TabItem>
@@ -61,9 +99,8 @@
         <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
             <AbsoluteLayout>
                 <ScrollView AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
-                    <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
-      >
-                        <Grid  x:Name="TongHop"  HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedSummary}">
+                    <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" >
+                        <Grid  x:Name="TongHop"  HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedSummary} ">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
@@ -99,7 +136,6 @@
                         </Grid>
                         <Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}">
                         </Grid>
-
                         <Grid   x:Name="Chitiet" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedDetail}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -153,21 +189,20 @@
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
                         </Grid>
-
                     </VerticalStackLayout>
                 </ScrollView>
                 <Button  Text="popup"  Clicked="OnShowPopupClicked" WidthRequest="75" HeightRequest="75" CornerRadius="37"  AbsoluteLayout.LayoutBounds="1,1,AutoSize,AutoSize"
-AbsoluteLayout.LayoutFlags="PositionProportional"  />
+                                        AbsoluteLayout.LayoutFlags="PositionProportional"  />
             </AbsoluteLayout>
         </material:TabItem>
 
+
+
+
+
+
+
+
     </material:TabView>
-
-
-
-
-
-
-
-
 </ContentPage>
+

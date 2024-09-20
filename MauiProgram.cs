@@ -53,17 +53,13 @@ namespace MAUI_IOT
             builder.Services.AddTransient<ProfileView>();
             builder.Services.AddTransient<ProfileViewModel>();
 
-            builder.Services.AddTransient<LessonView>();
-            builder.Services.AddTransient<LessonnViewModel>();
+            builder.Services.AddSingleton<LessonView>();
+            builder.Services.AddSingleton<LessonnViewModel>();
             //builder.Services.AddViewModel<LessonViewModel, LessonView>();
 
             //builder.Services.AddViewModel<FullScreenChartView,FullScreenChartViewModel>();
             builder.Services.AddTransient<FullScreenChartView>();
             builder.Services.AddTransient<FullScreenChartViewModel>();
-
-
-
-
 
             return builder.Build();
         }

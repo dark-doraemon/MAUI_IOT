@@ -33,6 +33,7 @@ using System.IO;
 using Microcharts;
 using MAUI_IOT.Services.Implements.LineChart;
 using MAUI_IOT.Services.Implements.DataManagement;
+using MAUI_IOT.Models;
 namespace MAUI_IOT.ViewModels
 {
     public partial class LessonnViewModel : ObservableObject
@@ -89,9 +90,29 @@ namespace MAUI_IOT.ViewModels
         private const float StrokeThickness_All = 1.5f;
         //private static DateTime startTime = new DateTime();
 
-        //Weight (input)
+
+        //Các thông số khi bắt đầu dữ liệu
         [ObservableProperty]
-        private double m = 5;
+        private ExperimentInfo experimentInfo = new ExperimentInfo()
+        {
+            Weight = 0,
+            Device = "ABCD",
+            SamplingDuration = 5000,
+            SamplingRate = 50
+        };
+
+        [ObservableProperty]
+        private string device = "Chưa kết nối";
+
+        [ObservableProperty]
+        private double weight;
+
+        [ObservableProperty]
+        private int samplingDuration;
+
+        [ObservableProperty]
+        private int samplingRate;
+
         //file 
         [ObservableProperty]
         private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
@@ -155,33 +176,38 @@ namespace MAUI_IOT.ViewModels
         private string textSelectRangeButton = "Select Range";
 
         private List<Packet> packetList = new List<Packet>();
-        //Test
-        private ObservableCollection<ObservablePoint> ff = new ObservableCollection<ObservablePoint>
-        {
-             new ObservablePoint(2.2, 5.4),
-                        new ObservablePoint(4.5, 2.5),
-                        new ObservablePoint(4.2, 7.4),
-                        new ObservablePoint(6.4, 9.9),
-                        new ObservablePoint(4.2, 9.2),
-                        new ObservablePoint(5.8, 3.5),
-                        new ObservablePoint(7.3, 5.8),
-                        new ObservablePoint(8.9, 3.9),
-                        new ObservablePoint(6.1, 4.6),
-                        new ObservablePoint(9.4, 7.7),
-                        new ObservablePoint(8.4, 8.5),
-                        new ObservablePoint(3.6, 9.6),
-                        new ObservablePoint(4.4, 6.3),
-                        new ObservablePoint(5.8, 4.8),
-                        new ObservablePoint(6.9, 3.4),
-                        new ObservablePoint(7.6, 1.8),
-                        new ObservablePoint(8.3, 8.3),
-                        new ObservablePoint(9.9, 5.2),
-                        new ObservablePoint(8.1, 4.7),
-                        new ObservablePoint(7.4, 3.9),
-                        new ObservablePoint(6.8, 2.3),
-                        new ObservablePoint(5.3, 7.1),
-        };
 
+        //Popup Items
+        [ObservableProperty]
+        public ObservableCollection<Models.Device> devices = new ObservableCollection<Models.Device>();
+
+        [ObservableProperty]
+        public bool isLoadingPopup;
+
+        [ObservableProperty]
+        public bool isActiveLoad;
+
+        [ObservableProperty]
+        public bool isDisplayPicker;
+
+        [ObservableProperty]
+        public Models.Device currentItems = new Models.Device() { Name = "ADXL345", Address = "ABCD/data" };
+
+        [RelayCommand]
+        public void OpenPicker()
+        {
+            IsLoadingPopup = true;
+            IsActiveLoad = true;
+            Devices.Clear();
+
+            Devices.Add(new Models.Device() { Name = "ADXL345", Address = "ABCD/data" });
+            Devices.Add(new Models.Device() { Name = "ESP32", Address = "ABCD/data" });
+            Devices.Add(new Models.Device() { Name = "Humidity", Address = "ABCD/data" });
+            Devices.Add(new Models.Device() { Name = "Temperature", Address = "ABCD/data" });
+
+            IsActiveLoad = false;
+            IsLoadingPopup = false;
+        }
 
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
@@ -444,6 +470,9 @@ namespace MAUI_IOT.ViewModels
         private void OnStart()
         {
             Debug.Write("OnStart");
+
+
+            Debug.WriteLine("Khối lượng" + Weight + "\n Tốc độ lấy mẫu: " + SamplingRate + "\n Thời gian lấy mẫu: " + SamplingDuration + ")");
             //if (!IsEnableButtonStart) return;
 
             //if (!IsEnableEntryWeight) return;
@@ -480,7 +509,8 @@ namespace MAUI_IOT.ViewModels
             IsStartingButtonStart = false;
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
-            SelectedDatas = new ObservableCollection<Data>(Datas);
+
+            // SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
         [RelayCommand]
@@ -582,7 +612,7 @@ namespace MAUI_IOT.ViewModels
         public void addFile()
         {
             fileCount++;
-            m = 0;
+            ExperimentInfo.Weight = 0;
             datas = new ObservableCollection<Data>();
         }
 
@@ -593,7 +623,7 @@ namespace MAUI_IOT.ViewModels
         public async Task Save(string name)
         {
             FileSave fileSave = new FileSave();
-            fileSave.m = m;
+            fileSave.m = ExperimentInfo.Weight;
             fileSave.datafile = Datas; ;
             string fileName = $"{name}.json";
             var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
@@ -608,7 +638,7 @@ namespace MAUI_IOT.ViewModels
         public async Task Load(string fileName)
         {
             LoadData loader = new LoadData();
-            await loader.Load(fileName, m, datas);
+            await loader.Load(fileName, ExperimentInfo.Weight, datas);
             draw.DrawChart(datas, _accX, _accY, _accZ, _force, Sync);
         }
 
@@ -639,13 +669,15 @@ namespace MAUI_IOT.ViewModels
 
 
 
-        public void addData()
+
+        public void addDataDetail()
         {
 
             Debug.WriteLine("ADD data vào table ");
             SelectedDatas = new ObservableCollection<Data>(Datas);
 
         }
+
 
 
         [ObservableProperty]
@@ -667,7 +699,7 @@ namespace MAUI_IOT.ViewModels
                 {
                     listA.Add(Math.Sqrt(item.accX * item.accX + item.accY * item.accY + item.accZ + item.accZ));
                 }
-                listF = listA.Select(a => a * M).ToList();
+                listF = listA.Select(a => a * 5).ToList(); //5 là khối lượng quá nặng 
 
                 AvgF = listF.Average();
 
@@ -685,7 +717,13 @@ namespace MAUI_IOT.ViewModels
 
 
 
-
+            }
         }
+
+
+
+
+
+
     }
 }

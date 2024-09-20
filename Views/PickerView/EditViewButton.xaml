@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Frame xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:model="clr-namespace:MAUI_IOT.Models"
+       x:Class="MAUI_IOT.Views.PickerView.EditViewButton"
+       Padding="0" Margin="0">
+
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+        <Label Text="{x:Static model:FaBrandIcon.ScrewdriverWrench}"
+               FontAttributes="Bold" FontSize="20"
+               FontFamily="FaBrands"
+               TextColor="Black"
+               x:Name="lblDropdown"/>
+    </StackLayout>
+
+    <Frame.GestureRecognizers>
+        <TapGestureRecognizer Tapped="TabGestureRecognizer_Tapped" />
+    </Frame.GestureRecognizers>
+
+</Frame>

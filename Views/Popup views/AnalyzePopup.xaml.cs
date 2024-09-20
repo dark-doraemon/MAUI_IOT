@@ -6,7 +6,8 @@ namespace MAUI_IOT.Views;
 
 public partial class AnalyzePopup : Popup
 {
-
+    private int radioButtonCounter = 0;
+    private int valueCounter = 0;
     public AnalyzePopup(LessonnViewModel viewModel)
     {
         InitializeComponent();
@@ -20,17 +21,35 @@ public partial class AnalyzePopup : Popup
         var viewModel = BindingContext as LessonnViewModel;
         if (viewModel != null)
         {
-            viewModel.addData();  // Gọi hàm trong ViewModel
+            viewModel.addDataDetail();  // Gọi hàm trong ViewModel
         }
-
     }
+
     private void OnButtonSummaryClicked(object sender, CheckedChangedEventArgs e)
     {
         var viewModel = BindingContext as LessonnViewModel;
         if (viewModel != null)
         {
-            viewModel.addDataSummary();  // Gọi hàm trong ViewModel
+            viewModel.addDataSummary();
         }
 
     }
+
+
+
+    //public void onRadioBTNCheck(object sender, EventArgs e)
+    //{
+    //    RadioButton newRadioButton = new RadioButton
+    //    {
+    //        Content = $"Table {radioButtonCounter}",
+    //        BindingContext = valueCounter
+    //    };
+    //    newRadioButton.CheckedChanged += OnRadioButtonCheckedChanged;
+
+    //    RadioButtonContainer.Children.Add(newRadioButton);
+
+    //    radioButtonCounter++;
+    //    valueCounter++;
+    //}
+
 }

@@ -23,9 +23,9 @@ using Microcharts;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
-{
+{   
     private LessonnViewModel _lessonnViewModel;
-    private List<String> Series = new List<string>() { "Series_X", "Series_Y", "Series_Z" };
+    private List<String> Series = new List<string>() { "Series_X", "Series_Y"};
 
     public LessonView(LessonnViewModel lessonnViewModel)
     {
@@ -159,52 +159,7 @@ public partial class LessonView : ContentPage
 
 
 
-    //private void MyButton_Clicked(object sender, EventArgs e)
-    //{
-    //    var selectedItem = myPicker.SelectedItem;
-    //    if (selectedItem != null)
-    //    {
-    //        _lessonnViewModel.Save(selectedItem.ToString());
 
-    //    }
-
-    //}
-
-    //private void addPickerItem(object sender, EventArgs e)
-    //{
-    //    List<string> packetName = new List<string>();
-    //    for (int i = 0; i < _lessonnViewModel.FileCount; i++)
-    //    {
-    //        packetName.Add($"Experiment{i}");
-    //    }
-    //    myPicker.ItemsSource = packetName;
-
-    //}
-
-
-
-    //private void FormatWeightEntry()
-    //{
-    //    double temp = 0;
-    //    try
-    //    {
-    //        string entryAfterFormatted = weight_entry.Text.Replace(",", ".");
-    //        if (double.TryParse(entryAfterFormatted, NumberStyles.Any, CultureInfo.InvariantCulture, out temp))
-    //        {
-    //            _lessonnViewModel.M = temp;
-
-    //            if (temp < 0)
-    //            {
-    //                _lessonnViewModel.M = 0;
-    //                weight_entry.Text = "0";
-    //            }
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Debug.WriteLine(ex.ToString() + "Format entry");
-    //    }
-    //}
 
     private void Tabinit()
     {
@@ -475,17 +430,6 @@ public partial class LessonView : ContentPage
 
         return grid;
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

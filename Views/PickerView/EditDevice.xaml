@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mauiPopup:BasePopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         xmlns:mauiPopup="clr-namespace:MauiPopup.Views;assembly=MauiPopup"
+                         xmlns:model="clr-namespace:MAUI_IOT.Models"
+                         xmlns:viewModel="clr-namespace:MAUI_IOT.ViewModels"
+                         xmlns:customPopup="clr-namespace:MAUI_IOT.Views.PickerView"
+                         x:DataType="viewModel:LessonnViewModel"
+                         x:Class="MAUI_IOT.Views.PickerView.EditDevice"
+                         BackgroundColor="Transparent">
+
+    <ScrollView Padding="30, 100">
+        
+        <Grid RowDefinitions="*, *, *, *, *, Auto" ColumnDefinitions="2*, 3*">
+
+            <Label Grid.ColumnSpan="2" Grid.Row="0" Text="Thí nghiệm lần: 1" HorizontalOptions="Start" VerticalOptions="Center" FontAttributes="Bold" FontSize="24"/>
+
+            <Label Grid.Column="0" Grid.Row="1" Text="Thiết bị: " HorizontalOptions="Start" VerticalOptions="Center"/>
+            <Label Grid.Column="0" Grid.Row="2" Text="Khối lượng: " HorizontalOptions="Start" VerticalOptions="Center"/>
+            <Label Grid.Column="0" Grid.Row="3" Text="Tốc độ lấy mẫu: " HorizontalOptions="Start" VerticalOptions="Center"/>
+            <Label Grid.Column="0" Grid.Row="4" Text="Thời gian lấy mẫu: " HorizontalOptions="Start" VerticalOptions="Center"/>
+
+            <customPopup:DropDownButton x:Name="btnSelectDevice"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Center"    
+                                        Grid.Column="1"
+                                        Grid.Row="1"
+                                        PlaceHolder="Chọn thiết bị"
+                                        ItemSource="{Binding Devices}"
+                                        IsLoading="{Binding IsLoadingPopup}"
+                                        CurrentItems="{Binding CurrentItems}"
+                                        IsDisplayPickerControl="{Binding IsDisplayPicker}"
+                                        DisplayMember="Title"
+                                        OpenPickerCommand="{Binding OpenPickerCommand}"
+                                        PickerHeightRequest="200">
+
+                <customPopup:DropDownButton.ItemTemplate>
+                    <DataTemplate x:DataType="model:Device">
+                        <HorizontalStackLayout VerticalOptions="Center">
+                            <Image Source="dotnet_bot.png" HeightRequest="20" WidthRequest="20" />
+                            <Label Padding="0,5,0,5" FontSize="18" Text="{Binding Name}" />
+                        </HorizontalStackLayout>
+                    </DataTemplate>
+                </customPopup:DropDownButton.ItemTemplate>
+            </customPopup:DropDownButton>
+
+            <Entry Grid.Column="1" Grid.Row="2" Text="{Binding Weight }" Placeholder="Khối lượng" Keyboard="Numeric" VerticalOptions="Center"/>
+            <Entry Grid.Column="1" Grid.Row="3" Text="{Binding SamplingRate}" Placeholder="Tốc độ lấy mẫu" Keyboard="Numeric" VerticalOptions="Center"/>
+            <Entry Grid.Column="1" Grid.Row="4" Text="{Binding SamplingDuration}" Placeholder="Thời gian lấy mẫu" Keyboard="Numeric" VerticalOptions="Center"/>
+
+            <Button Grid.ColumnSpan="2" Grid.Row="5" HorizontalOptions="Center" VerticalOptions="Center" Text="Quay về" Clicked="Button_Clicked" />
+
+
+        </Grid>
+    </ScrollView>
+</mauiPopup:BasePopupPage>
