@@ -20,7 +20,7 @@
             <Label Grid.Column="0" Grid.Row="3" Text="Tốc độ lấy mẫu: " HorizontalOptions="Start" VerticalOptions="Center"/>
             <Label Grid.Column="0" Grid.Row="4" Text="Thời gian lấy mẫu: " HorizontalOptions="Start" VerticalOptions="Center"/>
 
-            <customPopup:DropDownButton 
+            <customPopup:DropDownButton x:Name="btnSelectDevice"
                                         HorizontalOptions="Start"
                                         VerticalOptions="Center"    
                                         Grid.Column="1"

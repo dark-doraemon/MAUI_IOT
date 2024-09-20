@@ -29,11 +29,11 @@
         <material:TabItem Title="Experiment" x:Name="Experiment" >
             <ScrollView Orientation="Vertical" Padding="10">
 
-                <Grid RowDefinitions="*, *" ColumnDefinitions="*, *" Grid.Row="0" Grid.Column="0">
+                <Grid RowDefinitions="*, *" ColumnDefinitions="*" Grid.Row="0" Grid.Column="0">
 
-                    <Grid RowDefinitions="Auto,*, *, *, *, *, *" ColumnDefinitions="10*, 8*, 2*" Grid.ColumnSpan="2" Margin="20, 0, 10, 0">
+                    <Grid RowDefinitions="Auto,*, *, *, *, *, *" ColumnDefinitions="*, *" Margin="40, 0, 10, 0" HorizontalOptions="FillAndExpand">
 
-                        <Label Text="Thông tin thí nghiệm" FontAttributes="Bold" FontSize="24" Grid.ColumnSpan="3" HorizontalOptions="Center"/>
+                        <Label Text="Thông tin thí nghiệm" FontAttributes="Bold" FontSize="24" Grid.ColumnSpan="2" HorizontalOptions="Start"/>
 
                         <Label Grid.Row="1" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Số lần thí nghiệm"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Thiết bị"/>
@@ -41,22 +41,22 @@
                         <Label Grid.Row="4" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Tốc độ lấy mẫu"/>
                         <Label Grid.Row="5" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Thời gian lấy mẫu"/>
 
-                        <Label Grid.Row="1" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" Text="1"/>
-                        <Label Grid.Row="2" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Device}"/>
-                        <Label Grid.Row="3" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Weight}"/>
-                        <Label Grid.Row="4" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding SamplingRate}"/>
-                        <Label Grid.Row="5" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding SamplingDuration, Converter={StaticResource ConverterTimestamp}}"/>
+                        <Label Grid.Row="1" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="1"/>
+                        <Label Grid.Row="2" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Device}"/>
+                        <Label Grid.Row="3" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Weight}"/>
+                        <Label Grid.Row="4" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding SamplingRate}"/>
+                        <Label Grid.Row="5" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding SamplingDuration, Converter={StaticResource ConverterTimestamp}}"/>
 
                         <customPopup:EditViewButton 
                                                     x:Name="editBtn"
-                                                    Grid.Column="2" Grid.RowSpan="3"  Grid.Row="1"
+                                                    Grid.Column="2" Grid.Row="0"
                                                     VerticalOptions="Center" 
-                                                    HeightRequest="40" 
-                                                    MinimumWidthRequest="40" 
+                                                    HeightRequest="30" 
+                                                    MinimumWidthRequest="30" 
                                                     HorizontalOptions="EndAndExpand"
-                                                    BackgroundColor="Yellow"
                                                     CornerRadius="50"
-                                                    BorderColor="Transparent"
+                                                    BackgroundColor="White"
+                                                    BorderColor="White"
                                                     ZIndex="2"/>
                     </Grid>
                     

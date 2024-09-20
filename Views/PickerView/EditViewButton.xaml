@@ -9,7 +9,7 @@
         <Label Text="{x:Static model:FaBrandIcon.ScrewdriverWrench}"
                FontAttributes="Bold" FontSize="20"
                FontFamily="FaBrands"
-               TextColor="Green"
+               TextColor="Black"
                x:Name="lblDropdown"/>
     </StackLayout>
 

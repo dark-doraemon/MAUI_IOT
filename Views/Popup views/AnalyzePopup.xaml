@@ -39,7 +39,7 @@
             </StackLayout>
         </ScrollView>
 
-        <Button Text="Add RadioButton" Grid.Row="5" Grid.Column="1" Margin="0" VerticalOptions="End" HorizontalOptions="End" Clicked="onRadioBTNCheck" />
+        <!--<Button Text="Add RadioButton" Grid.Row="5" Grid.Column="1" Margin="0" VerticalOptions="End" HorizontalOptions="End" Clicked="onRadioBTNCheck" />-->
     </Grid>
 
 </mct:Popup>

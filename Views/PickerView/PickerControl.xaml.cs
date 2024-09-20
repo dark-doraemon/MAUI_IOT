@@ -22,12 +22,11 @@ public partial class PickerControl : BasePopupPage
     private async void clPickerView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var currentItem = e.CurrentSelection.FirstOrDefault();
+
         try
         {
-            
             Models.Device selectedDevice = currentItem as Models.Device;
 
-           
             if (selectedDevice != null)
             {
                 lessonnViewModel.Device = selectedDevice.Name;
@@ -37,6 +36,8 @@ public partial class PickerControl : BasePopupPage
         {
             Debug.WriteLine(ex.ToString());
         }
+
+        await PopupAction.ClosePopup(currentItem);
 
     }
 }

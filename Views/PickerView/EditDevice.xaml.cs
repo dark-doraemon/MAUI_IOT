@@ -13,6 +13,7 @@ public partial class EditDevice : BasePopupPage
     {
         InitializeComponent();
         BindingContext = viewModel;
+        btnSelectDevice.ViewModel = viewModel;
     }
         private async void Button_Clicked(object sender, EventArgs e)
     {

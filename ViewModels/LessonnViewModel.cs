@@ -102,7 +102,7 @@ namespace MAUI_IOT.ViewModels
         };
 
         [ObservableProperty]
-        private string device;
+        private string device = "Chưa kết nối";
 
         [ObservableProperty]
         private double weight;
@@ -213,7 +213,6 @@ namespace MAUI_IOT.ViewModels
             Devices.Add(new Models.Device() { Name = "Humidity", Address = "ABCD/data" });
             Devices.Add(new Models.Device() { Name = "Temperature", Address = "ABCD/data" });
 
-            Task.Delay(1000);
             IsActiveLoad = false;
             IsLoadingPopup = false;
         }
