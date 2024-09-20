@@ -23,9 +23,9 @@ using Microcharts;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
-{   
+{
     private LessonnViewModel _lessonnViewModel;
-    private List<String> Series = new List<string>() { "Series_X", "Series_Y"};
+    private List<String> Series = new List<string>() { "Series_X", "Series_Y" };
 
     public LessonView(LessonnViewModel lessonnViewModel)
     {
@@ -61,11 +61,11 @@ public partial class LessonView : ContentPage
             Text = Models.FaBrandIcon.ChartLine,
             FontSize = 25,
             Padding = 0,
-            Margin = new Thickness(0, 20, 0, 0),
-            HeightRequest = 25,
-            WidthRequest = 25,
+            Margin = new Thickness(0, 20, 20, 0),
+            HeightRequest = 35,
+            WidthRequest = 35,
             HorizontalOptions = LayoutOptions.End,
-            BackgroundColor = Colors.Transparent,
+            BackgroundColor = Colors.Gray,
         };
         charts2.Children.Add(popupButton);
         charts2.SetRow(popupButton, 0);
@@ -100,7 +100,7 @@ public partial class LessonView : ContentPage
 
 
 
-      
+
 
         //};
         GenarateGridWithCharts(Series, Series.Count, true);

@@ -679,9 +679,9 @@ namespace MAUI_IOT.ViewModels
             {
                 SelectedDatas.Add(a);
 
+            }
+
         }
-
-
 
         [ObservableProperty]
         public double standardDeviationA = 0;
@@ -715,18 +715,7 @@ namespace MAUI_IOT.ViewModels
                     sumOfSquares += Math.Pow(item - AvgA, 2);
                 }
 
-
-
-
-
-
             }
         }
-
-
-
-
-
-
     }
 }

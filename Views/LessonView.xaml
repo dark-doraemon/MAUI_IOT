@@ -196,11 +196,7 @@
             </AbsoluteLayout>
         </material:TabItem>
 
-
-
-
-
-
+    </material:TabView>
 
 
 </ContentPage>
