@@ -91,7 +91,7 @@ namespace MAUI_IOT.ViewModels
 
         //Weight (input)
         [ObservableProperty]
-        private double m = 0;
+        private double m = 5;
         //file 
         [ObservableProperty]
         private int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
@@ -100,14 +100,6 @@ namespace MAUI_IOT.ViewModels
         private double xj { get; set; } = -10;
 
 
-
-
-        [ObservableProperty]
-        private bool isCheckedDetail2 = false;
-        [ObservableProperty]
-        private bool isCheckedSummary2 = false;
-        [ObservableProperty]
-        private bool isCheckedChart2 = false;
 
         //IsViewVisible
         [ObservableProperty]
@@ -486,11 +478,9 @@ namespace MAUI_IOT.ViewModels
             IsEnableTabAll = true;
             IsEnableEntryWeight = true;
             IsStartingButtonStart = false;
-
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
-
-            // SelectedDatas = new ObservableCollection<Data>(Datas);
+            SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
         [RelayCommand]
@@ -658,15 +648,50 @@ namespace MAUI_IOT.ViewModels
         }
 
 
+        [ObservableProperty]
+        public double standardDeviationA = 0;
+        [ObservableProperty]
+        public double avgA = 0;
+        [ObservableProperty]
+        public double standardDeviationF = 0;
+        [ObservableProperty]
+        public double avgF = 0;
+        public void addDataSummary()
+        {
+            //a = sqrt(x^2+y^2+z^2)
+            if (Datas.Count > 0)
+            {
+                List<Double> listA = new List<double>();
+                List<Double> listF = new List<double>();
+                foreach (var item in Datas)
+                {
+                    listA.Add(Math.Sqrt(item.accX * item.accX + item.accY * item.accY + item.accZ + item.accZ));
+                }
+                listF = listA.Select(a => a * M).ToList();
+
+                AvgF = listF.Average();
+
+                double sumOfSquaresF = listF.Select(x => Math.Pow(x - AvgF, 2)).Sum();
+                StandardDeviationF = Math.Sqrt(sumOfSquaresF / listF.Count);
+                AvgA = listA.Average();
+                double sumOfSquares = 0;
+                foreach (var item in listA)
+                {
+                    sumOfSquares += Math.Pow(item - AvgA, 2);
+                }
+
+                StandardDeviationA = Math.Sqrt(sumOfSquares / listA.Count);
+            }
+            else
+            {
+                return;
+            }
 
 
 
 
 
 
-
-
-
-
+        }
     }
 }

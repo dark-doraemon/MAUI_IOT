@@ -32,38 +32,61 @@ public partial class LessonView : ContentPage
         InitializeComponent();
         this._lessonnViewModel = lessonnViewModel;
         BindingContext = lessonnViewModel;
-        //   Tabinit();
-        //weight_entry.Text = lessonnViewModel.M.ToString();
-        //weight_entry.Focused += (sender, e) =>
-        //{
-        //    weight_entry.Text = "";
-        //    weight_entry.Focus();
-        //};
 
+        table_data1.HeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.5;
+        TongHop.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
+        charts2.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
+        Chitiet.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
         // chart table 
 
-        //CartesianChart cartesianChart2 = new CartesianChart
-        //{
-        //    Padding = new Thickness(0, 0, 0, 0),
-        //    Margin = new Thickness(0, 0, 0, 0),
-        //    ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,
-        //    MinimumHeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.7
-        //};
+        CartesianChart cartesianChart2 = new CartesianChart
+        {
+            Padding = new Thickness(0, 0, 0, 0),
+            Margin = new Thickness(0, 0, 0, 0),
+            ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,
+            MinimumHeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.7
+        };
+        //  charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-        //// Set up binding for chart
-        //cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series", Mode = BindingMode.OneWay });
-        //cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
-        //cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
-        //cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
-        //cartesianChart2.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
+        // Set up binding for chart
+        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
+        Button popupButton = new Button
+        {
+            FontFamily = "FaBrands",
+            TextColor = Colors.Black,
+            Text = Models.FaBrandIcon.ChartLine,
+            FontSize = 25,
+            Padding = 0,
+            Margin = new Thickness(0, 20, 0, 0),
+            HeightRequest = 25,
+            WidthRequest = 25,
+            HorizontalOptions = LayoutOptions.End,
+            BackgroundColor = Colors.Transparent,
+        };
+        charts2.Children.Add(popupButton);
+        charts2.SetRow(popupButton, 0);
+        charts2.SetColumnSpan(popupButton, 2);
+        charts2.SetColumn(popupButton, 0);
 
 
 
 
-        //charts2.Children.Add(cartesianChart2);
-        //charts2.SetRow(cartesianChart2, 1);
-        //charts2.SetColumnSpan(cartesianChart2, 2);
-        //charts2.SetColumn(cartesianChart2, 0);
+        charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+        charts2.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+        charts2.Children.Add(cartesianChart2);
+        charts2.SetRow(cartesianChart2, 1);
+        charts2.SetColumnSpan(cartesianChart2, 2);
+        charts2.SetColumn(cartesianChart2, 0);
+
+        popupButton.Clicked += (sender, e) =>
+        {
+        };
 
 
 
@@ -98,7 +121,6 @@ public partial class LessonView : ContentPage
 
         //};
         GenarateGridWithCharts(Series, Series.Count, true);
-
         Picker myPicker = this.FindByName<Picker>("myPicker");
 
         if (myPicker != null)
@@ -192,12 +214,17 @@ public partial class LessonView : ContentPage
 
     private void OnShowPopupClicked(object sender, EventArgs e)
     {
-        var popup = new AnalyzePopup(_lessonnViewModel);  // Tạo một instance của popup
-        this.ShowPopup(popup);           // Hiển thị popup
+        var popup = new AnalyzePopup(_lessonnViewModel);
+        this.ShowPopup(popup);
     }
 
 
 
+    //private void OnShowAddChartLinePopupClicked(object sender, EventArgs e)
+    //{
+    //    var popup = new AddChartLinePopup(_lessonnViewModel);
+    //    this.ShowPopup(popup);
+    //}
 
 
 
@@ -384,14 +411,12 @@ public partial class LessonView : ContentPage
                 HorizontalOptions = LayoutOptions.Start,
                 BackgroundColor = Colors.Transparent
             };
-
             button.Clicked += (sender, e) =>
             {
                 GenarateGridWithCharts(Series, Series.Count, true);
                 Debug.WriteLine("Serie: " + Series.Count);
             };
         }
-
         //Button close chart
         Button xmarks = new Button
         {

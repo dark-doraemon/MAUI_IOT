@@ -13,7 +13,9 @@ public partial class AnalyzePopup : Popup
         BindingContext = viewModel;
     }
 
-    private void OnButtonClicked(object sender, EventArgs e)
+
+
+    private void OnButtonDetaiClicked(object sender, CheckedChangedEventArgs e)
     {
         var viewModel = BindingContext as LessonnViewModel;
         if (viewModel != null)
@@ -22,6 +24,13 @@ public partial class AnalyzePopup : Popup
         }
 
     }
+    private void OnButtonSummaryClicked(object sender, CheckedChangedEventArgs e)
+    {
+        var viewModel = BindingContext as LessonnViewModel;
+        if (viewModel != null)
+        {
+            viewModel.addDataSummary();  // Gọi hàm trong ViewModel
+        }
 
-
+    }
 }
