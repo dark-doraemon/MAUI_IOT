@@ -39,66 +39,8 @@ public partial class LessonView : ContentPage
         Chitiet.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
         // chart table 
 
-        CartesianChart cartesianChart2 = new CartesianChart
-        {
-            Padding = new Thickness(0, 0, 0, 0),
-            Margin = new Thickness(0, 0, 0, 0),
-            ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,
-            MinimumHeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.7
-        };
-        //  charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-        // Set up binding for chart
-        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series", Mode = BindingMode.OneWay });
-        cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
-        cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
-        cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
-        cartesianChart2.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
-        Button popupButton = new Button
-        {
-            FontFamily = "FaBrands",
-            TextColor = Colors.Black,
-            Text = Models.FaBrandIcon.ChartLine,
-            FontSize = 25,
-            Padding = 0,
-            Margin = new Thickness(0, 20, 20, 0),
-            HeightRequest = 35,
-            WidthRequest = 35,
-            HorizontalOptions = LayoutOptions.End,
-            BackgroundColor = Colors.Gray,
-        };
-        charts2.Children.Add(popupButton);
-        charts2.SetRow(popupButton, 0);
-        charts2.SetColumnSpan(popupButton, 2);
-        charts2.SetColumn(popupButton, 0);
-
-
-
-
-        charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-        charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
-        charts2.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-        charts2.Children.Add(cartesianChart2);
-        charts2.SetRow(cartesianChart2, 1);
-        charts2.SetColumnSpan(cartesianChart2, 2);
-        charts2.SetColumn(cartesianChart2, 0);
-
-        popupButton.Clicked += (sender, e) =>
-        {
-        };
-
-
-
-
-
-
-
-
-
-
-
-
+        GenarateAnalyzeChart();
 
 
 
@@ -111,34 +53,8 @@ public partial class LessonView : ContentPage
             myPicker.Title = "Chọn 1 mục ";
         }
         List<string> packetName = new List<string>();
-        //for (int i = 0; i < lessonnViewModel.FileCount; i++)
-        //{
-        //    packetName.Add($"Experiment{i}");
-        //}
-        //myPicker.ItemsSource = packetName;
-        //myPicker.SelectedIndexChanged += (sender, e) =>
-        //{
-        //    var selectedItem = (sender as Picker)?.SelectedItem;
-        //    getdata(selectedItem);
-        //    weight_entry.Text = _lessonnViewModel.M.ToString();
-        //};
-        //Button myButton = this.FindByName<Button>("myButton");
-        //if (myButton != null)
-        //{
-        //    myButton.Clicked += MyButton_Clicked;
-        //}
+
     }
-
-
-
-
-    private void OnButtonClicked(object sender, EventArgs e)
-    {
-        // Xử lý sự kiện click của Button
-        DisplayAlert("Button Clicked", "You clicked the button!", "OK");
-    }
-
-
 
 
 
@@ -154,8 +70,175 @@ public partial class LessonView : ContentPage
     {
         var popup = new AnalyzePopup(_lessonnViewModel);
         this.ShowPopup(popup);
-    }
 
+    }
+    private void GenarateAnalyzeChart()
+    {
+        charts2.Clear();
+        CartesianChart cartesianChart2 = new CartesianChart
+        {
+            Padding = new Thickness(0, 0, 0, 0),
+            Margin = new Thickness(0, 0, 0, 0),
+            ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.None,
+            MinimumHeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.7
+        };
+        //  charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        Button popupButton = new Button
+        {
+            FontFamily = "FaBrands",
+            TextColor = Colors.Black,
+            Text = Models.FaBrandIcon.ChartLine,
+            FontSize = 40,
+            Padding = 0,
+            Margin = new Thickness(0, 20, 20, 0),
+            HeightRequest = 50,
+            WidthRequest = 50,
+            HorizontalOptions = LayoutOptions.End,
+            BackgroundColor = Colors.Transparent,
+
+        };
+
+        Grid grid2 = new Grid
+        {
+            RowDefinitions =
+            {
+                new RowDefinition { Height = new GridLength(30,GridUnitType.Absolute) },
+                new RowDefinition { Height = new GridLength(30,GridUnitType.Absolute) },
+                new RowDefinition { Height = new GridLength(30,GridUnitType.Absolute) },
+                new RowDefinition { Height = new GridLength(30,GridUnitType.Absolute) },
+            },
+            ColumnDefinitions =
+            {
+                new ColumnDefinition { Width = new GridLength(0.2, GridUnitType.Star) },
+                new ColumnDefinition { Width = new GridLength(0.2, GridUnitType.Star) }
+            },
+            HorizontalOptions = LayoutOptions.End,
+            Margin = new Thickness(0, 20, 20, 0),
+            IsVisible = false,
+
+        };  // grid chứa tuỳ chọn line 
+        bool isClicked = false;
+        popupButton.Clicked += (sender, e) =>
+        {
+            if (isClicked == true)
+            {
+                popupButton.BackgroundColor = Colors.Gray;
+                grid2.IsVisible = true;
+            }
+            else
+            {
+                popupButton.BackgroundColor = Colors.Transparent;
+                grid2.IsVisible = false;
+
+            }
+            isClicked = !isClicked;
+        };
+
+        CheckBox checkBox1 = new CheckBox
+        {
+            IsChecked = false,
+        };
+        CheckBox checkBox2 = new CheckBox
+        {
+            IsChecked = false,
+        };
+        CheckBox checkBox3 = new CheckBox
+        {
+            IsChecked = false,
+        };
+        CheckBox checkBox4 = new CheckBox
+        {
+            IsChecked = false,
+        };
+
+        Label dothi1 = new Label()
+        {
+            Text = "Đồ Thị 1",
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center,
+            FontAttributes = FontAttributes.Bold,
+            FontSize = 10
+        };
+        Label dothi2 = new Label()
+        {
+            Text = "Đồ Thị 2",
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center,
+            FontAttributes = FontAttributes.Bold,
+            FontSize = 10
+        };
+        Label dothi3 = new Label()
+        {
+            Text = "Đồ Thị 3",
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center,
+            FontAttributes = FontAttributes.Bold,
+            FontSize = 10
+        };
+        Label dothi4 = new Label()
+        {
+            Text = "Đồ Thị 4",
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center,
+            FontAttributes = FontAttributes.Bold,
+            FontSize = 10
+        };
+        grid2.Children.Add(dothi1);
+        grid2.Children.Add(dothi2);
+        grid2.Children.Add(dothi3);
+        grid2.Children.Add(dothi4);
+        grid2.Children.Add(checkBox1);
+        grid2.Children.Add(checkBox2);
+        grid2.Children.Add(checkBox3);
+        grid2.Children.Add(checkBox4);
+        grid2.SetRow(checkBox1, 0);
+        grid2.SetRow(checkBox2, 1);
+        grid2.SetRow(checkBox3, 2);
+        grid2.SetRow(checkBox4, 3);
+        grid2.SetColumn(checkBox1, 0);
+        grid2.SetColumn(checkBox2, 0);
+        grid2.SetColumn(checkBox3, 0);
+        grid2.SetColumn(checkBox4, 0);
+        grid2.SetColumn(dothi1, 1);
+        grid2.SetColumn(dothi2, 1);
+        grid2.SetColumn(dothi3, 1);
+        grid2.SetColumn(dothi4, 1);
+        grid2.SetRow(dothi1, 0);
+        grid2.SetRow(dothi2, 1);
+        grid2.SetRow(dothi3, 2);
+        grid2.SetRow(dothi4, 3);
+
+
+
+
+
+        // Set up binding for chart
+        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
+
+
+        charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+        charts2.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        charts2.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+        charts2.Children.Add(popupButton);
+        charts2.Children.Add(cartesianChart2);
+        charts2.Children.Add(grid2);
+        charts2.SetRow(cartesianChart2, 1);
+        charts2.SetColumn(cartesianChart2, 0);
+        charts2.SetColumnSpan(cartesianChart2, 2);
+        charts2.SetColumnSpan(grid2, 2);
+        charts2.SetColumn(grid2, 0);
+        charts2.SetRow(grid2, 1);
+        charts2.SetRow(popupButton, 0);
+        charts2.SetColumn(popupButton, 1);
+
+
+    }
 
 
     //private void OnShowAddChartLinePopupClicked(object sender, EventArgs e)

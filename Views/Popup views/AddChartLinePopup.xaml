@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI_IOT.Views.AddChartLinePopup"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+      >
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"  />
+            <RowDefinition Height="50"  />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Label Text="Tuỳ chọn" Grid.Row="0" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center"  FontAttributes="Bold" FontSize="Medium" />
+        <Label Text="Tổng Hợp" Grid.Row="1" Grid.Column="0" VerticalOptions="Center"  Margin="10,10"  FontAttributes="Bold" FontSize="Medium"/>
+        <CheckBox  Grid.Row="1" Grid.Column="1" Margin="0"  HorizontalOptions="End" IsChecked="{Binding IsCheckedSummary, Mode=TwoWay} "  />
+        <Label Text="Chi tiết" Grid.Row="2" Grid.Column="0" VerticalOptions="Center" Margin="10,10" FontAttributes="Bold" FontSize="Medium" />
+        <CheckBox Grid.Row="2" Grid.Column="1" Margin="0" VerticalOptions="Center"   HorizontalOptions="End"  IsChecked="{Binding IsCheckedDetail}"  />
+        <Label Text="Biểu đồ" Grid.Row="3" Grid.Column="0" VerticalOptions="Center"  Margin="10,10" FontAttributes="Bold" FontSize="Medium" />
+        <CheckBox  Grid.Row="3" Grid.Column="1" Margin="0" VerticalOptions="Center" HorizontalOptions="End"  IsChecked="{Binding IsCheckedChart, Mode=TwoWay}"/>
+
+    </Grid>
+
+</mct:Popup>
