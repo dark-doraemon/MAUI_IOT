@@ -122,9 +122,6 @@
 		<MauiXaml Update="Views\ADXL345View.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Views\Popup views\AddChartLinePopup.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Views\Popup views\AnalyzePopup.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
