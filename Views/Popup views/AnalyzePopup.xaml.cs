@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Extensions;
+using CommunityToolkit.Maui.Views;
 using LiveChartsCore.Measure;
 using MAUI_IOT.ViewModels;
 using Microsoft.Maui.Layouts;
@@ -14,7 +15,7 @@ public partial class AnalyzePopup : Popup
     {
         InitializeComponent();
         BindingContext = viewModel;
-        GirdChoice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        GirdChoice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(0.5, GridUnitType.Star) });
         GirdChoice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
         int datacouter = 5;
@@ -35,12 +36,12 @@ public partial class AnalyzePopup : Popup
 
 
         Grid comparegird = new Grid();
-
+        comparegird.BackgroundColor = Colors.Cyan;
         comparegird.ColumnDefinitions.Clear();
         comparegird.RowDefinitions.Clear();
         comparegird.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
         comparegird.VerticalOptions = LayoutOptions.Start;
-        comparegird.Margin = new Thickness(0, 10, 0, 100);// Cách viền trên một chút (10px)
+        comparegird.Margin = new Thickness(0, 10, 0, 0);
         comparegird.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         comparegird.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
@@ -148,16 +149,17 @@ public partial class AnalyzePopup : Popup
     Grid GenDataGrid(int n)
     {
         Grid grid = new Grid();
+        grid.BackgroundColor = Colors.Red;
         grid.ColumnDefinitions.Clear();
         grid.RowDefinitions.Clear();
         grid.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
         for (int i = 0; i < 6; i++)
         {
             if (i % 2 == 0)
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.75, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0.6, GridUnitType.Star) });
             else
             {
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1.4, GridUnitType.Star) });
 
             }
         }
@@ -180,11 +182,10 @@ public partial class AnalyzePopup : Popup
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             Label lblName = new Label
             {
-                Text = $"Thí Nghiệm  Lần {i}",
+                Text = $"Thí Nghiệm Lần {i}",
                 VerticalOptions = LayoutOptions.Center,
                 FontAttributes = FontAttributes.Bold,
                 FontSize = 15,
-                Margin = new Thickness(5, 5),
 
             };
 
@@ -193,7 +194,8 @@ public partial class AnalyzePopup : Popup
                 Text = $"F(l{i})",
                 VerticalOptions = LayoutOptions.Center,
                 FontAttributes = FontAttributes.Bold,
-                FontSize = 15
+                FontSize = 15,
+                Margin = new Thickness(5, 0, 0, 0)
             };
             CheckBox chkF = new CheckBox
             {
