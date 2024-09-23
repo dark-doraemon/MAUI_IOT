@@ -59,11 +59,11 @@
                                                     BorderColor="White"
                                                     ZIndex="2"/>
                     </Grid>
-                    
+
                     <Grid x:Name="charts" Grid.Row="2" Grid.ColumnSpan="2"/>
 
                 </Grid>
-       
+
 
 
             </ScrollView>
@@ -99,7 +99,6 @@
 
 
         </material:TabItem>
-
 
         <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
 
@@ -231,6 +230,53 @@ AbsoluteLayout.LayoutFlags="PositionProportional"  />
             </AbsoluteLayout>
         </material:TabItem>
 
+        <material:TabItem Title="Database Mock">
+            <Grid RowDefinitions="Auto, *, 2*">
+
+                <HorizontalStackLayout>
+                    <Button Text="Load Data" Command="{Binding LoadDataFromDatabaseCommand}" />
+                    <Button Text="Save Data" Command="{Binding SaveCommand}" />
+                    <Entry Text="{Binding IdExInfo}" Keyboard="Numeric"/>
+                </HorizontalStackLayout>
+
+                <ListView x:Name="listView" ItemsSource="{Binding ExInfo_database}" Grid.Row="1">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="*, *">
+
+                                <Label Grid.Column="0" Grid.Row="0" Text="Experiment Id: "/>
+                                <Label Grid.Column="0" Grid.Row="1" Text="Device: "/>
+                                <Label Grid.Column="0" Grid.Row="2" Text="Weight: "/>
+                                <Label Grid.Column="0" Grid.Row="3" Text="SamplingRate: "/>
+                                <Label Grid.Column="0" Grid.Row="4" Text="SamplingDuration: "/>
+
+                                <Label Grid.Column="1" Grid.Row="0" x:DataType="model:ExperimentInfo" Text="{Binding ExperimentInfoId}"/>
+                                <Label Grid.Column="1" Grid.Row="1" x:DataType="model:ExperimentInfo" Text="{Binding Device}"/>
+                                <Label Grid.Column="1" Grid.Row="2" x:DataType="model:ExperimentInfo" Text="{Binding Weight}"/>
+                                <Label Grid.Column="1" Grid.Row="3" x:DataType="model:ExperimentInfo" Text="{Binding SamplingRate}"/>
+                                <Label Grid.Column="1" Grid.Row="4" x:DataType="model:ExperimentInfo" Text="{Binding SamplingDuration}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <ListView ItemsSource="{Binding Data_database}" Grid.Row="2">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid RowDefinitions="Auto" ColumnDefinitions="*, *, *, *, *, *, * ">
+                                <Label Grid.Column="0" x:DataType="data:Data" Text="{Binding DataId}"/>
+                                <Label Grid.Column="1" x:DataType="data:Data" Text="{Binding timestamp}"/>
+                                <Label Grid.Column="2" x:DataType="data:Data" Text="{Binding accX}"/>
+                                <Label Grid.Column="3" x:DataType="data:Data" Text="{Binding accY}"/>
+                                <Label Grid.Column="4" x:DataType="data:Data" Text="{Binding accZ}"/>
+                                <Label Grid.Column="5" x:DataType="data:Data" Text="{Binding force}"/>
+                                <Label Grid.Column="6" x:DataType="data:Data" Text="{Binding ExperimentInfoId}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </material:TabItem>
 
 
 

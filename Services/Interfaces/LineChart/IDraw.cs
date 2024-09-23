@@ -14,6 +14,5 @@ namespace MAUI_IOT.Services.Interfaces.LineChart
     {
         public void DrawChart(ObservableCollection<Data> data, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, object Sync);
         public void DrawChart(Packet packet, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, ObservableCollection<Data> Datas, object Sync);
-
     }
 }

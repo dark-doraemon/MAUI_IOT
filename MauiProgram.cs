@@ -1,4 +1,5 @@
-﻿using MAUI_IOT.Services.Implements;
+using Syncfusion.Maui.Core.Hosting;
+using MAUI_IOT.Services.Implements;
 using MAUI_IOT.Services.Implements.MQTT;
 using MAUI_IOT.Services.Interfaces;
 using MAUI_IOT.Services.Interfaces.MQTT;
@@ -23,6 +24,7 @@ namespace MAUI_IOT
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+            .ConfigureSyncfusionCore()
                 .UseSkiaSharp(true)
                 .UseMicrocharts()
                 .UseUraniumUI()

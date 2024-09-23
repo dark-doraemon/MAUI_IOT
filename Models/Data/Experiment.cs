@@ -8,17 +8,15 @@ using System.Threading.Tasks;
 
 namespace MAUI_IOT.Models.Data
 {
-    public class Data
+    public class Experiment
     {
         [PrimaryKey, AutoIncrement]
-        public int DataId { get; set; }
-        public int timestamp {get; set;}
-        public double accX { get; set; }
-        public double accY { get; set; }
-        public double accZ { get; set; }
-        public double force { get; set; }
+        public int ExperimentId { get; set; }
+        [Unique]
+        public string ExperimentName { get; set; } = string.Empty;
+        public DateTime DateTime { get; set; }
 
-        [ForeignKey(nameof(ExperimentInfo))]
+        [ForeignKey(nameof(Experiment))]
         public int ExperimentInfoId { get; set; }
     }
 }
