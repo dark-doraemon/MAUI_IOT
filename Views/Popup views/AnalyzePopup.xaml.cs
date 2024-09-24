@@ -84,7 +84,7 @@ public partial class AnalyzePopup : Popup
             HorizontalOptions = LayoutOptions.Start,
         };
         chkTongHop.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsCheckedSummary", BindingMode.TwoWay));
-
+        chkTongHop.CheckedChanged += OnButtonSummaryClicked;
         // Thêm Label và CheckBox "Tổng Hợp" vào hàng 1, cột 0 và cột 1
         Grid.SetRow(lblTongHop, 1);
         Grid.SetColumn(lblTongHop, 0);
@@ -108,7 +108,7 @@ public partial class AnalyzePopup : Popup
             HorizontalOptions = LayoutOptions.Start,
         };
         chkChiTiet.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsCheckedDetail", BindingMode.TwoWay));
-
+        chkChiTiet.CheckedChanged += OnButtonDetaiClicked;
         // Thêm Label và CheckBox "Chi Tiết" vào hàng 1, cột 2 và cột 3
         Grid.SetRow(lblChiTiet, 1);
         Grid.SetColumn(lblChiTiet, 2);
@@ -132,7 +132,6 @@ public partial class AnalyzePopup : Popup
             HorizontalOptions = LayoutOptions.Start,
         };
         chkBieuDo.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsCheckedChart", BindingMode.TwoWay));
-
         // Thêm Label và CheckBox "Biểu Đồ" vào hàng 1, cột 4 và cột 5
         Grid.SetRow(lblBieuDo, 1);
         Grid.SetColumn(lblBieuDo, 4);
