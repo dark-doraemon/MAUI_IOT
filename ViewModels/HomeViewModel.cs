@@ -45,12 +45,5 @@ namespace MAUI_IOT.ViewModels
                 Debug.WriteLine("Move to lession" + ex.Message.ToString());
             }
         }
-
-
-
-
-
-
-
     }
 }

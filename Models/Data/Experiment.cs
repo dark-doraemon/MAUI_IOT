@@ -10,13 +10,13 @@ namespace MAUI_IOT.Models.Data
 {
     public class Experiment
     {
-        [PrimaryKey, AutoIncrement]
-        public int ExperimentId { get; set; }
+        [PrimaryKey]
+        public string ExperimentId { get; set; }
         [Unique]
         public string ExperimentName { get; set; } = string.Empty;
         public DateTime DateTime { get; set; }
 
         [ForeignKey(nameof(Experiment))]
-        public int ExperimentInfoId { get; set; }
+        public string ExperimentInfoId { get; set; }
     }
 }

@@ -40,10 +40,10 @@ namespace MAUI_IOT.Services.Implements.LineChart
             }
         }
 
-       
 
 
-        public void DrawChart(Packet packet, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, ObservableCollection<Data> Datas, object Sync)
+
+        public void DrawChart(Packet packet, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, ObservableCollection<ObservablePoint> _accF, ObservableCollection<ObservablePoint> _acca, ObservableCollection<Data> Datas, object Sync)
         {
             if (packet != null)
             {
@@ -53,15 +53,21 @@ namespace MAUI_IOT.Services.Implements.LineChart
                     _accY.Clear();
                     _accZ.Clear();
                     _force.Clear();
+                    _acca.Clear();
+                    _accF.Clear();
                     foreach (Data data in packet.data)
                     {
                         //chart
                         double time = data.timestamp / 1000.0;
+
                         //chart
                         _accX.Add(new ObservablePoint(time, data.accX));
                         _accY.Add(new ObservablePoint(time, data.accY));
                         _accZ.Add(new ObservablePoint(time, data.accZ));
-                        _force.Add(new ObservablePoint(data.accX, data.accY));
+                        _force.Add(new ObservablePoint(time, data.accY));
+                        _accF.Add(new ObservablePoint(time, data.force));
+                        _acca.Add(new ObservablePoint(time, data.a));
+
                         //table
                         Datas.Add(data);
 

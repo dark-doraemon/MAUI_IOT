@@ -24,6 +24,7 @@
     <ContentPage.BindingContext>
         <viewmodel:LessonnViewModel />
     </ContentPage.BindingContext>
+
     <material:TabView x:Name="tab_View">
 
         <material:TabItem Title="Experiment" x:Name="Experiment" >
@@ -120,23 +121,22 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Row="0" Grid.Column="1" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Row="0" Grid.Column="2" Text="a" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                                <Label Grid.Row="0" Grid.Column="1" Text="F (N)" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                                <Label Grid.Row="0" Grid.Column="2" Text="a (m/s^2)" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
                                 <Label Grid.Row="1" Grid.Column="0" Text="AVG" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding AvgF}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Row="1" Grid.Column="2" Text="{Binding AvgA}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding AvgF, StringFormat='{0:F3}'}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                                <Label Grid.Row="1" Grid.Column="2" Text="{Binding AvgA, StringFormat='{0:F3}'}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
                                 <Label Grid.Row="2" Grid.Column="0" Text="STD" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding StandardDeviationF}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
-                                <Label Grid.Row="2" Grid.Column="2" Text="{Binding StandardDeviationA}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding StandardDeviationF, StringFormat='{0:F3}'}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
+                                <Label Grid.Row="2" Grid.Column="2" Text="{Binding StandardDeviationA, StringFormat='{0:F3}'}" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold" />
                             </Grid>
                         </Grid>
-                        <Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}">
-                        </Grid>
-                        <Grid   x:Name="Chitiet" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedDetail}">
+
+                        <Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}"></Grid>
+                        
+                        <Grid x:Name="Chitiet" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedDetail}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
@@ -146,8 +146,10 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Grid Grid.Row="0" ColumnSpan="3" BackgroundColor="LightGray" Padding="10">
+                            
+                            <Grid Grid.Row="0" ColumnSpan="5" BackgroundColor="LightGray" Padding="10">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
@@ -167,12 +169,12 @@
                                 <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
 
                             </Grid>
-                            <CollectionView Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding SelectedDatas}" x:Name="table_data1" ItemsUpdatingScrollMode="KeepScrollOffset">
+                            
+                            <CollectionView Grid.Row="1" Grid.ColumnSpan="5" ItemsSource="{Binding SelectedDatas}" x:Name="table_data1" ItemsUpdatingScrollMode="KeepScrollOffset">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="data:Data">
                                         <Grid Padding="10">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="*" />
@@ -202,49 +204,34 @@
                 <HorizontalStackLayout>
                     <Button Text="Load Data" Command="{Binding LoadDataFromDatabaseCommand}" />
                     <Button Text="Save Data" Command="{Binding SaveCommand}" />
-                    <Entry Text="{Binding IdExInfo}" Keyboard="Numeric"/>
+                    <Button Text="List Data" Clicked="Button_Clicked" Command="{Binding testDatabaseThoughClickedCommand}"/>
+                    <Label Text="{Binding CurrentFileName}" />
                 </HorizontalStackLayout>
 
-                <ListView x:Name="listView" ItemsSource="{Binding ExInfo_database}" Grid.Row="1">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="*, *">
+                <Grid x:Name="listData" RowDefinitions="*" ColumnDefinitions="*" Grid.Row="2" BackgroundColor="White" HeightRequest="400">
+                    <CollectionView ItemsSource="{Binding Experiment_database}" x:Name="CollectionView">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="data:Experiment">
+                                <Frame Padding="10" Margin="5" BorderColor="LightGray" CornerRadius="8" HasShadow="True">
+                                    
+                                    <Grid ColumnDefinitions="*, *">
+                                        <Label Grid.Column="0" Text="{Binding ExperimentName}" FontAttributes="Bold" FontSize="16"/>
+                                        <Label Grid.Column="1" Text="{Binding DateTime}" TextColor="Gray"/>
+                                    </Grid>
 
-                                <Label Grid.Column="0" Grid.Row="0" Text="Experiment Id: "/>
-                                <Label Grid.Column="0" Grid.Row="1" Text="Device: "/>
-                                <Label Grid.Column="0" Grid.Row="2" Text="Weight: "/>
-                                <Label Grid.Column="0" Grid.Row="3" Text="SamplingRate: "/>
-                                <Label Grid.Column="0" Grid.Row="4" Text="SamplingDuration: "/>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:LessonnViewModel}}, Path=ExperimentTappedCommand}" CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
-                                <Label Grid.Column="1" Grid.Row="0" x:DataType="model:ExperimentInfo" Text="{Binding ExperimentInfoId}"/>
-                                <Label Grid.Column="1" Grid.Row="1" x:DataType="model:ExperimentInfo" Text="{Binding Device}"/>
-                                <Label Grid.Column="1" Grid.Row="2" x:DataType="model:ExperimentInfo" Text="{Binding Weight}"/>
-                                <Label Grid.Column="1" Grid.Row="3" x:DataType="model:ExperimentInfo" Text="{Binding SamplingRate}"/>
-                                <Label Grid.Column="1" Grid.Row="4" x:DataType="model:ExperimentInfo" Text="{Binding SamplingDuration}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-
-                <ListView ItemsSource="{Binding Data_database}" Grid.Row="2">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid RowDefinitions="Auto" ColumnDefinitions="*, *, *, *, *, *, * ">
-                                <Label Grid.Column="0" x:DataType="data:Data" Text="{Binding DataId}"/>
-                                <Label Grid.Column="1" x:DataType="data:Data" Text="{Binding timestamp}"/>
-                                <Label Grid.Column="2" x:DataType="data:Data" Text="{Binding accX}"/>
-                                <Label Grid.Column="3" x:DataType="data:Data" Text="{Binding accY}"/>
-                                <Label Grid.Column="4" x:DataType="data:Data" Text="{Binding accZ}"/>
-                                <Label Grid.Column="5" x:DataType="data:Data" Text="{Binding force}"/>
-                                <Label Grid.Column="6" x:DataType="data:Data" Text="{Binding ExperimentInfoId}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                </Grid>
             </Grid>
         </material:TabItem>
 
 
 
-
+    </material:TabView>
 </ContentPage>

@@ -12,14 +12,14 @@ namespace MAUI_IOT.Models
 {
     public class ExperimentInfo
     {
-        [PrimaryKey, AutoIncrement]
-        public int ExperimentInfoId { get; set; }
+        [PrimaryKey]
+        public string ExperimentInfoId { get; set; }
         public string Device {  get; set; } = string.Empty;
         public double Weight { get; set; }
         public int SamplingRate { get; set;}
         public int SamplingDuration { get; set;}
 
         [ForeignKey(nameof(Experiment))]
-        public int ExperimentId { get; set; }
+        public string ExperimentId { get; set; }
     }
 }

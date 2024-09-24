@@ -15,7 +15,7 @@ namespace MAUI_IOT.Services.Implements.DataManagement
     public class DatabaseHelper
     {
         private SQLiteAsyncConnection _conn;
-
+        public static string Database_path { get; set; }
         public DatabaseHelper(string fileName)
         {
 
@@ -24,20 +24,16 @@ namespace MAUI_IOT.Services.Implements.DataManagement
             string dbPath;
 
 #if ANDROID
-// Dùng đường dẫn ngoài app, ví dụ lưu trong thư mục Documents
             dbPath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, fileName);
 #elif WINDOWS
-// Lưu file trong thư mục Downloads của Windows
-            dbPath = Path.Combine(FileSystem.AppDataDirectory, "MyDatabase.db3");
+            dbPath = Path.Combine(FileSystem.AppDataDirectory, fileName);
 #else
-            // Đối với các nền tảng khác như iOS hoặc Mac
-            dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "MyDatabase.db3");
+            dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), fileName);
 #endif
-
-            // Tạo kết nối đến SQLite
             _conn = new SQLiteAsyncConnection(dbPath);
 
-            // Tạo bảng trong SQLite
+            Database_path = dbPath;
+
             CreateTablesAsync();
         }
 
@@ -49,6 +45,7 @@ namespace MAUI_IOT.Services.Implements.DataManagement
                 _conn.CreateTableAsync<Data>().Wait();
                 _conn.CreateTableAsync<Experiment>().Wait();
                 _conn.CreateTableAsync<ExperimentInfo>().Wait();
+                _conn.CreateTableAsync<DataSummarize>().Wait();
             }
             catch (Exception ex)
             {
@@ -76,7 +73,12 @@ namespace MAUI_IOT.Services.Implements.DataManagement
             await _conn.InsertAsync(data);
         }
 
-        public async Task<ObservableCollection<Data>> GetDataByExperimentId(int id)
+        public async Task AddAsync(DataSummarize data)
+        {
+            await _conn.InsertAsync(data);
+        }
+
+        public async Task<ObservableCollection<Data>> GetDataByExperimentId(string id)
         {
             var dataList = await _conn.Table<Data>()
                                       .Where(data => data.ExperimentInfoId == id)
@@ -85,12 +87,26 @@ namespace MAUI_IOT.Services.Implements.DataManagement
             return new ObservableCollection<Data>(dataList);
         }
 
-        public async Task<ObservableCollection<ExperimentInfo>> GetExperimentInfoById(int id)
+        public async Task<ObservableCollection<Experiment>> GetExperiments()
+        {
+            var dataList = await _conn.Table<Experiment>().ToListAsync();
+            return new ObservableCollection<Experiment>(dataList);
+        }
+
+        public async Task<ObservableCollection<ExperimentInfo>> GetExperimentInfoById(string id)
         {
             var dataList =  await _conn.Table<ExperimentInfo>()
                                        .Where(data => data.ExperimentInfoId == id)
                                        .ToListAsync();
             return new ObservableCollection<ExperimentInfo>(dataList);
+        }
+
+        public async Task<ObservableCollection<DataSummarize>> GetDataSummarizeById(string id)
+        {
+            var dataList = await _conn.Table<DataSummarize>()
+                                      .Where(data => data.ExperimentInfoId == id)
+                                      .ToListAsync();
+            return new ObservableCollection<DataSummarize>(dataList);
         }
 
         private async Task CheckAndRequestStoragePermission()

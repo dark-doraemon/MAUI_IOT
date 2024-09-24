@@ -11,12 +11,13 @@ namespace MAUI_IOT.Models.Data
     public class DataSummarize
     {
         [PrimaryKey, AutoIncrement]
-        public int DataSummarizeId { get; set; }
-        public double Std { get; set; }
+        public long DataSummarizeId { get; set; }
+        public double Std_A { get; set; }
+        public double Std_F { get; set; }
         public double AvgA { get; set; }
         public double AvgF { get; set; }
 
         [ForeignKey(nameof(ExperimentInfo))]
-        public int ExperimentInfoId { get; set; }
+        public string ExperimentInfoId { get; set; }
     }
 }

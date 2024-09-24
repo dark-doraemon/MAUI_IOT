@@ -20,6 +20,8 @@ using LiveChartsCore.SkiaSharpView;
 using CommunityToolkit.Maui.Views;
 using LiveChartsCore.SkiaSharpView.SKCharts;
 using Microcharts;
+using MAUI_IOT.Models.Data;
+using Syncfusion.Maui.DataSource.Extensions;
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
@@ -37,14 +39,9 @@ public partial class LessonView : ContentPage
         TongHop.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
         charts2.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
         Chitiet.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
+
         // chart table 
-
-
         GenarateAnalyzeChart();
-
-
-
-        //};
         GenarateGridWithCharts(Series, Series.Count, true);
         Picker myPicker = this.FindByName<Picker>("myPicker");
 
@@ -53,6 +50,9 @@ public partial class LessonView : ContentPage
             myPicker.Title = "Chọn 1 mục ";
         }
         List<string> packetName = new List<string>();
+        editBtn.ViewModel = lessonnViewModel;
+
+        listData.IsVisible = false;
 
     }
 
@@ -64,7 +64,6 @@ public partial class LessonView : ContentPage
     {
         // tab_View.SelectedTab = Config;
     }
-
 
     private void OnShowPopupClicked(object sender, EventArgs e)
     {
@@ -208,17 +207,17 @@ public partial class LessonView : ContentPage
         grid2.SetRow(dothi3, 2);
         grid2.SetRow(dothi4, 3);
 
-
-
-
-
         // Set up binding for chart
-        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series_Summarize", Mode = BindingMode.OneWay });
         cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
         cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
         cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
         cartesianChart2.SetBinding(CartesianChart.DrawMarginFrameProperty, new Binding { Path = "Frame", Mode = BindingMode.OneWay });
 
+        checkBox1.SetBinding(CheckBox.IsCheckedProperty, new Binding { Path = "IsCheckLine_1", Mode = BindingMode.TwoWay });
+        checkBox2.SetBinding(CheckBox.IsCheckedProperty, new Binding { Path = "IsCheckLine_2", Mode = BindingMode.TwoWay });
+        checkBox3.SetBinding(CheckBox.IsCheckedProperty, new Binding { Path = "IsCheckLine_3", Mode = BindingMode.TwoWay });
+        checkBox4.SetBinding(CheckBox.IsCheckedProperty, new Binding { Path = "IsCheckLine_4", Mode = BindingMode.TwoWay });
 
         charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         charts2.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
@@ -237,7 +236,10 @@ public partial class LessonView : ContentPage
         charts2.SetRow(popupButton, 0);
         charts2.SetColumn(popupButton, 1);
 
-
+        checkBox1.PropertyChanged += (s, e) =>
+        {
+            Debug.WriteLine("State of checkBox_1: " + checkBox1.IsChecked);
+        };
     }
 
 
@@ -247,36 +249,7 @@ public partial class LessonView : ContentPage
     //    this.ShowPopup(popup);
     //}
 
-
-
-
-
-
-
-
-
     //load dữ liệu 
-
-    private async Task getdata(object selectedItem)
-    {
-        try
-        {
-            await _lessonnViewModel.Load(selectedItem.ToString());
-        }
-        catch (Exception ex)
-        {
-
-            Debug.WriteLine("======================================Try catch Lessonview.xaml.cs===================================================");
-            Debug.WriteLine(ex.Message.ToString());
-            Debug.WriteLine("=======================================================================================================");
-
-
-        }
-
-
-
-    }
-
     private void GenarateGridWithCharts(List<string> listSeries, int rowNumber, bool isMaximize)
     {
         //Restart grid
@@ -497,11 +470,21 @@ public partial class LessonView : ContentPage
         return grid;
     }
 
-
-
-
-    private void swapAxes()
+    private void Button_Clicked(object sender, EventArgs e)
     {
-
+        listData.IsVisible = !listData.IsVisible;
+        Debug.WriteLine("Data list clicked " + _lessonnViewModel.Experiment_database.Count);
+        CollectionView.ItemsSource = new ObservableCollection<Experiment>();
+        try
+        {
+            CollectionView.ItemsSource = _lessonnViewModel.Experiment_database;
+            Debug.WriteLine("Data list clicked " + _lessonnViewModel.Experiment_database.Count);
+            foreach (Experiment exp in CollectionView.ItemsSource.ToList<Experiment>()) {
+                Debug.WriteLine("Data: " + exp.ExperimentName);
+            }
+        }
+        catch (Exception ex) { 
+            Debug.WriteLine("Error when loading data" + ex.Message.ToString());
+        }
     }
 }

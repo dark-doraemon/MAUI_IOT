@@ -38,6 +38,8 @@ namespace MAUI_IOT.ViewModels
 {
     public partial class LessonnViewModel : ObservableObject
     {
+        private readonly string LessonName = "bai_1";
+
         //Services
         private readonly IConnect _connect;
         private readonly IPublish _publisher;
@@ -48,6 +50,8 @@ namespace MAUI_IOT.ViewModels
         private readonly ObservableCollection<ObservablePoint> _accX = new ObservableCollection<ObservablePoint>();
         private readonly ObservableCollection<ObservablePoint> _accY = new ObservableCollection<ObservablePoint>();
         private readonly ObservableCollection<ObservablePoint> _accZ = new ObservableCollection<ObservablePoint>();
+        private readonly ObservableCollection<ObservablePoint> _accF = new ObservableCollection<ObservablePoint>();
+        private readonly ObservableCollection<ObservablePoint> _acca = new ObservableCollection<ObservablePoint>();
         private ObservableCollection<ObservablePoint> _force { get; set; } = new ObservableCollection<ObservablePoint>();
         private readonly ObservableCollection<double> _timetamp = new ObservableCollection<double>();
 
@@ -78,26 +82,19 @@ namespace MAUI_IOT.ViewModels
                 StrokeThickness = 1
             }
         };
+
         //Line in chart
         public ObservableCollection<ISeries> Series { get; set; }
         public ObservableCollection<ISeries> Series_X { get; set; }
         public ObservableCollection<ISeries> Series_Y { get; set; }
         public ObservableCollection<ISeries> Series_Z { get; set; }
+        public ObservableCollection<ISeries> Series_Summarize { get; set; }
         private DateTime lastTimeTap = new DateTime();
         private const float StrokeThickness = 1.1f;
         private const float StrokeThickness_All = 1.5f;
-        //private static DateTime startTime = new DateTime();
 
 
         //Các thông số khi bắt đầu dữ liệu
-        [ObservableProperty]
-        private ExperimentInfo experimentInfo = new ExperimentInfo()
-        {
-            Weight = 0,
-            Device = "ABCD",
-            SamplingDuration = 5000,
-            SamplingRate = 50
-        };
 
         [ObservableProperty]
         private string device = "Chưa kết nối";
@@ -207,9 +204,47 @@ namespace MAUI_IOT.ViewModels
             IsLoadingPopup = false;
         }
 
+
+        //Summarize
+        [ObservableProperty]
+        public double standardDeviationA = 0;
+        [ObservableProperty]
+        public double avgA = 0;
+        [ObservableProperty]
+        public double standardDeviationF = 0;
+        [ObservableProperty]
+        public double avgF = 0;
+
+        //Load data
+        public ObservableCollection<Experiment> Experiment_database { get; set; } = new ObservableCollection<Experiment>();
+        public ObservableCollection<Data> Data_database { get; set; } = new ObservableCollection<Data>();
+        public ObservableCollection<ExperimentInfo> ExInfo_database { get; set; } = new ObservableCollection<ExperimentInfo>();
+        public ObservableCollection<DataSummarize> DataSummarize_database { get; set; } = new ObservableCollection<DataSummarize>();
+
+        [ObservableProperty]
+        public string primaryKey;
+
+        [ObservableProperty]
+        public string currentFileName = "NULL";
+
+        [ObservableProperty]
+        public bool isCheckLine_1 = false;
+
+        [ObservableProperty]
+        public bool isCheckLine_2 = false;
+
+        [ObservableProperty]
+        public bool isCheckLine_3 = false;
+
+        [ObservableProperty]
+        public bool isCheckLine_4 = false;
+
+        private DatabaseHelper _database;
+
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
         {
+
             Debug.WriteLine("Hello hello");
             _connect = connect;
             _publisher = publisher;
@@ -221,7 +256,7 @@ namespace MAUI_IOT.ViewModels
             {
                 new LineSeries<ObservablePoint>
                 {
-                    Values = _force,
+                    Values = _accF,
                     Fill = null,
                     GeometryFill = null, // Màu cho điểm dữ liệu
                     GeometryStroke = null, // Đường viền cho điểm dữ liệu
@@ -233,7 +268,7 @@ namespace MAUI_IOT.ViewModels
                 },
                 new LineSeries<ObservablePoint>
                 {
-                    Values = new ObservableCollection<ObservablePoint>(),
+                    Values = _acca,
                     //Values = new ObservableCollection<ObservablePoint>(),
                     Fill = null,
                     GeometryFill = null, // Màu cho điểm dữ liệu
@@ -283,6 +318,43 @@ namespace MAUI_IOT.ViewModels
                     GeometryFill = null,
                     GeometryStroke = null,
                     Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = StrokeThickness }
+                },
+            };
+
+            //Summerize
+            Series_Summarize = new ObservableCollection<ISeries>()
+            {
+                new LineSeries<ObservablePoint>
+                {
+                    Values = null,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.Red){StrokeThickness = StrokeThickness }
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Values = null,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.Yellow){StrokeThickness = StrokeThickness }
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Values = null,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.Blue){StrokeThickness = StrokeThickness }
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Values = null,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.Green){StrokeThickness = StrokeThickness }
                 },
             };
 
@@ -384,8 +456,33 @@ namespace MAUI_IOT.ViewModels
             _mqttClient = mqttFactory.CreateMqttClient();
 
             //File
-            _database = new DatabaseHelper("mockdata");
-            //ExInfo_database.Add(new ExperimentInfo { ExperimentInfoId = 1, Device = "Device A", Weight = 70, SamplingRate = 100, SamplingDuration = 30 });
+            _database = new DatabaseHelper(LessonName + ".db3");
+
+            Experiment_database.Clear();
+            Task.Run(async () => {
+                Experiment_database = await _database.GetExperiments();
+                if(Experiment_database.Count < 1)
+                {
+                    Debug.WriteLine("Nothing in experiment_database");
+                }
+                else
+                {
+                    Debug.WriteLine("Data has been loaded into Experiment_database");
+                }
+                
+                });
+
+            Experiment_database.CollectionChanged += (sender, e) =>
+            {
+                switch (e.Action) { 
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                        Debug.WriteLine("Event Experiment database get data");
+                        break;
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                        Debug.WriteLine("Event Experiment database remove data");
+                        break;
+                }
+            };
         }
         private async Task Connect()
         {
@@ -416,7 +513,7 @@ namespace MAUI_IOT.ViewModels
 
                 if (packet != null)
                 {
-                    draw.DrawChart(packet, _accX, _accY, _accZ, _force, Datas, Sync);
+                    draw.DrawChart(packet, _accX, _accY, _accZ, _force, _accF, _acca, Datas, Sync);
                 }
                 else
                 {
@@ -494,7 +591,7 @@ namespace MAUI_IOT.ViewModels
             IsStartingButtonStart = false;
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
-
+            summarizeResult();
             //SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
@@ -534,7 +631,7 @@ namespace MAUI_IOT.ViewModels
         }
 
         [RelayCommand]
-        public async void PointerUp(PointerCommandArgs args)
+        public void PointerUp(PointerCommandArgs args)
         {
             if (OnReleased && isDoubleClickedChart)
             {
@@ -596,9 +693,9 @@ namespace MAUI_IOT.ViewModels
         [RelayCommand]
         public void addFile()
         {
-            fileCount++;
-            ExperimentInfo.Weight = 0;
-            datas = new ObservableCollection<Data>();
+            //fileCount++;
+            //ExperimentInfo.Weight = 0;
+            //datas = new ObservableCollection<Data>();
         }
 
 
@@ -607,26 +704,45 @@ namespace MAUI_IOT.ViewModels
         [RelayCommand]
         public async Task Save()
         {
-            
             Debug.WriteLine("Save file starting.....");
+            PrimaryKey = generatePrimaryKey();
+           
             try
             {
+                await _database.AddAsync(new Experiment
+                {
+                    ExperimentInfoId = PrimaryKey,
+                    DateTime = DateTime.Now,
+                    ExperimentId = PrimaryKey,
+                    ExperimentName = LessonName + " " + DateTime.Now.ToString("d/M/yyyy H:mm")
+                });
+
                 foreach (Data d in Datas)
                 {
-                    d.ExperimentInfoId = IdExInfo;
+                    d.ExperimentInfoId = PrimaryKey;
                     await _database.AddAsync(d);
                 }
 
                 await _database.AddAsync(new ExperimentInfo
                 {
-                    ExperimentInfoId = IdExInfo,
+                    ExperimentInfoId = PrimaryKey,
                     Device = CurrentItems.Name.ToString(),
                     SamplingDuration = SamplingDuration,
                     SamplingRate = SamplingRate,
                     Weight = Weight,
+                    ExperimentId = PrimaryKey,
+                });
+
+                await _database.AddAsync(new DataSummarize
+                {
+                    AvgA = AvgA,
+                    AvgF = AvgF,
+                    Std_A = StandardDeviationA,
+                    Std_F = StandardDeviationF,
+                    ExperimentInfoId = PrimaryKey
                 });
             }
-            catch (Exception ex) { 
+            catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
 
@@ -634,58 +750,82 @@ namespace MAUI_IOT.ViewModels
         }
 
 
-
-
-
- 
-
-
-
-
-
-
-
-
-
-        public ObservableCollection<Data> Data_database { get; set; } = new ObservableCollection<Data>();
-        public ObservableCollection<ExperimentInfo> ExInfo_database { get; set; } = new ObservableCollection<ExperimentInfo>();
-        [ObservableProperty]
-        public int idExInfo;
-        private DatabaseHelper _database;
         [RelayCommand]
         public async Task LoadDataFromDatabase()
         {
             Debug.WriteLine("Load data....");
-            Debug.WriteLine("Path: " + FileSystem.AppDataDirectory.ToString() );
-            Data_database = await _database.GetDataByExperimentId(IdExInfo);
-            ExInfo_database = await _database.GetExperimentInfoById(IdExInfo);
+            Debug.WriteLine("Path: " + FileSystem.AppDataDirectory.ToString());
 
+            if (PrimaryKey == null || PrimaryKey.Length == 0) {
+                Debug.WriteLine("Loading data failure");
+                return;
+            }
+
+            Data_database.Clear();
+            ExInfo_database.Clear();
+            DataSummarize_database.Clear();
+
+            try
+            {
+                //Experiment_database.Clear();
+                //Experiment_database = await _database.GetExperiments();
+                Data_database = await _database.GetDataByExperimentId(PrimaryKey);
+                ExInfo_database = await _database.GetExperimentInfoById(PrimaryKey);
+                DataSummarize_database = await _database.GetDataSummarizeById(PrimaryKey);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
             SelectedDatas = Data_database;
             Device = ExInfo_database.First().Device;
             SamplingDuration = ExInfo_database.First().SamplingDuration;
             SamplingRate = ExInfo_database.First().SamplingRate;
             Weight = ExInfo_database.First().Weight;
 
-            ObservableCollection<ObservablePoint> accX = new ObservableCollection<ObservablePoint>();
-            ObservableCollection<ObservablePoint> accY = new ObservableCollection<ObservablePoint>();
-            ObservableCollection<ObservablePoint> accZ = new ObservableCollection<ObservablePoint>();
-            foreach(Data data in SelectedDatas)
+            _accX.Clear();
+            _accY.Clear();
+            _accZ.Clear();
+
+            foreach (Data data in SelectedDatas)
             {
-                accX.Add(new ObservablePoint(data.timestamp, data.accX));
-                accY.Add(new ObservablePoint(data.timestamp, data.accY));
-                accZ.Add(new ObservablePoint(data.timestamp, data.accZ));
+                _accX.Add(new ObservablePoint(data.timestamp, data.accX));
+                _accY.Add(new ObservablePoint(data.timestamp, data.accY));
+                _accZ.Add(new ObservablePoint(data.timestamp, data.accZ));
             }
 
+            AvgA = DataSummarize_database.First().AvgA;
+            AvgF = DataSummarize_database.First().AvgF;
+            StandardDeviationA = DataSummarize_database.First().Std_A;
+            StandardDeviationF = DataSummarize_database.First().Std_F;
+
+            Debug.WriteLine("Load data success");
         }
 
-        [ObservableProperty]
-        public double standardDeviationA = 0;
-        [ObservableProperty]
-        public double avgA = 0;
-        [ObservableProperty]
-        public double standardDeviationF = 0;
-        [ObservableProperty]
-        public double avgF = 0;
+        [RelayCommand]
+        public async Task testDatabaseThoughClicked()
+        {
+            //Debug.WriteLine("Path: " + DatabaseHelper.Database_path);
+            //Debug.WriteLine("Loading when process clicked");
+            //await Task.Run( async () =>
+            //{
+               
+            //    if(Experiment_database == null)
+            //    {
+            //        Debug.WriteLine("Loading data failure");
+            //        return;
+            //    }
+
+            //    foreach (Experiment e in Experiment_database)
+            //    {
+            //        Debug.WriteLine($"Experimentid: {e.ExperimentName}");
+            //    }
+
+            //    Debug.WriteLine("Loading successful in clicked");
+            //});
+            //Debug.WriteLine("Loading end task loading data");
+        }
+
         public void addDataSummary()
         {
             //a = sqrt(x^2+y^2+z^2)
@@ -701,14 +841,6 @@ namespace MAUI_IOT.ViewModels
 
                 AvgF = listF.Average();
 
-            Series_X[0].Values = accX;
-            Series_Y[0].Values = accX;
-            Series_Z[0].Values = accX;
-
-            Debug.WriteLine("Load data success");
-        }
-        
-
                 double sumOfSquaresF = listF.Select(x => Math.Pow(x - AvgF, 2)).Sum();
                 StandardDeviationF = Math.Sqrt(sumOfSquaresF / listF.Count);
                 AvgA = listA.Average();
@@ -719,6 +851,81 @@ namespace MAUI_IOT.ViewModels
                 }
 
             }
+        }
+
+        public void addDataDetail()
+        {
+
+            Debug.WriteLine("ADD data vào table ");
+            //SelectedDatas = new ObservableCollection<Data>(Datas);
+            foreach (var a in Datas)
+            {
+                SelectedDatas.Add(a);
+
+            }
+
+        }
+
+        private string generatePrimaryKey()
+        {
+            return DateTime.Now.ToString("dMyyHmsmf");
+        }
+        private void summarizeResult()
+        {
+            AvgF = Datas.Average(value => value.force);
+            AvgA = Datas.Average(value => value.a);
+            StandardDeviationF = caculateStandardDeviation(Datas.Select(value => value.force).ToList());
+            StandardDeviationA = caculateStandardDeviation(Datas.Select(value => value.a).ToList());
+        }
+
+        private double caculateStandardDeviation(List<double> datas)
+        {
+            double mean = datas.Average();
+            double result = datas.Select(value => (value - mean) * (value - mean)).Sum() / (datas.Count - 1) * 1.0;
+            return Math.Sqrt(result);
+        }
+
+        [RelayCommand]
+        private void OnExperimentTapped(Experiment selectedExperiment)
+        {
+            if (selectedExperiment != null)
+            {
+                Debug.WriteLine($"Selected Experiment: {selectedExperiment.ExperimentInfoId}");
+                PrimaryKey = selectedExperiment.ExperimentInfoId;
+                CurrentFileName = selectedExperiment.ExperimentName;
+            }
+        }
+
+        partial void OnIsCheckLine_1Changed(bool value)
+        {
+            if (value)
+                Series_Summarize[0].Values = _accX;
+            else
+                Series_Summarize[0].Values = null;
+        }
+
+        partial void OnIsCheckLine_2Changed(bool value)
+        {
+            if (value)
+                Series_Summarize[1].Values = _accY;
+            else
+                Series_Summarize[1].Values = null;
+        }
+
+        partial void OnIsCheckLine_3Changed(bool value)
+        {
+            if (value)
+                Series_Summarize[2].Values = _accZ;
+            else
+                Series_Summarize[2].Values = null;
+        }
+
+        partial void OnIsCheckLine_4Changed(bool value)
+        {
+            if (value)
+                Series_Summarize[3].Values = _acca;
+            else
+                Series_Summarize[3].Values = null;
         }
     }
 }
