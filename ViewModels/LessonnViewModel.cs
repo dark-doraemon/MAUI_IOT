@@ -78,9 +78,7 @@ namespace MAUI_IOT.ViewModels
                 StrokeThickness = 1
             }
         };
-
-
-
+        //Line in chart
         public ObservableCollection<ISeries> Series { get; set; }
         public ObservableCollection<ISeries> Series_X { get; set; }
         public ObservableCollection<ISeries> Series_Y { get; set; }
@@ -385,22 +383,9 @@ namespace MAUI_IOT.ViewModels
             mqttFactory = new MqttFactory();
             _mqttClient = mqttFactory.CreateMqttClient();
 
-
-
-            string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
-            if (filePaths.Contains("/data/user/0/com.companyname.maui_iot/files/profileInstalled")) // file hệ thống tự tạo 
-            {
-                fileCount--;
-            }
-            Debug.WriteLine("=======================================================================================================");
-            foreach (var a in filePaths)
-            {
-                Debug.WriteLine(a);
-            }
-            Debug.WriteLine("=======================================================================================================");
-
-
-
+            //File
+            _database = new DatabaseHelper("mockdata");
+            //ExInfo_database.Add(new ExperimentInfo { ExperimentInfoId = 1, Device = "Device A", Weight = 70, SamplingRate = 100, SamplingDuration = 30 });
         }
         private async Task Connect()
         {
@@ -620,65 +605,75 @@ namespace MAUI_IOT.ViewModels
 
 
         [RelayCommand]
-        public async Task Save(string name)
+        public async Task Save()
         {
-            FileSave fileSave = new FileSave();
-            fileSave.m = ExperimentInfo.Weight;
-            fileSave.datafile = Datas; ;
-            string fileName = $"{name}.json";
-            var filePath = Path.Combine(FileSystem.AppDataDirectory, fileName);
-            string jsonData = System.Text.Json.JsonSerializer.Serialize<FileSave>(fileSave);
-            await File.WriteAllTextAsync(filePath, jsonData);
-            Debug.WriteLine($"===============================FILE PATH {filePath} =================================================== ");
-            Debug.WriteLine($"Data file  :  {jsonData}  ");
-            Debug.WriteLine("========================================ĐÃ lưu file ===============================================================");
-        }
-
-        [RelayCommand]
-        public async Task Load(string fileName)
-        {
-            LoadData loader = new LoadData();
-            await loader.Load(fileName, ExperimentInfo.Weight, datas);
-            draw.DrawChart(datas, _accX, _accY, _accZ, _force, Sync);
-        }
-
-
-
-
-        [RelayCommand]
-        public void deleteAllFile()
-        {
-            string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
-            foreach (string filePath in filePaths)
+            
+            Debug.WriteLine("Save file starting.....");
+            try
             {
-                File.Delete(filePath);
+                foreach (Data d in Datas)
+                {
+                    d.ExperimentInfoId = IdExInfo;
+                    await _database.AddAsync(d);
+                }
+
+                await _database.AddAsync(new ExperimentInfo
+                {
+                    ExperimentInfoId = IdExInfo,
+                    Device = CurrentItems.Name.ToString(),
+                    SamplingDuration = SamplingDuration,
+                    SamplingRate = SamplingRate,
+                    Weight = Weight,
+                });
+            }
+            catch (Exception ex) { 
+                Debug.WriteLine(ex.Message);
             }
 
-        }
-
-        public static int fileCounter()
-        {
-            string[] filePaths = Directory.GetFiles(FileSystem.AppDataDirectory);
-            int fileCount = Directory.GetFiles(FileSystem.AppDataDirectory).Length;
-            if (filePaths.Contains("profileInstalled")) // file hệ thống tự tạo 
-            {
-                fileCount--;
-            }
-            return fileCount;
+            Debug.WriteLine("Save file successful");
         }
 
 
 
 
-        public void addDataDetail()
+
+ 
+
+
+
+
+
+
+
+
+
+        public ObservableCollection<Data> Data_database { get; set; } = new ObservableCollection<Data>();
+        public ObservableCollection<ExperimentInfo> ExInfo_database { get; set; } = new ObservableCollection<ExperimentInfo>();
+        [ObservableProperty]
+        public int idExInfo;
+        private DatabaseHelper _database;
+        [RelayCommand]
+        public async Task LoadDataFromDatabase()
         {
+            Debug.WriteLine("Load data....");
+            Debug.WriteLine("Path: " + FileSystem.AppDataDirectory.ToString() );
+            Data_database = await _database.GetDataByExperimentId(IdExInfo);
+            ExInfo_database = await _database.GetExperimentInfoById(IdExInfo);
 
-            Debug.WriteLine("ADD data vào table ");
-            //SelectedDatas = new ObservableCollection<Data>(Datas);
-            foreach (var a in Datas)
+            SelectedDatas = Data_database;
+            Device = ExInfo_database.First().Device;
+            SamplingDuration = ExInfo_database.First().SamplingDuration;
+            SamplingRate = ExInfo_database.First().SamplingRate;
+            Weight = ExInfo_database.First().Weight;
+
+            ObservableCollection<ObservablePoint> accX = new ObservableCollection<ObservablePoint>();
+            ObservableCollection<ObservablePoint> accY = new ObservableCollection<ObservablePoint>();
+            ObservableCollection<ObservablePoint> accZ = new ObservableCollection<ObservablePoint>();
+            foreach(Data data in SelectedDatas)
             {
-                SelectedDatas.Add(a);
-
+                accX.Add(new ObservablePoint(data.timestamp, data.accX));
+                accY.Add(new ObservablePoint(data.timestamp, data.accY));
+                accZ.Add(new ObservablePoint(data.timestamp, data.accZ));
             }
 
         }
@@ -705,6 +700,14 @@ namespace MAUI_IOT.ViewModels
                 listF = listA.Select(a => a * 5).ToList(); //5 là khối lượng quá nặng 
 
                 AvgF = listF.Average();
+
+            Series_X[0].Values = accX;
+            Series_Y[0].Values = accX;
+            Series_Z[0].Values = accX;
+
+            Debug.WriteLine("Load data success");
+        }
+        
 
                 double sumOfSquaresF = listF.Select(x => Math.Pow(x - AvgF, 2)).Sum();
                 StandardDeviationF = Math.Sqrt(sumOfSquaresF / listF.Count);

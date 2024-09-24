@@ -12,7 +12,7 @@ namespace MAUI_IOT.Services.Implements.LineChart
 {
     public class Draw : IDraw
     {
-        public void DrawChart(ObservableCollection<Data> data, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, object Sync)
+        public void DrawChart(ObservableCollection<Data> data, ObservableCollection<ObservablePoint>_accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, object Sync)
         {
             if (data != null)
             {
@@ -39,6 +39,10 @@ namespace MAUI_IOT.Services.Implements.LineChart
                 }
             }
         }
+
+       
+
+
         public void DrawChart(Packet packet, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, ObservableCollection<Data> Datas, object Sync)
         {
             if (packet != null)

@@ -101,6 +101,8 @@
 		<PackageReference Include="MQTTnet" Version="4.3.6.1152" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Plugin.Maui.Popup" Version="1.0.5" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<PackageReference Include="Syncfusion.Maui.ListView" Version="27.1.48" />
 		<PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
 		<PackageReference Include="UraniumUI" Version="2.9.1" />
 		<PackageReference Include="UraniumUI.Material" Version="2.9.1" />
