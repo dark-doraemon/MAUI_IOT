@@ -503,7 +503,7 @@ namespace MAUI_IOT.ViewModels
             _mqttClient = mqttFactory.CreateMqttClient();
             _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
             //_mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
-            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/dataa");
+            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
 
             Config config = new Config(5000, 50);
             string config_json = System.Text.Json.JsonSerializer.Serialize(config);

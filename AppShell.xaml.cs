@@ -1,4 +1,8 @@
-﻿using MAUI_IOT.Views;
+﻿#if ANDROID
+using Android.OS;
+using Android.Content;
+#endif
+using MAUI_IOT.Views;
 
 namespace MAUI_IOT
 {
@@ -7,7 +11,6 @@ namespace MAUI_IOT
         public AppShell()
         {
             InitializeComponent();
-
             Routing.RegisterRoute(nameof(LoadingView), typeof(LoadingView));
             //Routing.RegisterRoute(nameof(HomeView), typeof(HomeView));
             Routing.RegisterRoute(nameof(ProfileView), typeof(ProfileView));
