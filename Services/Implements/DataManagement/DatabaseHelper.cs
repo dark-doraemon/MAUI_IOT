@@ -111,25 +111,26 @@ namespace MAUI_IOT.Services.Implements.DataManagement
 
         private async Task CheckAndRequestStoragePermission()
         {
-            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-            if (status != PermissionStatus.Granted)
-            {
-                status = await Permissions.RequestAsync<Permissions.StorageWrite>();
-            }
+            // Trực tiếp yêu cầu quyền
+            var status = await Permissions.RequestAsync<Permissions.StorageWrite>();
 
             if (status != PermissionStatus.Granted)
             {
                 throw new UnauthorizedAccessException("Quyền truy cập lưu trữ chưa được cấp.");
             }
-#if ANDROID
-            if (Build.VERSION.SdkInt < BuildVersionCodes.R)
-            {
-                var activity = Platform.CurrentActivity ?? throw new InvalidOperationException("Activity không tồn tại.");
 
-                // Yêu cầu quyền đọc ghi bộ nhớ ngoài
-                activity.RequestPermissions(new string[] { Manifest.Permission.WriteExternalStorage, Manifest.Permission.ReadExternalStorage }, 1);
+#if ANDROID
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+            {
+                // Xử lý quyền truy cập bộ nhớ ngoài đối với Android 11 trở lên
+                var manageStatus = await Permissions.RequestAsync<Permissions.ManageExternalStorage>();
+                if (manageStatus != PermissionStatus.Granted)
+                {
+                    throw new UnauthorizedAccessException("Quyền quản lý bộ nhớ ngoài chưa được cấp.");
+                }
             }
 #endif
         }
+
     }
 }

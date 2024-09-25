@@ -456,8 +456,13 @@ namespace MAUI_IOT.ViewModels
             _mqttClient = mqttFactory.CreateMqttClient();
 
             //File
-            _database = new DatabaseHelper(LessonName + ".db3");
-
+            try
+            {
+                _database = new DatabaseHelper(LessonName + ".db3");
+            }
+            catch (Exception ex) {
+                Debug.WriteLine(ex.Message);
+            }
             Experiment_database.Clear();
             Task.Run(async () => {
                 Experiment_database = await _database.GetExperiments();
