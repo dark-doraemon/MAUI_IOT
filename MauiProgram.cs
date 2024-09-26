@@ -15,6 +15,7 @@ using MAUI_IOT.Services.Interfaces.DataManagement;
 using MAUI_IOT.Services.Implements.DataManagement;
 using MAUI_IOT.Services.Interfaces.SaveData;
 using MAUI_IOT.Services.Implements.SaveData;
+using ZXing.Net.Maui.Controls;
 namespace MAUI_IOT
 {
     public static class MauiProgram
@@ -25,6 +26,7 @@ namespace MAUI_IOT
             builder
                 .UseMauiApp<App>()
             .ConfigureSyncfusionCore()
+            .UseBarcodeReader()
                 .UseSkiaSharp(true)
                 .UseMicrocharts()
                 .UseUraniumUI()
