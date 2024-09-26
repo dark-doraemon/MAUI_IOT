@@ -15,11 +15,6 @@
            Grid.Column="1"
            HeightRequest="20"
            WidthRequest="20"/>
-
-        <ActivityIndicator Grid.Row="0" Grid.Column="1" HeightRequest="20" WidthRequest="20"
-                           x:Name="loading"
-                           IsVisible="{Binding IsLoading, Source={StaticResource LessonViewModel}}"
-                           IsRunning="True"/>
     </Grid>
 
 

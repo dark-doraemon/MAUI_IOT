@@ -162,7 +162,6 @@ public partial class DropDownButton : Frame
     {
         InitializeComponent();
         BindingContext = new LessonnViewModel();
-        loading.IsVisible = false;  
     }
 
     private void TabGestureRecognizer_Tapped(object sender, TappedEventArgs e)

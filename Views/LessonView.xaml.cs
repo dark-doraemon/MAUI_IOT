@@ -43,12 +43,7 @@ public partial class LessonView : ContentPage
         // chart table 
         GenarateAnalyzeChart();
         GenarateGridWithCharts(Series, Series.Count, true);
-        Picker myPicker = this.FindByName<Picker>("myPicker");
 
-        if (myPicker != null)
-        {
-            myPicker.Title = "Chọn 1 mục ";
-        }
         List<string> packetName = new List<string>();
         editBtn.ViewModel = lessonnViewModel;
 
@@ -114,6 +109,10 @@ public partial class LessonView : ContentPage
             HorizontalOptions = LayoutOptions.End,
             Margin = new Thickness(0, 20, 20, 0),
             IsVisible = false,
+            BackgroundColor = Colors.Cyan,
+            HeightRequest = 150,
+            VerticalOptions = LayoutOptions.Start,
+            Padding = 10
 
         };  // grid chứa tuỳ chọn line 
         bool isClicked = false;
@@ -132,7 +131,7 @@ public partial class LessonView : ContentPage
             }
             isClicked = !isClicked;
         };
-
+       
         CheckBox checkBox1 = new CheckBox
         {
             IsChecked = false,
