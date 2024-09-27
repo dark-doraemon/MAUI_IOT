@@ -1,27 +1,9 @@
 ﻿
 using MAUI_IOT.ViewModels;
-using Microsoft.Maui.Layouts;
 using System.Diagnostics;
-using MAUI_IOT.Models;
-using System.Collections.ObjectModel;
-using Newtonsoft.Json;
-using System.Globalization;
-using UraniumUI.ViewExtensions;
-using SkiaSharp.Views.Maui;
-using Microsoft.Maui.Controls;
-using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView.Maui;
-using LiveChartsCore.Drawing;
-using SkiaSharp;
-using MAUI_IOT.Services.Interfaces;
-using System.Drawing;
-using System.Runtime.ConstrainedExecution;
-using LiveChartsCore.SkiaSharpView;
 using CommunityToolkit.Maui.Views;
-using LiveChartsCore.SkiaSharpView.SKCharts;
-using Microcharts;
-using MAUI_IOT.Models.Data;
-using Syncfusion.Maui.DataSource.Extensions;
+
 namespace MAUI_IOT.Views;
 
 public partial class LessonView : ContentPage
@@ -150,7 +132,7 @@ public partial class LessonView : ContentPage
 
         Label dothi1 = new Label()
         {
-            Text = "Đồ Thị 1",
+            Text = "Trend F",
             VerticalOptions = LayoutOptions.Center,
             HorizontalOptions = LayoutOptions.Center,
             FontAttributes = FontAttributes.Bold,
@@ -158,7 +140,7 @@ public partial class LessonView : ContentPage
         };
         Label dothi2 = new Label()
         {
-            Text = "Đồ Thị 2",
+            Text = "Trend A",
             VerticalOptions = LayoutOptions.Center,
             HorizontalOptions = LayoutOptions.Center,
             FontAttributes = FontAttributes.Bold,
@@ -206,7 +188,7 @@ public partial class LessonView : ContentPage
         grid2.SetRow(dothi4, 3);
 
         // Set up binding for chart
-        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "Series_Summarize", Mode = BindingMode.OneWay });
+        cartesianChart2.SetBinding(CartesianChart.SeriesProperty, new Binding { Path = "SeriesRegression", Mode = BindingMode.OneWay });
         cartesianChart2.SetBinding(CartesianChart.SyncContextProperty, new Binding { Path = "Sync", Mode = BindingMode.OneWay });
         cartesianChart2.SetBinding(CartesianChart.XAxesProperty, new Binding { Path = "XAxes", Mode = BindingMode.OneWay });
         cartesianChart2.SetBinding(CartesianChart.YAxesProperty, new Binding { Path = "YAxes", Mode = BindingMode.OneWay });
@@ -478,6 +460,4 @@ public partial class LessonView : ContentPage
         listData.IsVisible = !listData.IsVisible;
         listAllFile.IsVisible = !listData.IsVisible;
     }
-
-
 }

@@ -46,14 +46,20 @@ namespace MAUI_IOT.ViewModels
         private readonly ISubscribe _subscriber;
         private readonly IDisconnect _disconnect;
 
-        //Data
-        private readonly ObservableCollection<ObservablePoint> _accX = new ObservableCollection<ObservablePoint>();
-        private readonly ObservableCollection<ObservablePoint> _accY = new ObservableCollection<ObservablePoint>();
-        private readonly ObservableCollection<ObservablePoint> _accZ = new ObservableCollection<ObservablePoint>();
-        private readonly ObservableCollection<ObservablePoint> _accF = new ObservableCollection<ObservablePoint>();
-        private readonly ObservableCollection<ObservablePoint> _acca = new ObservableCollection<ObservablePoint>();
-        private ObservableCollection<ObservablePoint> _force { get; set; } = new ObservableCollection<ObservablePoint>();
-        private readonly ObservableCollection<double> _timetamp = new ObservableCollection<double>();
+        //Data when current
+        [ObservableProperty]
+        private ObservableCollection<ObservablePoint> _accX = new ObservableCollection<ObservablePoint>();
+        [ObservableProperty]
+        private ObservableCollection<ObservablePoint> _accY = new ObservableCollection<ObservablePoint>();
+        [ObservableProperty]
+        private ObservableCollection<ObservablePoint> _accZ = new ObservableCollection<ObservablePoint>();
+        [ObservableProperty]
+        private ObservableCollection<ObservablePoint> _accF = new ObservableCollection<ObservablePoint>();
+        [ObservableProperty]
+        private ObservableCollection<ObservablePoint> _accA = new ObservableCollection<ObservablePoint>();
+
+        private ObservableCollection<double> _timetamp = new ObservableCollection<double>();
+
 
         [ObservableProperty]
         public ObservableCollection<Data> datas = new ObservableCollection<Data>();
@@ -89,6 +95,10 @@ namespace MAUI_IOT.ViewModels
         public ObservableCollection<ISeries> Series_Y { get; set; }
         public ObservableCollection<ISeries> Series_Z { get; set; }
         public ObservableCollection<ISeries> Series_Summarize { get; set; }
+
+        [ObservableProperty]
+        public ObservableCollection<ISeries> seriesRegression;
+
         private DateTime lastTimeTap = new DateTime();
         private const float StrokeThickness = 1.1f;
         private const float StrokeThickness_All = 1.5f;
@@ -256,6 +266,13 @@ namespace MAUI_IOT.ViewModels
         private Dictionary<string, ObservableCollection<ExperimentConfig>> ExperimentConfigs_database { get; set; } = new Dictionary<string, ObservableCollection<ExperimentConfig>>();
         private Dictionary<string , ObservableCollection<DataSummarize>> DataSummarizes_database { get; set; } = new Dictionary<string, ObservableCollection<DataSummarize>>();
 
+        //Regression
+        [ObservableProperty]
+        public ObservableCollection<ObservablePoint> _fRegression = new ObservableCollection<ObservablePoint>();
+
+        [ObservableProperty]
+        public ObservableCollection<ObservablePoint> _aRegression = new ObservableCollection<ObservablePoint>();
+
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
         {
@@ -271,7 +288,7 @@ namespace MAUI_IOT.ViewModels
             {
                 new LineSeries<ObservablePoint>
                 {
-                    Values = _accF,
+                    Values = AccF,
                     Fill = null,
                     GeometryFill = null, // Màu cho điểm dữ liệu
                     GeometryStroke = null, // Đường viền cho điểm dữ liệu
@@ -283,7 +300,7 @@ namespace MAUI_IOT.ViewModels
                 },
                 new LineSeries<ObservablePoint>
                 {
-                    Values = _acca,
+                    Values = AccA,
                     //Values = new ObservableCollection<ObservablePoint>(),
                     Fill = null,
                     GeometryFill = null, // Màu cho điểm dữ liệu
@@ -370,6 +387,42 @@ namespace MAUI_IOT.ViewModels
                     GeometryFill = null,
                     GeometryStroke = null,
                     Stroke =  new SolidColorPaint(SKColors.Green){StrokeThickness = StrokeThickness }
+                },
+            };
+
+            SeriesRegression = new ObservableCollection<ISeries>()
+            {
+                 new LineSeries<ObservablePoint>
+                {
+                    Values = null,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.Red){StrokeThickness = StrokeThickness }
+                },
+                 new LineSeries<ObservablePoint>
+                {
+                    Values = null,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.Blue){StrokeThickness = StrokeThickness }
+                },
+                  new LineSeries<ObservablePoint>
+                {
+                    Values = _accF,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.Purple){StrokeThickness = StrokeThickness }
+                },
+                   new LineSeries<ObservablePoint>
+                {
+                    Values = AccA,
+                    Fill = null,
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    Stroke =  new SolidColorPaint(SKColors.DarkGreen){StrokeThickness = StrokeThickness }
                 },
             };
 
@@ -466,6 +519,7 @@ namespace MAUI_IOT.ViewModels
                 }
             };
 
+
             //MQTT connect
             mqttFactory = new MqttFactory();
             _mqttClient = mqttFactory.CreateMqttClient();
@@ -500,10 +554,11 @@ namespace MAUI_IOT.ViewModels
         private async Task Connect()
         {
             //Clean
-            _accX.Clear();
-            _accY.Clear();
-            _accZ.Clear();
-            _force.Clear();
+            AccX.Clear();
+            AccY.Clear();
+            AccZ.Clear();
+            AccF.Clear();
+            AccA.Clear();
             _timetamp.Clear();
 
             Datas.Clear();
@@ -526,7 +581,7 @@ namespace MAUI_IOT.ViewModels
 
                 if (packet != null)
                 {
-                    draw.DrawChart(packet, _accX, _accY, _accZ, _force, _accF, _acca, Datas, Sync);
+                    draw.DrawChart(packet, AccX, AccY, AccZ, AccF, AccF, AccA, Datas, Sync);
                 }
                 else
                 {
@@ -576,7 +631,6 @@ namespace MAUI_IOT.ViewModels
 
             Debug.WriteLine("Start button was clicked");
             Task.Run(async () => { await Connect(); });
-
             ColorButtonStart = InActive;
             ColorButtonStop = Active;
             ColorButtonSave = InActive;
@@ -592,7 +646,7 @@ namespace MAUI_IOT.ViewModels
         {
             Debug.Write("OnStop");
 
-            if (!IsStartingButtonStart) return;
+            if (Datas == null || Datas.Count < 0) return;
 
             Debug.WriteLine("Stop button was clicked");
             Task.Run(async () => await Disconnect());
@@ -605,6 +659,17 @@ namespace MAUI_IOT.ViewModels
             ColorButtonStart = Active;
             ColorButtonStop = InActive;
             summarizeResult();
+
+            try
+            {
+                ARegression = getLinearRegression(AccA);
+                FRegression = getLinearRegression(AccF);
+                SeriesRegression[0].Values = FRegression;
+                SeriesRegression[1].Values = SeriesRegression;
+            }
+            catch (Exception ex) {
+                Debug.WriteLine(ex.Message);
+            }
             //SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
@@ -717,6 +782,8 @@ namespace MAUI_IOT.ViewModels
         [RelayCommand]
         public async Task Save()
         {
+            if(Datas.Count < 0) { return; }
+
             Debug.WriteLine("Save file starting.....");
             try
             {
@@ -786,6 +853,8 @@ namespace MAUI_IOT.ViewModels
                 ExperimentManagerId = PrimaryKey,
                 ExperimentName = LessonName + " lần " + countExperiment.ToString(),
             });
+
+        
         }
 
         private async Task<string> LoadExperimentFromDatabase()
@@ -1001,33 +1070,46 @@ namespace MAUI_IOT.ViewModels
         partial void OnIsCheckLine_1Changed(bool value)
         {
             if (value)
-                Series_Summarize[0].Values = _accX;
+                SeriesRegression[0].Values = FRegression;
             else
-                Series_Summarize[0].Values = null;
+                SeriesRegression[0].Values = null;
         }
 
         partial void OnIsCheckLine_2Changed(bool value)
         {
             if (value)
-                Series_Summarize[1].Values = _accY;
+                SeriesRegression[1].Values = ARegression;
             else
-                Series_Summarize[1].Values = null;
+                SeriesRegression[1].Values = null;
         }
 
         partial void OnIsCheckLine_3Changed(bool value)
         {
             if (value)
-                Series_Summarize[2].Values = _accZ;
+                SeriesRegression[2].Values = AccF;
             else
-                Series_Summarize[2].Values = null;
+                SeriesRegression[2].Values = null;
         }
 
         partial void OnIsCheckLine_4Changed(bool value)
         {
             if (value)
-                Series_Summarize[3].Values = _acca;
+                SeriesRegression[3].Values = AccA;
             else
-                Series_Summarize[3].Values = null;
+                SeriesRegression[3].Values = null;
+        }
+
+        private ObservableCollection<ObservablePoint> getLinearRegression(ObservableCollection<ObservablePoint> observablePoints)
+        {
+            (double, double) weight_bias = CaculateRegression.LinearRegressionFunction(observablePoints);
+            ObservableCollection<ObservablePoint> linearRegression = new ObservableCollection<ObservablePoint>();
+
+            foreach(var x in observablePoints)
+            {
+                if (x != null)
+                    linearRegression.Add(new ObservablePoint(x.X, (double)(weight_bias.Item1 * x.Y + weight_bias.Item2)));
+            }
+            return linearRegression;
         }
     }
 }

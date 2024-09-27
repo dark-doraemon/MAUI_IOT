@@ -97,6 +97,7 @@
                         Clicked="OnClick"-->
             </Grid>
         </material:TabItem>
+        
         <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
             <Grid RowDefinitions="*" ColumnDefinitions="*" >
                 <ScrollView AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
@@ -134,7 +135,7 @@
                             </Grid>
                         </Grid>
 
-                        <Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}"></Grid>
+                        <Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}"/>
 
                         <Grid x:Name="Chitiet" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedDetail}">
                             <Grid.RowDefinitions>
