@@ -98,7 +98,7 @@
             </Grid>
         </material:TabItem>
         <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
-            <AbsoluteLayout>
+            <Grid RowDefinitions="*" ColumnDefinitions="*" >
                 <ScrollView AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                     <VerticalStackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" >
                         <Grid  x:Name="TongHop"  HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedSummary} ">
@@ -135,7 +135,7 @@
                         </Grid>
 
                         <Grid x:Name="charts2" IsVisible="{Binding IsCheckedChart}"></Grid>
-                        
+
                         <Grid x:Name="Chitiet" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="{Binding IsCheckedDetail}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -148,7 +148,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            
+
                             <Grid Grid.Row="0" ColumnSpan="5" BackgroundColor="LightGray" Padding="10">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -169,7 +169,7 @@
                                 <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"  FontAttributes="Bold"/>
 
                             </Grid>
-                            
+
                             <CollectionView Grid.Row="1" Grid.ColumnSpan="5" ItemsSource="{Binding SelectedDatas}" x:Name="table_data1" ItemsUpdatingScrollMode="KeepScrollOffset">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="data:Data">
@@ -193,30 +193,72 @@
                         </Grid>
                     </VerticalStackLayout>
                 </ScrollView>
-                <Button  Text="popup"  Clicked="OnShowPopupClicked" WidthRequest="75" HeightRequest="75" CornerRadius="37"  AbsoluteLayout.LayoutBounds="1,1,AutoSize,AutoSize"
-                                        AbsoluteLayout.LayoutFlags="PositionProportional"  />
-            </AbsoluteLayout>
+                
+                <Button x:Name="DraggableButton" 
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        VerticalOptions="End"
+                        HorizontalOptions="End"
+                        Text="{x:Static model:FaBrandIcon.ChevronLeft}" 
+                        Padding="0, 0, 10, 10"
+                        Margin="0, 0, -20, 20"
+                        FontSize="50" 
+                        Clicked="OnShowPopupClicked" 
+                        WidthRequest="55" HeightRequest="80" CornerRadius="20"/>
+            </Grid>
         </material:TabItem>
 
         <material:TabItem Title="Database Mock">
             <Grid RowDefinitions="Auto, *, 2*">
 
-                <HorizontalStackLayout>
-                    <Button Text="Load Data" Command="{Binding LoadDataFromDatabaseCommand}" />
-                    <Button Text="Save Data" Command="{Binding SaveCommand}" />
-                    <Button Text="List Data" Clicked="Button_Clicked" Command="{Binding testDatabaseThoughClickedCommand}"/>
+                <VerticalStackLayout>
+                    <Button Margin="10" Text="Save Data Current File" Command="{Binding SaveCommand}" />
+                    <Button Margin="10" Text="Save Data All File" Command="{Binding SaveCommand}" />
+                    
+                    <Button Margin="10" Text="List Data" Clicked="Button_Clicked"/>
+                    <Button Margin="10" Text="List All Experiemnts" Clicked="Button_Clicked_1"/>
+                    
                     <Label Text="{Binding CurrentFileName}" />
-                </HorizontalStackLayout>
+                    <Label Text="{Binding CurrentExperimentName}" />
+                </VerticalStackLayout>
+
+                <Grid x:Name="listAllFile" RowDefinitions="*" ColumnDefinitions="*" Grid.Row="2" BackgroundColor="White" HeightRequest="400">
+                    <CollectionView ItemsSource="{Binding ExperimentManagers}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="data:ExperimentManager">
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Xóa"
+                                                       BackgroundColor="Red"
+                                                       IconImageSource="dotnet_bot.png"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:LessonnViewModel}}, Path=DeleteSelectedCommand}" CommandParameter="{Binding .}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+
+                                    <Frame Padding="10" Margin="5" CornerRadius="8" HasShadow="True">
+                                        <Grid ColumnDefinitions="*">
+                                            <Label Grid.Column="0" Text="{Binding ExperimentManagerName}" FontSize="16" FontAttributes="Bold"/>
+                                        </Grid>
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:LessonnViewModel}}, Path=ExperimentManagerTappedCommand}" CommandParameter="{Binding .}"/>
+                                        </Frame.GestureRecognizers>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+
 
                 <Grid x:Name="listData" RowDefinitions="*" ColumnDefinitions="*" Grid.Row="2" BackgroundColor="White" HeightRequest="400">
-                    <CollectionView ItemsSource="{Binding Experiment_database}" x:Name="CollectionView">
+                    <CollectionView ItemsSource="{Binding Experiments}" x:Name="CollectionView">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="data:Experiment">
                                 <Frame Padding="10" Margin="5" BorderColor="LightGray" CornerRadius="8" HasShadow="True">
-                                    
-                                    <Grid ColumnDefinitions="*, *">
+
+                                    <Grid ColumnDefinitions="*">
                                         <Label Grid.Column="0" Text="{Binding ExperimentName}" FontAttributes="Bold" FontSize="16"/>
-                                        <Label Grid.Column="1" Text="{Binding DateTime}" TextColor="Gray"/>
                                     </Grid>
 
                                     <Frame.GestureRecognizers>
@@ -226,7 +268,6 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-
                 </Grid>
             </Grid>
         </material:TabItem>

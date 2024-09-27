@@ -216,16 +216,18 @@ namespace MAUI_IOT.ViewModels
         public double avgF = 0;
 
         //Load data
-        public ObservableCollection<Experiment> Experiment_database { get; set; } = new ObservableCollection<Experiment>();
-        public ObservableCollection<Data> Data_database { get; set; } = new ObservableCollection<Data>();
-        public ObservableCollection<ExperimentInfo> ExInfo_database { get; set; } = new ObservableCollection<ExperimentInfo>();
-        public ObservableCollection<DataSummarize> DataSummarize_database { get; set; } = new ObservableCollection<DataSummarize>();
+        public ObservableCollection<Data> currentFileData { get; set; } = new ObservableCollection<Data>();
+        public ObservableCollection<ExperimentConfig> currentFileExperimentConfig { get; set; } = new ObservableCollection<ExperimentConfig>();
+        public ObservableCollection<DataSummarize> currentFileDataSummarize { get; set; } = new ObservableCollection<DataSummarize>();
 
         [ObservableProperty]
         public string primaryKey;
 
         [ObservableProperty]
         public string currentFileName = "NULL";
+
+        [ObservableProperty]
+        public string currentExperimentName = "NULL";   
 
         [ObservableProperty]
         public bool isCheckLine_1 = false;
@@ -240,6 +242,19 @@ namespace MAUI_IOT.ViewModels
         public bool isCheckLine_4 = false;
 
         private DatabaseHelper _database;
+
+        private string _primaryKey = string.Empty;
+
+
+        //Database
+        [ObservableProperty]
+        public ObservableCollection<ExperimentManager> experimentManagers = new ObservableCollection<ExperimentManager>();
+
+        [ObservableProperty]
+        private ObservableCollection<Experiment> experiments = new ObservableCollection<Experiment>();
+        private Dictionary<string, ObservableCollection<Data>> Datas_database { get; set; } = new Dictionary<string, ObservableCollection<Data>>();
+        private Dictionary<string, ObservableCollection<ExperimentConfig>> ExperimentConfigs_database { get; set; } = new Dictionary<string, ObservableCollection<ExperimentConfig>>();
+        private Dictionary<string , ObservableCollection<DataSummarize>> DataSummarizes_database { get; set; } = new Dictionary<string, ObservableCollection<DataSummarize>>();
 
         public LessonnViewModel() { }
         public LessonnViewModel(IConnect connect, IPublish publisher, ISubscribe subscriber, IDisconnect disconnect)
@@ -456,38 +471,31 @@ namespace MAUI_IOT.ViewModels
             _mqttClient = mqttFactory.CreateMqttClient();
 
             //File
+
+            //Create a table managerment experiments
+
             try
             {
-                _database = new DatabaseHelper(LessonName + ".db3");
+                DatabaseHelper.InitConnection(LessonName + ".db3");
             }
             catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
-            Experiment_database.Clear();
-            Task.Run(async () => {
-                Experiment_database = await _database.GetExperiments();
-                if(Experiment_database.Count < 1)
-                {
-                    Debug.WriteLine("Nothing in experiment_database");
-                }
-                else
-                {
-                    Debug.WriteLine("Data has been loaded into Experiment_database");
-                }
-                
-                });
 
-            Experiment_database.CollectionChanged += (sender, e) =>
+            //init a experiment when start lesson, if don't save data, this file will be removed
+            _primaryKey = generatePrimaryKey();
+            DatabaseHelper.AddAsync(new ExperimentManager
             {
-                switch (e.Action) { 
-                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        Debug.WriteLine("Event Experiment database get data");
-                        break;
-                    case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                        Debug.WriteLine("Event Experiment database remove data");
-                        break;
-                }
-            };
+                ExperimentManagerId = _primaryKey,
+                ExperimentManagerName = LessonName + " " + DateTime.Now.ToString("d/M/yyyy H:mm")
+            });
+
+            //loading files: data has been saved before
+            Task.Run(async () =>
+            {
+                ExperimentManagers = await DatabaseHelper.GetExperimentManagersAsync();
+            });
+
         }
         private async Task Connect()
         {
@@ -703,34 +711,38 @@ namespace MAUI_IOT.ViewModels
             //datas = new ObservableCollection<Data>();
         }
 
-
+        public static int countExperiment = 0;
 
 
         [RelayCommand]
         public async Task Save()
         {
             Debug.WriteLine("Save file starting.....");
-            PrimaryKey = generatePrimaryKey();
-           
             try
             {
-                await _database.AddAsync(new Experiment
+                var temp = DatabaseHelper.GetExperimentsByExperimentManagerId(_primaryKey);
+                if(temp == null)
                 {
-                    ExperimentInfoId = PrimaryKey,
-                    DateTime = DateTime.Now,
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            PrimaryKey = generatePrimaryKey();
+            countExperiment++;
+            try
+            {
+                await DatabaseHelper.AddAsync(new Experiment
+                {
                     ExperimentId = PrimaryKey,
-                    ExperimentName = LessonName + " " + DateTime.Now.ToString("d/M/yyyy H:mm")
+                    ExperimentName = LessonName + " " + countExperiment.ToString(),
+                    ExperimentManagerId = _primaryKey,
                 });
 
-                foreach (Data d in Datas)
+                await DatabaseHelper.AddAsync(new ExperimentConfig
                 {
-                    d.ExperimentInfoId = PrimaryKey;
-                    await _database.AddAsync(d);
-                }
-
-                await _database.AddAsync(new ExperimentInfo
-                {
-                    ExperimentInfoId = PrimaryKey,
                     Device = CurrentItems.Name.ToString(),
                     SamplingDuration = SamplingDuration,
                     SamplingRate = SamplingRate,
@@ -738,55 +750,118 @@ namespace MAUI_IOT.ViewModels
                     ExperimentId = PrimaryKey,
                 });
 
-                await _database.AddAsync(new DataSummarize
+                await DatabaseHelper.AddAsync(new DataSummarize
                 {
                     AvgA = AvgA,
                     AvgF = AvgF,
                     Std_A = StandardDeviationA,
                     Std_F = StandardDeviationF,
-                    ExperimentInfoId = PrimaryKey
+                    ExperimentId = PrimaryKey
                 });
+
+                foreach(Data d in Datas)
+                {
+                    await DatabaseHelper.AddAsync(new Data
+                    {
+                        accX = d.accX,
+                        accY = d.accY,
+                        accZ = d.accZ,
+                        force = d.force,
+                        timestamp = d.timestamp,
+                        ExperimentId = PrimaryKey
+                    });
+                }
+
+                
             }
             catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
 
             Debug.WriteLine("Save file successful");
+            Experiments.Add(new Experiment
+            {
+                DateTime = DateTime.Now,
+                ExperimentId = PrimaryKey,
+                ExperimentManagerId = PrimaryKey,
+                ExperimentName = LessonName + " lần " + countExperiment.ToString(),
+            });
         }
 
+        private async Task<string> LoadExperimentFromDatabase()
+        {
+            IsLoadingDataFromDataBase = true;
+            ObservableCollection<ExperimentManager> Data = await DatabaseHelper.GetExperimentManagersAsync();
+            if(Data.Count < 1 || Data == null)
+            {
+                Debug.Write("Database don't have data");
+                IsLoadingDataFromDataBase= false;
+                return string.Empty;
+            }
+            else
+            {
+                IsLoadingDataFromDataBase = false;
+                return Data.FirstOrDefault().ExperimentManagerId.ToString() ?? string.Empty;
+            }
+        }
+
+        [ObservableProperty]
+        private bool isLoadingDataFromDataBase = false;
 
         [RelayCommand]
-        public async Task LoadDataFromDatabase()
+        public async Task LoadDataFromDatabase(string experimentManagerId)
         {
             Debug.WriteLine("Load data....");
             Debug.WriteLine("Path: " + FileSystem.AppDataDirectory.ToString());
 
-            if (PrimaryKey == null || PrimaryKey.Length == 0) {
-                Debug.WriteLine("Loading data failure");
+            Datas_database.Clear();
+            DataSummarizes_database.Clear();
+            ExperimentConfigs_database.Clear();
+
+
+            IsLoadingDataFromDataBase = true;
+
+            if (string.IsNullOrEmpty(experimentManagerId)) {
+                Debug.WriteLine("Nothing in database");
                 return;
             }
 
-            Data_database.Clear();
-            ExInfo_database.Clear();
-            DataSummarize_database.Clear();
+            //GEt list experiment for add data in dictionary
+            ObservableCollection<Experiment> experiments = await DatabaseHelper.GetExperimentsByExperimentManagerId(experimentManagerId);
+            foreach (Experiment experiment in experiments) {
+                Datas_database.Add(experiment.ExperimentId, await DatabaseHelper.GetDataByExperimentId(experiment.ExperimentId));
+                ExperimentConfigs_database.Add(experiment.ExperimentId, await DatabaseHelper.GetExperimentConfigByExperimentId(experiment.ExperimentId));
+                DataSummarizes_database.Add(experiment.ExperimentId, await DatabaseHelper.GetDataSummarizeByExperimentId(experiment.ExperimentId));
+            }
 
+            //Load data into collection view
+            Experiments = await DatabaseHelper.GetExperimentsByExperimentManagerId(experimentManagerId);
+            IsLoadingDataFromDataBase = false;
+            Debug.WriteLine("Load data success");
+        }
+
+        private void getDataFromExperimentId(string id)
+        {
+            IsLoadingDataFromDataBase = true;
             try
             {
-                //Experiment_database.Clear();
-                //Experiment_database = await _database.GetExperiments();
-                Data_database = await _database.GetDataByExperimentId(PrimaryKey);
-                ExInfo_database = await _database.GetExperimentInfoById(PrimaryKey);
-                DataSummarize_database = await _database.GetDataSummarizeById(PrimaryKey);
+                currentFileData = Datas_database[id];
+                currentFileExperimentConfig = ExperimentConfigs_database[id];
+                currentFileDataSummarize = DataSummarizes_database[id];
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
-            SelectedDatas = Data_database;
-            Device = ExInfo_database.First().Device;
-            SamplingDuration = ExInfo_database.First().SamplingDuration;
-            SamplingRate = ExInfo_database.First().SamplingRate;
-            Weight = ExInfo_database.First().Weight;
+
+            if (currentFileData.Count < 1 || currentFileDataSummarize.Count < 1 || currentFileExperimentConfig.Count < 1) 
+                return;
+
+            SelectedDatas = currentFileData;
+            Device = currentFileExperimentConfig.First().Device;
+            SamplingDuration = currentFileExperimentConfig.First().SamplingDuration;
+            SamplingRate = currentFileExperimentConfig.First().SamplingRate;
+            Weight = currentFileExperimentConfig.First().Weight;
 
             _accX.Clear();
             _accY.Clear();
@@ -799,37 +874,13 @@ namespace MAUI_IOT.ViewModels
                 _accZ.Add(new ObservablePoint(data.timestamp, data.accZ));
             }
 
-            AvgA = DataSummarize_database.First().AvgA;
-            AvgF = DataSummarize_database.First().AvgF;
-            StandardDeviationA = DataSummarize_database.First().Std_A;
-            StandardDeviationF = DataSummarize_database.First().Std_F;
-
-            Debug.WriteLine("Load data success");
+            AvgA = currentFileDataSummarize.First().AvgA;
+            AvgF = currentFileDataSummarize.First().AvgF;
+            StandardDeviationA = currentFileDataSummarize.First().Std_A;
+            StandardDeviationF = currentFileDataSummarize.First().Std_F;
+            IsLoadingDataFromDataBase = false;
         }
 
-        [RelayCommand]
-        public async Task testDatabaseThoughClicked()
-        {
-            //Debug.WriteLine("Path: " + DatabaseHelper.Database_path);
-            //Debug.WriteLine("Loading when process clicked");
-            //await Task.Run( async () =>
-            //{
-               
-            //    if(Experiment_database == null)
-            //    {
-            //        Debug.WriteLine("Loading data failure");
-            //        return;
-            //    }
-
-            //    foreach (Experiment e in Experiment_database)
-            //    {
-            //        Debug.WriteLine($"Experimentid: {e.ExperimentName}");
-            //    }
-
-            //    Debug.WriteLine("Loading successful in clicked");
-            //});
-            //Debug.WriteLine("Loading end task loading data");
-        }
 
         public void addDataSummary()
         {
@@ -890,14 +941,60 @@ namespace MAUI_IOT.ViewModels
             return Math.Sqrt(result);
         }
 
+        //Get experiments
         [RelayCommand]
         private void OnExperimentTapped(Experiment selectedExperiment)
         {
+            IsLoadingDataFromDataBase = true;
+            Debug.WriteLine("Data binding: .../");
             if (selectedExperiment != null)
             {
-                Debug.WriteLine($"Selected Experiment: {selectedExperiment.ExperimentInfoId}");
-                PrimaryKey = selectedExperiment.ExperimentInfoId;
-                CurrentFileName = selectedExperiment.ExperimentName;
+                Debug.WriteLine($"Selected Experiment: {selectedExperiment.ExperimentId}");
+                getDataFromExperimentId(selectedExperiment.ExperimentId);
+            }
+
+            IsLoadingDataFromDataBase = false;
+            Debug.WriteLine("Data binding: successful .../");
+            CurrentExperimentName = selectedExperiment.ExperimentName ?? string.Empty;
+        }
+
+        //Get File
+        [RelayCommand]
+        private async Task OnExperimentManagerTapped(ExperimentManager selectedExperimentManager)
+        {
+            IsLoadingDataFromDataBase = true;
+            Debug.WriteLine("Data binding: .../");
+            if (selectedExperimentManager != null)
+            {
+                Debug.WriteLine($"Selected Experiment: {selectedExperimentManager.ExperimentManagerId}");
+                Experiments.Clear();
+                await LoadDataFromDatabase(selectedExperimentManager.ExperimentManagerId);
+            }
+            IsLoadingDataFromDataBase = false;
+            CurrentFileName = selectedExperimentManager.ExperimentManagerName ?? string.Empty;
+            Debug.WriteLine($"Data binding: {Experiments.Count} /");
+        }
+
+        [RelayCommand]
+        private async Task DeleteSelected(ExperimentManager selectedExperimentManager)
+        {
+            if (selectedExperimentManager != null)
+            {
+                ExperimentManagers.Remove(selectedExperimentManager);
+                await DatabaseHelper.DeleteExperimentManagerById(selectedExperimentManager.ExperimentManagerId);
+                
+                ObservableCollection<Experiment> experimentId = await DatabaseHelper.GetExperimentsByExperimentManagerId(selectedExperimentManager.ExperimentManagerId);
+
+                if (experimentId.Count < 1 || experimentId == null) return;
+
+                foreach(Experiment experiment in experimentId)
+                {
+                    await DatabaseHelper.DeleteByExperimentId(experiment.ExperimentId);
+                }
+
+                await DatabaseHelper.DeleteByExperimentId(selectedExperimentManager.ExperimentManagerId);
+
+                Debug.WriteLine("Delete file success: " + selectedExperimentManager.ExperimentManagerName);
             }
         }
 

@@ -16,7 +16,7 @@ namespace MAUI_IOT.Models.Data
         public string ExperimentName { get; set; } = string.Empty;
         public DateTime DateTime { get; set; }
 
-        [ForeignKey(nameof(Experiment))]
-        public string ExperimentInfoId { get; set; }
+        [ForeignKey(nameof(ExperimentManager))]
+        public string ExperimentManagerId { get; set; } = string.Empty;
     }
 }

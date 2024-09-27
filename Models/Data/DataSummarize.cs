@@ -17,7 +17,7 @@ namespace MAUI_IOT.Models.Data
         public double AvgA { get; set; }
         public double AvgF { get; set; }
 
-        [ForeignKey(nameof(ExperimentInfo))]
-        public string ExperimentInfoId { get; set; }
+        [ForeignKey(nameof(ExperimentConfig))]
+        public string ExperimentId { get; set; } = string.Empty;
     }
 }

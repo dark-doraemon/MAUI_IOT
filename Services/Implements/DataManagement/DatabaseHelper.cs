@@ -14,15 +14,12 @@ namespace MAUI_IOT.Services.Implements.DataManagement
 {
     public class DatabaseHelper
     {
-        private SQLiteAsyncConnection _conn;
-        public static string Database_path { get; set; }
-        public DatabaseHelper(string fileName)
+        public static string Database_path { get; private set; } = string.Empty;
+        private static SQLiteAsyncConnection _connection = null;
+        public static void InitConnection(string fileName)
         {
-
-            Task.Run(async () => await CheckAndRequestStoragePermission());
-
-            string dbPath;
-
+            if (_connection != null) { return; }
+            string dbPath = string.Empty;
 #if ANDROID
             dbPath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, fileName);
 #elif WINDOWS
@@ -30,112 +27,170 @@ namespace MAUI_IOT.Services.Implements.DataManagement
 #else
             dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), fileName);
 #endif
-            _conn = new SQLiteAsyncConnection(dbPath);
 
             Database_path = dbPath;
-
-            CreateTablesAsync();
-        }
-
-
-        private void CreateTablesAsync()
-        {
+            _connection = new SQLiteAsyncConnection(dbPath);
             try
             {
-                _conn.CreateTableAsync<Data>().Wait();
-                _conn.CreateTableAsync<Experiment>().Wait();
-                _conn.CreateTableAsync<ExperimentInfo>().Wait();
-                _conn.CreateTableAsync<DataSummarize>().Wait();
+                _connection.CreateTableAsync<ExperimentManager>().Wait();
+                _connection.CreateTableAsync<Data>().Wait();
+                _connection.CreateTableAsync<Experiment>().Wait();
+                _connection.CreateTableAsync<ExperimentConfig>().Wait();
+                _connection.CreateTableAsync<DataSummarize>().Wait();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Lỗi khi tạo bảng: {ex.Message}");
             }
         }
-        public async Task AddAsync(Data data)
+
+        public static void AddAsync(ExperimentManager data)
         {
             try
             {
-                await _conn.InsertAsync(data);
+                if (_connection == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Database is not connected");
+                }
+                else
+                {
+                    _connection.InsertAsync(data).Wait();
+                }
             }
             catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message.ToString());
             }
         }
 
-        public async Task AddAsync(Experiment data)
+        public static async Task AddAsync(Data data)
         {
-            await _conn.InsertAsync(data);
+            if(_connection == null)
+            {
+                System.Diagnostics.Debug.WriteLine("Database is not connected");
+            }
+            else
+            {
+                await _connection.InsertAsync(data);
+            }
         }
 
-        public async Task AddAsync(ExperimentInfo data)
+        public static async Task AddAsync(Experiment data)
         {
-            await _conn.InsertAsync(data);
+            if (_connection == null)
+            {
+                System.Diagnostics.Debug.WriteLine("Database is not connected");
+            }
+            else
+            {
+                await _connection.InsertAsync(data);
+            }
         }
 
-        public async Task AddAsync(DataSummarize data)
+        public static async Task AddAsync(ExperimentConfig data)
         {
-            await _conn.InsertAsync(data);
+            if (_connection == null)
+            {
+                System.Diagnostics.Debug.WriteLine("Database is not connected");
+            }
+            else
+            {
+                await _connection.InsertAsync(data);
+            }
         }
 
-        public async Task<ObservableCollection<Data>> GetDataByExperimentId(string id)
+        public static async Task AddAsync(DataSummarize data)
         {
-            var dataList = await _conn.Table<Data>()
-                                      .Where(data => data.ExperimentInfoId == id)
-                                      .ToListAsync();
-
-            return new ObservableCollection<Data>(dataList);
+            if (_connection == null)
+            {
+                System.Diagnostics.Debug.WriteLine("Database is not connected");
+            }
+            else
+            {
+                await _connection.InsertAsync(data);
+            }
         }
 
-        public async Task<ObservableCollection<Experiment>> GetExperiments()
+        public static async Task<ObservableCollection<ExperimentManager>> GetExperimentManagersAsync()
         {
-            var dataList = await _conn.Table<Experiment>().ToListAsync();
+            if (_connection != null)
+            {
+                var dataList = await _connection.Table<ExperimentManager>().ToListAsync();
+                return new ObservableCollection<ExperimentManager>(dataList);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Database is not connect");
+                return new ObservableCollection<ExperimentManager>();
+            }
+        }
+
+        public static async Task<ObservableCollection<Experiment>> GetExperimentsByExperimentManagerId(string id)
+        {
+            var dataList = await _connection.Table<Experiment>().Where(d => d.ExperimentManagerId == id).ToListAsync();
             return new ObservableCollection<Experiment>(dataList);
         }
 
-        public async Task<ObservableCollection<ExperimentInfo>> GetExperimentInfoById(string id)
+        public static async Task<ObservableCollection<ExperimentConfig>> GetExperimentConfigByExperimentId(string id)
         {
-            var dataList =  await _conn.Table<ExperimentInfo>()
-                                       .Where(data => data.ExperimentInfoId == id)
+            var dataList =  await _connection.Table<ExperimentConfig>()
+                                       .Where(data => data.ExperimentId == id)
                                        .ToListAsync();
-            return new ObservableCollection<ExperimentInfo>(dataList);
+            return new ObservableCollection<ExperimentConfig>(dataList);
         }
 
-        public async Task<ObservableCollection<DataSummarize>> GetDataSummarizeById(string id)
+        public static async Task<ObservableCollection<DataSummarize>> GetDataSummarizeByExperimentId(string id)
         {
-            var dataList = await _conn.Table<DataSummarize>()
-                                      .Where(data => data.ExperimentInfoId == id)
+            var dataList = await _connection.Table<DataSummarize>()
+                                      .Where(data => data.ExperimentId == id)
                                       .ToListAsync();
             return new ObservableCollection<DataSummarize>(dataList);
         }
 
-        private async Task CheckAndRequestStoragePermission()
+        public static async Task<ObservableCollection<Data>> GetDataByExperimentId(string id)
         {
-            // Trực tiếp yêu cầu quyền
+            var dataList = await _connection.Table<Data>()
+                                      .Where(data => data.ExperimentId == id)
+                                      .ToListAsync();
+            return new ObservableCollection<Data>(dataList);
+        }
 
-#if ANDROID
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+        public static async Task DeleteExperimentManagerById(string id)
+        {
+            if (_connection == null)
             {
-                if (!Android.OS.Environment.IsExternalStorageManager)
-                {
-                    Intent intent = new Intent(Android.Provider.Settings.ActionManageAllFilesAccessPermission);
-                    var activity = Platform.CurrentActivity ?? throw new InvalidOperationException("Activity chưa tồn tại");
-                    activity.StartActivity(intent);
-                    return;
-                }
+                System.Diagnostics.Debug.WriteLine("Database is not connected");
             }
             else
             {
-                var status = await Permissions.RequestAsync<Permissions.StorageWrite>();
-
-                if (status != PermissionStatus.Granted)
+                var item = await _connection.Table<ExperimentManager>().FirstOrDefaultAsync(x => x.ExperimentManagerId == id);
+                if (item != null)
                 {
-                    throw new UnauthorizedAccessException("Quyền truy cập lưu trữ chưa được cấp.");
+                    await _connection.DeleteAsync(item);
                 }
             }
-#endif
-
         }
 
+        //Delete Data DataSummarize ExperimentConfig
+        public static async Task DeleteByExperimentId(string id)
+        {
+            if (_connection == null)
+            {
+                System.Diagnostics.Debug.WriteLine("Database is not connected");
+            }
+            else
+            {
+                var item_Data = _connection.Table<Data>().FirstOrDefaultAsync(x => x.ExperimentId == id);
+                var item_DataSummarize = _connection.Table<DataSummarize>().FirstOrDefaultAsync(x => x.ExperimentId == id);
+                var item_ExperimentConfig = _connection.Table<ExperimentConfig>().FirstOrDefaultAsync(x => x.ExperimentId == id);
+
+                if (item_ExperimentConfig != null && item_Data != null && item_DataSummarize != null)
+                {
+                    await _connection.DeleteAsync(item_Data);
+                    await _connection.DeleteAsync(item_DataSummarize);
+                    await _connection.DeleteAsync(item_ExperimentConfig);
+                }
+                System.Diagnostics.Debug.WriteLine("Delete all file has experiment id: " + id);
+            }
+        }
     }
 }

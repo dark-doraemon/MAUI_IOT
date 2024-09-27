@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace MAUI_IOT.Models
 {
-    public class ExperimentInfo
+    public class ExperimentConfig
     {
-        [PrimaryKey]
-        public string ExperimentInfoId { get; set; }
+        [PrimaryKey, AutoIncrement]
+        public int ExperimentConfigId { get; set; }
         public string Device {  get; set; } = string.Empty;
         public double Weight { get; set; }
         public int SamplingRate { get; set;}
         public int SamplingDuration { get; set;}
 
         [ForeignKey(nameof(Experiment))]
-        public string ExperimentId { get; set; }
+        public string ExperimentId { get; set; } = string.Empty;
     }
 }

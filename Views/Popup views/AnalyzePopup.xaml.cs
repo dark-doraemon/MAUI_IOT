@@ -26,6 +26,39 @@ public partial class AnalyzePopup : Popup
         GirdChoice.Children.Add(data);
         GirdChoice.SetRow(choice, 0);
         GirdChoice.SetRow(data, 1);
+        GirdChoice.RowSpacing = 0;
+        // Tạo Border để làm border
+        Border border = new Border
+        {
+            Stroke = Colors.Black,
+            StrokeThickness = 1,
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Start
+        };
+
+        Border border1 = new Border
+        {
+            Stroke = Colors.Black, 
+            StrokeThickness = 0.5, 
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Start,
+        };
+
+        Border border2 = new Border
+        {
+            Stroke = Colors.Black,
+            StrokeThickness = 1,
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.End
+        };
+
+        GirdChoice.Children.Add(border);
+        GirdChoice.Children.Add(border1);
+        GirdChoice.Children.Add(border2);
+        GirdChoice.SetRow(border, 0); 
+        GirdChoice.SetRow(border1, 1); 
+        GirdChoice.SetRow(border2, 2); 
+        GirdChoice.RowSpacing = 0;
     }
 
 
@@ -36,7 +69,7 @@ public partial class AnalyzePopup : Popup
 
 
         Grid comparegird = new Grid();
-        comparegird.BackgroundColor = Colors.Cyan;
+        comparegird.BackgroundColor = Colors.Transparent;
         comparegird.ColumnDefinitions.Clear();
         comparegird.RowDefinitions.Clear();
         comparegird.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
@@ -148,7 +181,8 @@ public partial class AnalyzePopup : Popup
     Grid GenDataGrid(int n)
     {
         Grid grid = new Grid();
-        grid.BackgroundColor = Colors.Red;
+        grid.BackgroundColor = Colors.Transparent;
+        grid.Padding = 10;
         grid.ColumnDefinitions.Clear();
         grid.RowDefinitions.Clear();
         grid.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
@@ -183,6 +217,7 @@ public partial class AnalyzePopup : Popup
             {
                 Text = $"Thí Nghiệm Lần {i}",
                 VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
                 FontAttributes = FontAttributes.Bold,
                 FontSize = 15,
 
@@ -192,25 +227,27 @@ public partial class AnalyzePopup : Popup
             {
                 Text = $"F(l{i})",
                 VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.End,
                 FontAttributes = FontAttributes.Bold,
                 FontSize = 15,
                 Margin = new Thickness(5, 0, 0, 0)
             };
             CheckBox chkF = new CheckBox
             {
-                HorizontalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Center,
             };
             // chkChiTiet.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsCheckedDetail", BindingMode.TwoWay));
             Label lblA = new Label
             {
                 Text = $"A(l{i})",
                 VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.End,
                 FontAttributes = FontAttributes.Bold,
                 FontSize = 15
             };
             CheckBox chkA = new CheckBox
             {
-                HorizontalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Center,
             };
             // chkChiTiet.SetBinding(CheckBox.IsCheckedProperty, new Binding("IsCheckedDetail", BindingMode.TwoWay));
             grid.Children.Add(lblName);

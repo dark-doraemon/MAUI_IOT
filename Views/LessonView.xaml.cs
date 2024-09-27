@@ -35,10 +35,10 @@ public partial class LessonView : ContentPage
         this._lessonnViewModel = lessonnViewModel;
         BindingContext = lessonnViewModel;
 
-        table_data1.HeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.5;
-        TongHop.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
-        charts2.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
-        Chitiet.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
+       table_data1.HeightRequest = (DeviceDisplay.Current.MainDisplayInfo.Height / DeviceDisplay.Current.MainDisplayInfo.Density) * 0.5;
+       TongHop.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
+       charts2.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
+       Chitiet.WidthRequest = (DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density) * 1;
 
         // chart table 
         GenarateAnalyzeChart();
@@ -48,13 +48,10 @@ public partial class LessonView : ContentPage
         editBtn.ViewModel = lessonnViewModel;
 
         listData.IsVisible = false;
-
+        listAllFile.IsVisible = false;
     }
 
-
-
-
-
+    bool isDragging = false;
     private void Tabinit()
     {
         // tab_View.SelectedTab = Config;
@@ -62,9 +59,11 @@ public partial class LessonView : ContentPage
 
     private void OnShowPopupClicked(object sender, EventArgs e)
     {
-        var popup = new AnalyzePopup(_lessonnViewModel);
-        this.ShowPopup(popup);
-
+        if (!isDragging)
+        {
+            var popup = new AnalyzePopup(_lessonnViewModel);
+            this.ShowPopup(popup);
+        }
     }
     private void GenarateAnalyzeChart()
     {
@@ -109,7 +108,7 @@ public partial class LessonView : ContentPage
             HorizontalOptions = LayoutOptions.End,
             Margin = new Thickness(0, 20, 20, 0),
             IsVisible = false,
-            BackgroundColor = Colors.Cyan,
+            BackgroundColor = Colors.Transparent,
             HeightRequest = 150,
             VerticalOptions = LayoutOptions.Start,
             Padding = 10
@@ -241,7 +240,6 @@ public partial class LessonView : ContentPage
         };
     }
 
-
     //private void OnShowAddChartLinePopupClicked(object sender, EventArgs e)
     //{
     //    var popup = new AddChartLinePopup(_lessonnViewModel);
@@ -339,6 +337,12 @@ public partial class LessonView : ContentPage
         charts.Padding = new Thickness(0, 10, 0, 0);
         charts.Children.Add(stack);
         charts.SetRow(stack, rowNumber);
+    }
+
+    private void Button_Clicked_1(object sender, EventArgs e)
+    {
+        listAllFile.IsVisible =  !listAllFile.IsVisible;
+        listData.IsVisible = !listAllFile.IsVisible;
     }
 
     private Grid GenerateChart(List<string> listSeries, int rowNumber, int chartIndex, bool isMaximize)
@@ -472,18 +476,8 @@ public partial class LessonView : ContentPage
     private void Button_Clicked(object sender, EventArgs e)
     {
         listData.IsVisible = !listData.IsVisible;
-        Debug.WriteLine("Data list clicked " + _lessonnViewModel.Experiment_database.Count);
-        CollectionView.ItemsSource = new ObservableCollection<Experiment>();
-        try
-        {
-            CollectionView.ItemsSource = _lessonnViewModel.Experiment_database;
-            Debug.WriteLine("Data list clicked " + _lessonnViewModel.Experiment_database.Count);
-            foreach (Experiment exp in CollectionView.ItemsSource.ToList<Experiment>()) {
-                Debug.WriteLine("Data: " + exp.ExperimentName);
-            }
-        }
-        catch (Exception ex) { 
-            Debug.WriteLine("Error when loading data" + ex.Message.ToString());
-        }
+        listAllFile.IsVisible = !listData.IsVisible;
     }
+
+
 }

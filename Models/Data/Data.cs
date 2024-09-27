@@ -19,7 +19,7 @@ namespace MAUI_IOT.Models.Data
         public double force { get; set; }
         public double a { get => Math.Sqrt(accX * accX + accY * accY + accZ * accZ); }
 
-        [ForeignKey(nameof(ExperimentInfo))]
-        public string ExperimentInfoId { get; set; }
+        [ForeignKey(nameof(ExperimentConfig))]
+        public string ExperimentId { get; set; } = string.Empty;
     }
 }
