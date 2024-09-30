@@ -262,7 +262,9 @@ namespace MAUI_IOT.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<Experiment> experiments = new ObservableCollection<Experiment>();
-        private Dictionary<string, ObservableCollection<Data>> Datas_database { get; set; } = new Dictionary<string, ObservableCollection<Data>>();
+
+        [ObservableProperty]
+        private Dictionary<string, ObservableCollection<Data>> datas_database = new Dictionary<string, ObservableCollection<Data>>();
         private Dictionary<string, ObservableCollection<ExperimentConfig>> ExperimentConfigs_database { get; set; } = new Dictionary<string, ObservableCollection<ExperimentConfig>>();
         private Dictionary<string , ObservableCollection<DataSummarize>> DataSummarizes_database { get; set; } = new Dictionary<string, ObservableCollection<DataSummarize>>();
 
@@ -564,8 +566,8 @@ namespace MAUI_IOT.ViewModels
             Datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
-            _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
-            //_mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
+            //_mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
+            _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8081, "iot", "iot@123456");
             _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
 
             Config config = new Config(5000, 50);
@@ -839,6 +841,7 @@ namespace MAUI_IOT.ViewModels
                     });
                 }
 
+                Datas_database.Add(LessonName + " " + countExperiment.ToString(), Datas);
                 
             }
             catch (Exception ex) {

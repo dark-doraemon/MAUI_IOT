@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:data="clr-namespace:MAUI_IOT.Models.Data"
+             xmlns:viewmodel="clr-namespace:MAUI_IOT.ViewModels"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             x:DataType="viewmodel:LessonnViewModel"
+             x:Class="MAUI_IOT.Views.TabViewLessonView.AnalysisTab2"
+             Padding="10">
+
+    <ContentView.BindingContext>
+        <viewmodel:LessonnViewModel/>
+    </ContentView.BindingContext>
+    
+    <ContentView.Content>
+        <Grid RowDefinitions="*" ColumnDefinitions="*" IsVisible="False">
+            <Grid Grid.Row="0" Grid.Column="0">
+                <CollectionView ItemsSource="{Binding Datas}" ItemsUpdatingScrollMode="KeepScrollOffset">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="data:Data" >
+                            <Grid ColumnDefinitions="*, *, *, *, *">
+                                <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+            <Grid Grid.Row="0" Grid.Column="0">
+                <CollectionView ItemsSource="{Binding Datas_database.Keys}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Grid ColumnDefinitions="*, *, *" RowDefinitions="*">
+                                <material:CheckBox Grid.Column="0" Text="{Binding}" />
+                                <material:CheckBox Grid.Column="1" Text="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Grid>
+    </ContentView.Content>
+       
+</ContentView>

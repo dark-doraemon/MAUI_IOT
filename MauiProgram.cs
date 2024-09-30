@@ -16,6 +16,7 @@ using MAUI_IOT.Services.Implements.DataManagement;
 using MAUI_IOT.Services.Interfaces.SaveData;
 using MAUI_IOT.Services.Implements.SaveData;
 using ZXing.Net.Maui.Controls;
+using MAUI_IOT.Views.TabViewLessonView;
 namespace MAUI_IOT
 {
     public static class MauiProgram
@@ -50,6 +51,10 @@ namespace MAUI_IOT
 
             builder.Services.AddSingleton<LoginView>();
             builder.Services.AddSingleton<LoginViewModel>();
+
+            builder.Services.AddTransient<Analysis>();
+            builder.Services.AddTransient<AnalysisTab1>();
+            builder.Services.AddTransient<AnalysisTab2>();
 
             builder.Services.AddTransient<HomeView>();
             builder.Services.AddTransient<HomeViewModel>();
