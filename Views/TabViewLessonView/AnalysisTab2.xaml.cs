@@ -20,18 +20,18 @@ public partial class AnalysisTab2 : ContentView
         }
     }
 
-    private void Button_Clicked(object sender, EventArgs e)
+    private async void Button_Clicked(object sender, EventArgs e)
     {
-        gridCollection.Children.Clear();
-
-        Content.Children.Remove(gridCollection);
-
-        tableDetail(gridCollection);
-
-        Content.Children.Add(gridCollection);
-
-        LessonnViewModel l = BindingContext as LessonnViewModel;
-        Debug.WriteLine("Number of datas count: " + l.Datas_database.Count);
+        await MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            await Task.Delay(100);
+            gridCollection.Children.Clear();
+            gridCollection.ColumnDefinitions.Clear();
+            //Content.Add(tableDetail(gridCollection));
+            Content.SetRowSpan(tableDetail(gridCollection), 1);
+            LessonnViewModel l = BindingContext as LessonnViewModel;
+            Debug.WriteLine("Number of datas count: " + l.Datas_database.Count);
+        });
     }
 
     public Grid tableDetail(Grid view)
@@ -56,11 +56,19 @@ public partial class AnalysisTab2 : ContentView
         return view;
     }
 
-    public IView generateColumn(ObservableCollection<Data> data) // Thay YourDataType bằng kiểu dữ liệu thực tế
+    public IView generateColumn(ObservableCollection<Data> data) 
     {
-        Grid columns = new Grid();
-        columns.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
+        Grid columns = new Grid
+        {
+            ColumnDefinitions = {
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            },
+            RowDefinitions =
+            {
+                new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)},
+            }
+        };
+       
         var collectionView = new CollectionView
         {
             ItemsSource = data,
@@ -70,12 +78,13 @@ public partial class AnalysisTab2 : ContentView
                 Grid grid = new Grid
                 {
                     ColumnDefinitions = {
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto }
-                },
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    },
+
                     RowDefinitions = {
-                    new RowDefinition { Height = GridLength.Auto }
-                }
+                        new RowDefinition { Height = GridLength.Auto }
+                    }
                 };
 
                 var labelA = new Label

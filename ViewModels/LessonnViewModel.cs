@@ -903,6 +903,7 @@ namespace MAUI_IOT.ViewModels
             catch (Exception ex) {
                 await Shell.Current.DisplayAlert("Thông báo", "Lưu thất bại", "Đồng ý");
                 Debug.WriteLine(ex.Message);
+                return;
             }
 
             Debug.WriteLine("Save file successful");

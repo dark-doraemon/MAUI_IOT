@@ -8,18 +8,9 @@
              x:Class="MAUI_IOT.Views.TabViewLessonView.AnalysisTab2"
              Padding="10">
 
-    <ContentView.BindingContext>
-        <viewmodel:LessonnViewModel/>
-    </ContentView.BindingContext>
-    
     <ContentView.Content>
         <Grid x:Name="Content" RowDefinitions="Auto, *" ColumnDefinitions="*">
             <Grid ColumnDefinitions="*, *, *, *, *, *" Grid.Row="0" Grid.Column="0">
-                <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center" />
-                <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Text="Load" Clicked="Button_Clicked" Grid.Column="5"/>
             </Grid>
             
