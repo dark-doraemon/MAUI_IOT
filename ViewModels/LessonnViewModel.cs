@@ -246,7 +246,7 @@ namespace MAUI_IOT.ViewModels
         public string currentFileName = "NULL";
 
         [ObservableProperty]
-        public string currentExperimentName = "NULL";   
+        public string currentExperimentName = "NULL";
 
         [ObservableProperty]
         public bool isCheckLine_1 = false;
@@ -313,7 +313,7 @@ namespace MAUI_IOT.ViewModels
                 },
                 new LineSeries<ObservablePoint>
                 {
-                    Values = AccA,
+                    Values = FRegression,
                     //Values = new ObservableCollection<ObservablePoint>(),
                     Fill = null,
                     GeometryFill = null, // Màu cho điểm dữ liệu
@@ -536,7 +536,7 @@ namespace MAUI_IOT.ViewModels
             //MQTT connect
             mqttFactory = new MqttFactory();
             _mqttClient = mqttFactory.CreateMqttClient();
-            
+
             //File
 
             //Create a table managerment experiments
@@ -545,7 +545,8 @@ namespace MAUI_IOT.ViewModels
             {
                 DatabaseHelper.InitConnection(LessonName + ".db3");
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
             }
 
@@ -577,10 +578,10 @@ namespace MAUI_IOT.ViewModels
             Datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
-            _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
-            //_mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8081, "iot", "iot@123456");
-            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
-            
+            // _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
+            _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
+            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD1/data");
+
             Config config = new Config(5000, 50);
             string config_json = System.Text.Json.JsonSerializer.Serialize(config);
 
@@ -590,7 +591,15 @@ namespace MAUI_IOT.ViewModels
             {
 
                 var json = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-                Packet packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
+                Packet packet = null;
+                try
+                {
+                    packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
 
                 if (packet != null)
                 {
@@ -646,10 +655,11 @@ namespace MAUI_IOT.ViewModels
             if (CountNumberExperiment > 1)
             {
                 bool answer = await Shell.Current.DisplayAlert("Thông báo", $"Tạo mới thí nghiệm thứ: {CountNumberExperiment}", "Đồng ý", "Hủy");
-                if (!answer) {
+                if (!answer)
+                {
                     CountNumberExperiment--;
                     return;
-                } 
+                }
             }
 
             Debug.WriteLine("Khối lượng" + Weight + "\n Tốc độ lấy mẫu: " + SamplingRate + "\n Thời gian lấy mẫu: " + SamplingDuration + ")");
@@ -700,7 +710,7 @@ namespace MAUI_IOT.ViewModels
 
             summarizeResult();
 
-            
+
             try
             {
                 ARegression = getLinearRegression(AccA);
@@ -708,7 +718,8 @@ namespace MAUI_IOT.ViewModels
                 SeriesRegression[0].Values = FRegression;
                 SeriesRegression[1].Values = SeriesRegression;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
             }
             IsCaculateRegression = false;
@@ -828,8 +839,8 @@ namespace MAUI_IOT.ViewModels
             IsStartingButtonSave = true;
             IsEnableButtonStart = false;
 
-            if(Datas.Count < 1 || Datas == null)
-            { 
+            if (Datas.Count < 1 || Datas == null)
+            {
                 await Shell.Current.DisplayAlert("Thông báo", "Chưa có dữ liệu", "Hủy");
                 IsEnableButtonStart = true;
                 IsStartingButtonSave = false;
@@ -841,7 +852,7 @@ namespace MAUI_IOT.ViewModels
             try
             {
                 var temp = DatabaseHelper.GetExperimentsByExperimentManagerId(_primaryKey);
-                if(temp == null)
+                if (temp == null)
                 {
                     return;
                 }
@@ -882,7 +893,7 @@ namespace MAUI_IOT.ViewModels
                 };
                 await DatabaseHelper.AddAsync(dataSummarize);
 
-                foreach(Data d in Datas)
+                foreach (Data d in Datas)
                 {
                     await DatabaseHelper.AddAsync(new Data
                     {
@@ -898,9 +909,10 @@ namespace MAUI_IOT.ViewModels
                 Datas_database.Add(Datas);
                 ExperimentConfigs_database.Add(experimentConfig);
                 DataSummarizes_database.Add(dataSummarize);
-                
+
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 await Shell.Current.DisplayAlert("Thông báo", "Lưu thất bại", "Đồng ý");
                 Debug.WriteLine(ex.Message);
             }
@@ -924,10 +936,10 @@ namespace MAUI_IOT.ViewModels
         {
             IsLoadingDataFromDataBase = true;
             ObservableCollection<ExperimentManager> Data = await DatabaseHelper.GetExperimentManagersAsync();
-            if(Data.Count < 1 || Data == null)
+            if (Data.Count < 1 || Data == null)
             {
                 Debug.Write("Database don't have data");
-                IsLoadingDataFromDataBase= false;
+                IsLoadingDataFromDataBase = false;
                 return string.Empty;
             }
             else
@@ -953,14 +965,16 @@ namespace MAUI_IOT.ViewModels
 
             IsLoadingDataFromDataBase = true;
 
-            if (string.IsNullOrEmpty(experimentManagerId)) {
+            if (string.IsNullOrEmpty(experimentManagerId))
+            {
                 Debug.WriteLine("Nothing in database");
                 return;
             }
 
             //GEt list experiment for add data in dictionary
             ObservableCollection<Experiment> experiments = await DatabaseHelper.GetExperimentsByExperimentManagerId(experimentManagerId);
-            foreach (Experiment experiment in experiments) {
+            foreach (Experiment experiment in experiments)
+            {
                 Datas_database.Add(await DatabaseHelper.GetDataByExperimentId(experiment.ExperimentId));
                 ExperimentConfigs_database.Add(await DatabaseHelper.GetExperimentConfigByExperimentId(experiment.ExperimentId));
                 DataSummarizes_database.Add(await DatabaseHelper.GetDataSummarizeByExperimentId(experiment.ExperimentId));
@@ -976,7 +990,7 @@ namespace MAUI_IOT.ViewModels
         {
             IsLoadingDataFromDataBase = true;
 
-            if (currentFileData.Count < 1 || currentFileDataSummarize.Count < 1 || currentFileExperimentConfig.Count < 1) 
+            if (currentFileData.Count < 1 || currentFileDataSummarize.Count < 1 || currentFileExperimentConfig.Count < 1)
                 return;
 
             SelectedDatas = currentFileData;
@@ -1164,7 +1178,7 @@ namespace MAUI_IOT.ViewModels
             (double, double) weight_bias = CaculateRegression.LinearRegressionFunction(observablePoints);
             ObservableCollection<ObservablePoint> linearRegression = new ObservableCollection<ObservablePoint>();
 
-            foreach(var x in observablePoints)
+            foreach (var x in observablePoints)
             {
                 if (x != null)
                     linearRegression.Add(new ObservablePoint(x.X, (double)(weight_bias.Item1 * x.Y + weight_bias.Item2)));

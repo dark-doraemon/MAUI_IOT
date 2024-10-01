@@ -12,7 +12,7 @@ namespace MAUI_IOT.Models.Data
     {
         [PrimaryKey, AutoIncrement]
         public long DataId { get; set; }
-        public int timestamp {get; set;}
+        public double timestamp { get; set; }
         public double accX { get; set; }
         public double accY { get; set; }
         public double accZ { get; set; }
