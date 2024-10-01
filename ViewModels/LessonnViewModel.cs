@@ -39,7 +39,8 @@ namespace MAUI_IOT.ViewModels
     public partial class LessonnViewModel : ObservableObject
     {
         private readonly string LessonName = "bai_1";
-
+        [ObservableProperty]
+        private int countNumberExperiment = 0;
         //Services
         private readonly IConnect _connect;
         private readonly IPublish _publisher;
@@ -148,7 +149,13 @@ namespace MAUI_IOT.ViewModels
         [ObservableProperty]
         private bool isEnableButtonStart = true;
         [ObservableProperty]
+        private bool isEnableButtonSave = false;
+        [ObservableProperty]
         private bool isStartingButtonStart = false;
+        [ObservableProperty]
+        private bool isCaculateRegression = false;
+        [ObservableProperty]
+        private bool isSaveData = false;
         [ObservableProperty]
         private bool isEnableTabAll = false;
         [ObservableProperty]
@@ -157,6 +164,8 @@ namespace MAUI_IOT.ViewModels
         private bool isValidEntryWeight = true;
         [ObservableProperty]
         private bool isButtonSelectActive = false;
+        [ObservableProperty]
+        private bool isStartingButtonSave = false;
         [ObservableProperty]
         private object zoomAndPanningMode = LiveChartsCore.Measure.ZoomAndPanMode.X;
         private bool isDoubleClickedChart = false;
@@ -264,9 +273,11 @@ namespace MAUI_IOT.ViewModels
         private ObservableCollection<Experiment> experiments = new ObservableCollection<Experiment>();
 
         [ObservableProperty]
-        private Dictionary<string, ObservableCollection<Data>> datas_database = new Dictionary<string, ObservableCollection<Data>>();
-        private Dictionary<string, ObservableCollection<ExperimentConfig>> ExperimentConfigs_database { get; set; } = new Dictionary<string, ObservableCollection<ExperimentConfig>>();
-        private Dictionary<string , ObservableCollection<DataSummarize>> DataSummarizes_database { get; set; } = new Dictionary<string, ObservableCollection<DataSummarize>>();
+        private ObservableCollection<ObservableCollection<Data>> datas_database = new ObservableCollection<ObservableCollection<Data>>();
+        [ObservableProperty]
+        private ObservableCollection<ExperimentConfig> experimentConfigs_database = new ObservableCollection<ExperimentConfig>();
+        [ObservableProperty]
+        private ObservableCollection<DataSummarize> dataSummarizes_database = new ObservableCollection<DataSummarize>();
 
         //Regression
         [ObservableProperty]
@@ -525,7 +536,7 @@ namespace MAUI_IOT.ViewModels
             //MQTT connect
             mqttFactory = new MqttFactory();
             _mqttClient = mqttFactory.CreateMqttClient();
-
+            
             //File
 
             //Create a table managerment experiments
@@ -566,10 +577,10 @@ namespace MAUI_IOT.ViewModels
             Datas.Clear();
 
             _mqttClient = mqttFactory.CreateMqttClient();
-            //_mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
-            _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8081, "iot", "iot@123456");
+            _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
+            //_mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8081, "iot", "iot@123456");
             _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD/data");
-
+            
             Config config = new Config(5000, 50);
             string config_json = System.Text.Json.JsonSerializer.Serialize(config);
 
@@ -619,10 +630,27 @@ namespace MAUI_IOT.ViewModels
         private string textButtonSelect = "Select Range";
 
         [RelayCommand]
-        private void OnStart()
+        private async Task OnStart()
         {
             Debug.Write("OnStart");
+            if (IsSaveData || CountNumberExperiment < 1)
+            {
+                CountNumberExperiment++;
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Thông báo!", "Vui lòng lưu dữ liệu trước", "Đồng ý");
+                return;
+            }
 
+            if (CountNumberExperiment > 1)
+            {
+                bool answer = await Shell.Current.DisplayAlert("Thông báo", $"Tạo mới thí nghiệm thứ: {CountNumberExperiment}", "Đồng ý", "Hủy");
+                if (!answer) {
+                    CountNumberExperiment--;
+                    return;
+                } 
+            }
 
             Debug.WriteLine("Khối lượng" + Weight + "\n Tốc độ lấy mẫu: " + SamplingRate + "\n Thời gian lấy mẫu: " + SamplingDuration + ")");
             //if (!IsEnableButtonStart) return;
@@ -632,15 +660,19 @@ namespace MAUI_IOT.ViewModels
             //if (!IsValidEntryWeight) return;
 
             Debug.WriteLine("Start button was clicked");
-            Task.Run(async () => { await Connect(); });
+            _ = Connect();
+            //Task.Run(async () => { await Connect(); });
             ColorButtonStart = InActive;
             ColorButtonStop = Active;
             ColorButtonSave = InActive;
 
             IsEnableButtonStop = true;
             IsEnableButtonStart = false;
+            IsEnableButtonSave = false;
             IsEnableEntryWeight = false;
             IsStartingButtonStart = true;
+            IsEnableButtonSave = false;
+            IsSaveData = false;
         }
 
         [RelayCommand]
@@ -648,20 +680,27 @@ namespace MAUI_IOT.ViewModels
         {
             Debug.Write("OnStop");
 
-            if (Datas == null || Datas.Count < 0) return;
+
+            IsEnableButtonStart = true;
+            IsEnableButtonStop = false;
+            IsEnableButtonSave = true;
+            IsEnableTabAll = true;
+            IsEnableEntryWeight = true;
+            IsStartingButtonStart = false;
+            IsCaculateRegression = true;
+            ColorButtonStart = Active;
+            ColorButtonStop = InActive;
+            ColorButtonSave = Active;
+
+            if (Datas == null || Datas.Count < 1) return;
 
             Debug.WriteLine("Stop button was clicked");
             Task.Run(async () => await Disconnect());
 
-            IsEnableButtonStart = true;
-            IsEnableButtonStop = false;
-            IsEnableTabAll = true;
-            IsEnableEntryWeight = true;
-            IsStartingButtonStart = false;
-            ColorButtonStart = Active;
-            ColorButtonStop = InActive;
+
             summarizeResult();
 
+            
             try
             {
                 ARegression = getLinearRegression(AccA);
@@ -672,6 +711,8 @@ namespace MAUI_IOT.ViewModels
             catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
             }
+            IsCaculateRegression = false;
+            Debug.WriteLine("Onstop end");
             //SelectedDatas = new ObservableCollection<Data>(Datas);
         }
 
@@ -784,7 +825,17 @@ namespace MAUI_IOT.ViewModels
         [RelayCommand]
         public async Task Save()
         {
-            if(Datas.Count < 0) { return; }
+            IsStartingButtonSave = true;
+            IsEnableButtonStart = false;
+
+            if(Datas.Count < 1 || Datas == null)
+            { 
+                await Shell.Current.DisplayAlert("Thông báo", "Chưa có dữ liệu", "Hủy");
+                IsEnableButtonStart = true;
+                IsStartingButtonSave = false;
+                IsSaveData = true;
+                return;
+            }
 
             Debug.WriteLine("Save file starting.....");
             try
@@ -803,30 +854,33 @@ namespace MAUI_IOT.ViewModels
             countExperiment++;
             try
             {
-                await DatabaseHelper.AddAsync(new Experiment
+                var experiment = new Experiment
                 {
                     ExperimentId = PrimaryKey,
-                    ExperimentName = LessonName + " " + countExperiment.ToString(),
+                    ExperimentName = LessonName + " " + CountNumberExperiment.ToString(),
                     ExperimentManagerId = _primaryKey,
-                });
+                };
+                await DatabaseHelper.AddAsync(experiment);
 
-                await DatabaseHelper.AddAsync(new ExperimentConfig
+                var experimentConfig = new ExperimentConfig
                 {
                     Device = CurrentItems.Name.ToString(),
                     SamplingDuration = SamplingDuration,
                     SamplingRate = SamplingRate,
                     Weight = Weight,
                     ExperimentId = PrimaryKey,
-                });
+                };
+                await DatabaseHelper.AddAsync(experimentConfig);
 
-                await DatabaseHelper.AddAsync(new DataSummarize
+                var dataSummarize = new DataSummarize
                 {
                     AvgA = AvgA,
                     AvgF = AvgF,
                     Std_A = StandardDeviationA,
                     Std_F = StandardDeviationF,
                     ExperimentId = PrimaryKey
-                });
+                };
+                await DatabaseHelper.AddAsync(dataSummarize);
 
                 foreach(Data d in Datas)
                 {
@@ -841,10 +895,13 @@ namespace MAUI_IOT.ViewModels
                     });
                 }
 
-                Datas_database.Add(LessonName + " " + countExperiment.ToString(), Datas);
+                Datas_database.Add(Datas);
+                ExperimentConfigs_database.Add(experimentConfig);
+                DataSummarizes_database.Add(dataSummarize);
                 
             }
             catch (Exception ex) {
+                await Shell.Current.DisplayAlert("Thông báo", "Lưu thất bại", "Đồng ý");
                 Debug.WriteLine(ex.Message);
             }
 
@@ -857,7 +914,10 @@ namespace MAUI_IOT.ViewModels
                 ExperimentName = LessonName + " lần " + countExperiment.ToString(),
             });
 
-        
+            IsEnableButtonStart = true;
+            IsStartingButtonSave = false;
+            IsSaveData = true;
+            await Shell.Current.DisplayAlert("Thông báo", "Lưu thành công", "Đồng ý");
         }
 
         private async Task<string> LoadExperimentFromDatabase()
@@ -901,9 +961,9 @@ namespace MAUI_IOT.ViewModels
             //GEt list experiment for add data in dictionary
             ObservableCollection<Experiment> experiments = await DatabaseHelper.GetExperimentsByExperimentManagerId(experimentManagerId);
             foreach (Experiment experiment in experiments) {
-                Datas_database.Add(experiment.ExperimentId, await DatabaseHelper.GetDataByExperimentId(experiment.ExperimentId));
-                ExperimentConfigs_database.Add(experiment.ExperimentId, await DatabaseHelper.GetExperimentConfigByExperimentId(experiment.ExperimentId));
-                DataSummarizes_database.Add(experiment.ExperimentId, await DatabaseHelper.GetDataSummarizeByExperimentId(experiment.ExperimentId));
+                Datas_database.Add(await DatabaseHelper.GetDataByExperimentId(experiment.ExperimentId));
+                ExperimentConfigs_database.Add(await DatabaseHelper.GetExperimentConfigByExperimentId(experiment.ExperimentId));
+                DataSummarizes_database.Add(await DatabaseHelper.GetDataSummarizeByExperimentId(experiment.ExperimentId));
             }
 
             //Load data into collection view
@@ -915,16 +975,6 @@ namespace MAUI_IOT.ViewModels
         private void getDataFromExperimentId(string id)
         {
             IsLoadingDataFromDataBase = true;
-            try
-            {
-                currentFileData = Datas_database[id];
-                currentFileExperimentConfig = ExperimentConfigs_database[id];
-                currentFileDataSummarize = DataSummarizes_database[id];
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
 
             if (currentFileData.Count < 1 || currentFileDataSummarize.Count < 1 || currentFileExperimentConfig.Count < 1) 
                 return;
@@ -935,15 +985,15 @@ namespace MAUI_IOT.ViewModels
             SamplingRate = currentFileExperimentConfig.First().SamplingRate;
             Weight = currentFileExperimentConfig.First().Weight;
 
-            _accX.Clear();
-            _accY.Clear();
-            _accZ.Clear();
+            AccX.Clear();
+            AccY.Clear();
+            AccZ.Clear();
 
             foreach (Data data in SelectedDatas)
             {
-                _accX.Add(new ObservablePoint(data.timestamp, data.accX));
-                _accY.Add(new ObservablePoint(data.timestamp, data.accY));
-                _accZ.Add(new ObservablePoint(data.timestamp, data.accZ));
+                AccX.Add(new ObservablePoint(data.timestamp, data.accX));
+                AccY.Add(new ObservablePoint(data.timestamp, data.accY));
+                AccZ.Add(new ObservablePoint(data.timestamp, data.accZ));
             }
 
             AvgA = currentFileDataSummarize.First().AvgA;
@@ -1050,23 +1100,30 @@ namespace MAUI_IOT.ViewModels
         [RelayCommand]
         private async Task DeleteSelected(ExperimentManager selectedExperimentManager)
         {
-            if (selectedExperimentManager != null)
+            try
             {
-                ExperimentManagers.Remove(selectedExperimentManager);
-                await DatabaseHelper.DeleteExperimentManagerById(selectedExperimentManager.ExperimentManagerId);
-                
-                ObservableCollection<Experiment> experimentId = await DatabaseHelper.GetExperimentsByExperimentManagerId(selectedExperimentManager.ExperimentManagerId);
-
-                if (experimentId.Count < 1 || experimentId == null) return;
-
-                foreach(Experiment experiment in experimentId)
+                if (selectedExperimentManager != null)
                 {
-                    await DatabaseHelper.DeleteByExperimentId(experiment.ExperimentId);
+                    ExperimentManagers.Remove(selectedExperimentManager);
+                    await DatabaseHelper.DeleteExperimentManagerById(selectedExperimentManager.ExperimentManagerId);
+
+                    ObservableCollection<Experiment> experimentId = await DatabaseHelper.GetExperimentsByExperimentManagerId(selectedExperimentManager.ExperimentManagerId);
+
+                    if (experimentId.Count < 1 || experimentId == null) return;
+
+                    foreach (Experiment experiment in experimentId)
+                    {
+                        await DatabaseHelper.DeleteByExperimentId(experiment.ExperimentId);
+                    }
+
+                    await DatabaseHelper.DeleteByExperimentId(selectedExperimentManager.ExperimentManagerId);
+
+                    Debug.WriteLine("Delete file success: " + selectedExperimentManager.ExperimentManagerName);
                 }
-
-                await DatabaseHelper.DeleteByExperimentId(selectedExperimentManager.ExperimentManagerId);
-
-                Debug.WriteLine("Delete file success: " + selectedExperimentManager.ExperimentManagerName);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
         }
 

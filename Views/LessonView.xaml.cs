@@ -9,7 +9,7 @@ namespace MAUI_IOT.Views;
 public partial class LessonView : ContentPage
 {
     private LessonnViewModel _lessonnViewModel;
-    private List<String> Series = new List<string>() { "Series_X", "Series_Y" };
+    private List<String> Series = new List<string>() { "Series_X", "Series_Y", "Series_Z" };
 
     public LessonView(LessonnViewModel lessonnViewModel)
     {
@@ -53,6 +53,11 @@ public partial class LessonView : ContentPage
         Button buttonStop = new Button
         {
             Text = "Stop",
+        };
+
+        Button buttonSave = new Button
+        {
+            Text = "Save",
         };
 
         charts.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
@@ -99,9 +104,31 @@ public partial class LessonView : ContentPage
         };
         buttonStop.SetBinding(Button.CommandProperty, StopCommand);
 
+
+        var IsEnableSave = new Binding
+        {
+            Path = "IsEnableButtonSave",
+            Mode = BindingMode.OneWay,
+        };
+        buttonSave.SetBinding(Button.IsEnabledProperty, IsEnableSave);
+
+        var BackGroundColorSave = new Binding
+        {
+            Path = "ColorButtonSave",
+            Mode = BindingMode.OneWay,
+        };
+        buttonSave.SetBinding(Button.BackgroundColorProperty, BackGroundColorSave);
+
+        var SaveCommand = new Binding
+        {
+            Path = "SaveCommand",
+            Mode = BindingMode.OneWay,
+        };
+        buttonSave.SetBinding(Button.CommandProperty, SaveCommand);
+
         stack.Children.Add(buttonStart);
         stack.Children.Add(buttonStop);
-
+        stack.Children.Add(buttonSave);
 
         //Add chart and button in grid
         for (int i = 0; i < listSeries.Count; i++)

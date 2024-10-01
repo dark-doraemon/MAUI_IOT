@@ -10,8 +10,7 @@
                          BackgroundColor="Transparent">
 
     <ScrollView Padding="30, 100">
-        
-        <Grid RowDefinitions="*, *, *, *, *,*,*, Auto" ColumnDefinitions="2*, 3*">
+        <Grid RowDefinitions="*, *, *, *, *, *, *, Auto" ColumnDefinitions="2*, 3*">
 
             <Label Grid.ColumnSpan="2" Grid.Row="0" Text="Thí nghiệm lần: 1" HorizontalOptions="Start" VerticalOptions="Center" FontAttributes="Bold" FontSize="24"/>
 

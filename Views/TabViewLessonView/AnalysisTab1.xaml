@@ -15,7 +15,7 @@
     <ContentView.Content>
         <Grid x:Name="tab1Grid" RowDefinitions="*, 3*">
 
-            <Grid ColumnDefinitions="*, *, *" RowDefinitions="*, *, *">
+            <Grid ColumnDefinitions="*, 2*, 2*" RowDefinitions="Auto, Auto, Auto">
                 <Label Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" Text="AVG"/>
                 <Label Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" Text="STD"/>
 

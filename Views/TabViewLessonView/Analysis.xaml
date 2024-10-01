@@ -9,7 +9,7 @@
 
     <ContentView.Content>
         <material:TabView TabPlacement="Bottom">
-            <material:TabView.TabHeaderItemTemplate>
+            <!--<material:TabView.TabHeaderItemTemplate>
                 <DataTemplate>
                     <Button Text="{Binding Title}"
                             Command="{Binding Command}" WidthRequest="150" CornerRadius="20" BackgroundColor="LightGreen">
@@ -25,7 +25,7 @@
                         </Button.Triggers>
                     </Button>
                 </DataTemplate>
-            </material:TabView.TabHeaderItemTemplate>
+            </material:TabView.TabHeaderItemTemplate>-->
             
             <material:TabItem Title="Tổng kết">
                 <material:TabItem.ContentTemplate>

@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using MAUI_IOT.Pages;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,8 +12,7 @@ namespace MAUI_IOT.Models.Data
     public class Experiment
     {
         [PrimaryKey]
-        public string ExperimentId { get; set; }
-        [Unique]
+        public string ExperimentId { get; set; } = string.Empty;
         public string ExperimentName { get; set; } = string.Empty;
         public DateTime DateTime { get; set; }
 

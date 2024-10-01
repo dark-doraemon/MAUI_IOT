@@ -43,7 +43,7 @@
                         <Label Grid.Row="4" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Tốc độ lấy mẫu"/>
                         <Label Grid.Row="5" Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Text="Thời gian lấy mẫu"/>
 
-                        <Label Grid.Row="1" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="1"/>
+                        <Label Grid.Row="1" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding CountNumberExperiment}"/>
                         <Label Grid.Row="2" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Device}"/>
                         <Label Grid.Row="3" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding Weight}"/>
                         <Label Grid.Row="4" Grid.Column="1" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="Start" Text="{Binding SamplingRate}"/>
@@ -64,10 +64,9 @@
 
                     <Grid x:Name="charts" Grid.Row="2" Grid.ColumnSpan="2"/>
 
+                    <ActivityIndicator Grid.RowSpan="2" IsRunning="True" IsVisible="{Binding IsCaculateRegression}"/>
+                    <ActivityIndicator Grid.RowSpan="2" IsRunning="True" IsVisible="{Binding IsStartingButtonSave}"/>
                 </Grid>
-
-
-
             </ScrollView>
 
         </material:TabItem>

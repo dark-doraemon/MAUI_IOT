@@ -13,36 +13,36 @@
     </ContentView.BindingContext>
     
     <ContentView.Content>
-        <Grid RowDefinitions="*" ColumnDefinitions="*" IsVisible="False">
-            <Grid Grid.Row="0" Grid.Column="0">
-                <CollectionView ItemsSource="{Binding Datas}" ItemsUpdatingScrollMode="KeepScrollOffset">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="data:Data" >
-                            <Grid ColumnDefinitions="*, *, *, *, *">
-                                <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
-                                <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+        <Grid x:Name="Content" RowDefinitions="Auto, *" ColumnDefinitions="*">
+            <Grid ColumnDefinitions="*, *, *, *, *, *" Grid.Row="0" Grid.Column="0">
+                <Label Grid.Column="0" Text="Time" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Column="1" Text="X" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Label Grid.Column="2" Text="Y" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Column="3" Text="Z" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Grid.Column="4" Text="F" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Load" Clicked="Button_Clicked" Grid.Column="5"/>
             </Grid>
+            
+            <Grid x:Name="gridCollection" Grid.Row="1" Grid.Column="0"/>
 
-            <Grid Grid.Row="0" Grid.Column="0">
-                <CollectionView ItemsSource="{Binding Datas_database.Keys}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="x:String">
-                            <Grid ColumnDefinitions="*, *, *" RowDefinitions="*">
-                                <material:CheckBox Grid.Column="0" Text="{Binding}" />
-                                <material:CheckBox Grid.Column="1" Text="{Binding}" />
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </Grid>
         </Grid>
     </ContentView.Content>
-       
+
+
+
 </ContentView>
+<!--<Grid Grid.Row="1" Grid.Column="0">
+    <CollectionView ItemsSource="{Binding Datas}" ItemsUpdatingScrollMode="KeepScrollOffset">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="data:Data" >
+                <Grid ColumnDefinitions="*, *, *, *, *">
+                    <Label Grid.Column="0" Text="{Binding timestamp, Converter={StaticResource ConverterTimestamp}}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="{Binding accX, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Label Grid.Column="2" Text="{Binding accY, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="3" Text="{Binding accZ, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="4" Text="{Binding force, StringFormat='{0:F2}'}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</Grid>-->
