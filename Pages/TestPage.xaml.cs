@@ -73,7 +73,7 @@ public partial class TestPage : ContentPage
     {
         if (Connectivity.Current.NetworkAccess == NetworkAccess.None)
         {
-            DisplayAlert("Message", "Bạn chưa kết nối internet", "OK");
+            await DisplayAlert("Message", "Bạn chưa kết nối internet", "OK");
         }
         else
         {
