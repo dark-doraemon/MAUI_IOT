@@ -580,36 +580,36 @@ namespace MAUI_IOT.ViewModels
             _mqttClient = mqttFactory.CreateMqttClient();
             // _mqttClient = await _connect.IConnect(mqttFactory, "test.mosquitto.org", 1883);
             _mqttClient = await _connect.IConnect(mqttFactory, "113.161.84.132", 8883, "iot", "iot@123456");
-            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD1/data");
+            _mqttClient = await _subscriber.ISubscriber(_mqttClient, "/ABCD12/data");
 
             Config config = new Config(5000, 50);
             string config_json = System.Text.Json.JsonSerializer.Serialize(config);
 
-            _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "ABCD/control/config/req");
-            _mqttClient = await _publisher.IPublisher(_mqttClient, "start", "/ABCD/control/start/req");
+            _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "/ABCD2/data");
+            _mqttClient = await _publisher.IPublisher(_mqttClient, "connected", "/ABCD2/data");
             _mqttClient.ApplicationMessageReceivedAsync += async e =>
+        {
+
+            var json = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
+            Packet packet = null;
+            try
             {
+                packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
 
-                var json = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-                Packet packet = null;
-                try
-                {
-                    packet = System.Text.Json.JsonSerializer.Deserialize<Packet>(json);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-
-                if (packet != null)
-                {
-                    draw.DrawChart(packet, AccX, AccY, AccZ, AccF, AccF, AccA, Datas, Sync);
-                }
-                else
-                {
-                    Debug.WriteLine($"Null");
-                }
-            };
+            if (packet != null)
+            {
+                draw.DrawChart(packet, AccX, AccY, AccZ, AccF, AccF, AccA, Datas, Sync);
+            }
+            else
+            {
+                Debug.WriteLine($"Null");
+            }
+        };
             await Task.Delay(Timeout.Infinite);
         }
         private async Task Disconnect()
@@ -1064,10 +1064,25 @@ namespace MAUI_IOT.ViewModels
         }
         private void summarizeResult()
         {
-            AvgF = Datas.Average(value => value.force);
-            AvgA = Datas.Average(value => value.a);
-            StandardDeviationF = caculateStandardDeviation(Datas.Select(value => value.force).ToList());
-            StandardDeviationA = caculateStandardDeviation(Datas.Select(value => value.a).ToList());
+            try
+            {
+                AvgF = Datas.Average(value => value.force);
+                AvgA = Datas.Average(value => value.a);
+                StandardDeviationF = caculateStandardDeviation(Datas.Select(value => value.force).ToList());
+                StandardDeviationA = caculateStandardDeviation(Datas.Select(value => value.a).ToList());
+
+            }
+            catch
+            {
+                AvgF = 0;
+                AvgA = 0;
+                StandardDeviationA = 0;
+                StandardDeviationF = 0;
+
+
+
+            }
+
         }
 
         private double caculateStandardDeviation(List<double> datas)

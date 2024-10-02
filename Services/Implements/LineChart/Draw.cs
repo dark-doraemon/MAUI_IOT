@@ -12,7 +12,7 @@ namespace MAUI_IOT.Services.Implements.LineChart
 {
     public class Draw : IDraw
     {
-        public void DrawChart(ObservableCollection<Data> data, ObservableCollection<ObservablePoint>_accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, object Sync)
+        public void DrawChart(ObservableCollection<Data> data, ObservableCollection<ObservablePoint> _accX, ObservableCollection<ObservablePoint> _accY, ObservableCollection<ObservablePoint> _accZ, ObservableCollection<ObservablePoint> _force, object Sync)
         {
             if (data != null)
             {
@@ -25,7 +25,7 @@ namespace MAUI_IOT.Services.Implements.LineChart
                     foreach (var a in data)
                     {
                         //chart
-                        double time = a.timestamp / 1000.0;
+                        double time = a.timestamp;
                         //chart
                         _accX.Add(new ObservablePoint(time, a.accX));
                         _accY.Add(new ObservablePoint(time, a.accY));
@@ -58,7 +58,7 @@ namespace MAUI_IOT.Services.Implements.LineChart
                     foreach (Data data in packet.data)
                     {
                         //chart
-                        double time = data.timestamp / 1000.0;
+                        double time = data.timestamp;
 
                         //chart
                         _accX.Add(new ObservablePoint(time, data.accX));

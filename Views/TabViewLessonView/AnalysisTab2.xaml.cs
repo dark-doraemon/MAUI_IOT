@@ -23,16 +23,28 @@ public partial class AnalysisTab2 : ContentView
     private void Button_Clicked(object sender, EventArgs e)
     {
         gridCollection1.Children.Clear();
-
-        Content.Children.Remove(gridCollection);
+        gridCollection1.ColumnDefinitions.Clear();
 
         tableDetail(gridCollection1);
 
-        Content.Children.Add(gridCollection);
+        this.InvalidateMeasure();
 
         LessonnViewModel l = BindingContext as LessonnViewModel;
-        Debug.WriteLine("Number of datas count: " + l.Datas_database.Count);
     }
+
+    //private void Button_Clicked(object sender, EventArgs e)
+    //{
+    //    gridCollection1.Children.Clear();
+
+    //    Content.Children.Remove(gridCollection);
+
+    //    tableDetail(gridCollection1);
+
+    //    Content.Children.Add(gridCollection);
+
+    //    LessonnViewModel l = BindingContext as LessonnViewModel;
+    //    Debug.WriteLine("Number of datas count: " + l.Datas_database.Count);
+    //}
 
     public Grid tableDetail(Grid view)
     {
@@ -47,7 +59,7 @@ public partial class AnalysisTab2 : ContentView
 
         for (int i = 0; i < columnCount; i++)
         {
-            view.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            view.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(500, GridUnitType.Absolute) });
             var grid = generateColumn(temp.Datas_database[i], i);
             view.Children.Add(grid);
             view.SetColumn(grid, i);
