@@ -20,7 +20,7 @@ public partial class AnalysisTab2 : ContentView
         }
     }
 
-    private void Button_Clicked(object sender, EventArgs e)
+    private async void Button_Clicked(object sender, EventArgs e)
     {
         gridCollection1.Children.Clear();
         gridCollection1.ColumnDefinitions.Clear();
@@ -148,9 +148,10 @@ public partial class AnalysisTab2 : ContentView
                 Grid grid = new Grid
                 {
                     ColumnDefinitions = {
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Auto }
-                },
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    },
+
                     RowDefinitions = {
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto }
