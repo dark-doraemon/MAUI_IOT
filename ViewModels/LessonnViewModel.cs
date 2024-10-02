@@ -34,6 +34,7 @@ using Microcharts;
 using MAUI_IOT.Services.Implements.LineChart;
 using MAUI_IOT.Services.Implements.DataManagement;
 using MAUI_IOT.Models;
+using ZXing.OneD;
 namespace MAUI_IOT.ViewModels
 {
     public partial class LessonnViewModel : ObservableObject
@@ -303,24 +304,25 @@ namespace MAUI_IOT.ViewModels
                 {
                     Values = AccF,
                     Fill = null,
-                    GeometryFill = null, // Màu cho điểm dữ liệu
-                    GeometryStroke = null, // Đường viền cho điểm dữ liệu
-                    Stroke = new SolidColorPaint(SKColors.Red) // Màu đường
+                    GeometryFill = null,
+                    GeometryStroke = null,
+                    LineSmoothness = 0,
+                    Stroke = new SolidColorPaint(SKColors.Red)
                     {
-                        StrokeThickness = StrokeThickness_All, // Độ dày đường
+                        StrokeThickness = StrokeThickness_All,
                     },
 
                 },
                 new LineSeries<ObservablePoint>
                 {
-                    Values = FRegression,
-                    //Values = new ObservableCollection<ObservablePoint>(),
+                    Values = null,
                     Fill = null,
-                    GeometryFill = null, // Màu cho điểm dữ liệu
-                    GeometryStroke = null, // Đường viền cho điểm dữ liệu
-                    Stroke = new SolidColorPaint(SKColors.MediumPurple) // Màu đường
+                    GeometryFill = null, 
+                    GeometryStroke = null,
+                    LineSmoothness = 0,
+                    Stroke = new SolidColorPaint(SKColors.MediumPurple) 
                     {
-                        StrokeThickness = StrokeThickness*2f, // Độ dày đường
+                        StrokeThickness = StrokeThickness*2f, 
                     },
                 },
             };
@@ -334,8 +336,8 @@ namespace MAUI_IOT.ViewModels
                     Fill = null,
                     GeometryFill = null,
                     GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = StrokeThickness }
-
+                    Stroke = new SolidColorPaint(SKColors.Red){StrokeThickness = StrokeThickness },
+                    LineSmoothness = 0
                 },
             };
 
@@ -348,8 +350,8 @@ namespace MAUI_IOT.ViewModels
                     Fill = null,
                     GeometryFill = null,
                     GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Black){StrokeThickness = StrokeThickness }
-
+                    Stroke = new SolidColorPaint(SKColors.Black){StrokeThickness = StrokeThickness },
+                    LineSmoothness = 0
                 },
             };
 
@@ -362,7 +364,8 @@ namespace MAUI_IOT.ViewModels
                     Fill = null,
                     GeometryFill = null,
                     GeometryStroke = null,
-                    Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = StrokeThickness }
+                    Stroke = new SolidColorPaint(SKColors.Blue){StrokeThickness = StrokeThickness },
+                    LineSmoothness = 0
                 },
             };
 
@@ -715,12 +718,14 @@ namespace MAUI_IOT.ViewModels
             {
                 ARegression = getLinearRegression(AccA);
                 FRegression = getLinearRegression(AccF);
-                SeriesRegression[0].Values = FRegression;
-                SeriesRegression[1].Values = SeriesRegression;
+                Series[1].Values = FRegression;
+                //SeriesRegression[0].Values = FRegression;
+                //SeriesRegression[1].Values = SeriesRegression;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Shell.Current.DisplayAlert("Thông báo", "Dữ liệu bị lỗi!", "Đồng ý");
+                Debug.WriteLine("Linear regression: " + ex.Message);
             }
             IsCaculateRegression = false;
             Debug.WriteLine("Onstop end");
@@ -909,7 +914,7 @@ namespace MAUI_IOT.ViewModels
                 Datas_database.Add(Datas);
                 ExperimentConfigs_database.Add(experimentConfig);
                 DataSummarizes_database.Add(dataSummarize);
-
+                Series[1].Values = FRegression;
             }
             catch (Exception ex)
             {
@@ -1071,7 +1076,6 @@ namespace MAUI_IOT.ViewModels
                 AvgA = Datas.Average(value => value.a);
                 StandardDeviationF = caculateStandardDeviation(Datas.Select(value => value.force).ToList());
                 StandardDeviationA = caculateStandardDeviation(Datas.Select(value => value.a).ToList());
-
             }
             catch
             {
@@ -1079,11 +1083,7 @@ namespace MAUI_IOT.ViewModels
                 AvgA = 0;
                 StandardDeviationA = 0;
                 StandardDeviationF = 0;
-
-
-
             }
-
         }
 
         private double caculateStandardDeviation(List<double> datas)
@@ -1197,7 +1197,7 @@ namespace MAUI_IOT.ViewModels
             foreach (var x in observablePoints)
             {
                 if (x != null)
-                    linearRegression.Add(new ObservablePoint(x.X, (double)(weight_bias.Item1 * x.Y + weight_bias.Item2)));
+                    linearRegression.Add(new ObservablePoint(x.X, (double)(weight_bias.Item1 * x.X + weight_bias.Item2)));
             }
             return linearRegression;
         }
