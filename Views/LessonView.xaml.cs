@@ -22,8 +22,8 @@ public partial class LessonView : ContentPage
         List<string> packetName = new List<string>();
         editBtn.ViewModel = lessonnViewModel;
 
-        listData.IsVisible = false;
-        listAllFile.IsVisible = false;
+        //listData.IsVisible = false;
+        //listAllFile.IsVisible = false;
     }
 
     private void GenarateGridWithCharts(List<string> listSeries, int rowNumber, bool isMaximize)
@@ -145,11 +145,11 @@ public partial class LessonView : ContentPage
         charts.SetRow(stack, rowNumber);
     }
 
-    private void Button_Clicked_1(object sender, EventArgs e)
-    {
-        listAllFile.IsVisible =  !listAllFile.IsVisible;
-        listData.IsVisible = !listAllFile.IsVisible;
-    }
+    //private void Button_Clicked_1(object sender, EventArgs e)
+    //{
+    //    listAllFile.IsVisible =  !listAllFile.IsVisible;
+    //    listData.IsVisible = !listAllFile.IsVisible;
+    //}
 
     private Grid GenerateChart(List<string> listSeries, int rowNumber, int chartIndex, bool isMaximize)
     {
@@ -279,9 +279,9 @@ public partial class LessonView : ContentPage
         return grid;
     }
 
-    private void Button_Clicked(object sender, EventArgs e)
-    {
-        listData.IsVisible = !listData.IsVisible;
-        listAllFile.IsVisible = !listData.IsVisible;
-    }
+    //private void Button_Clicked(object sender, EventArgs e)
+    //{
+    //    listData.IsVisible = !listData.IsVisible;
+    //    listAllFile.IsVisible = !listData.IsVisible;
+    //}
 }

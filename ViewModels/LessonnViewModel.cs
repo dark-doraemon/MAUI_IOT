@@ -586,7 +586,7 @@ namespace MAUI_IOT.ViewModels
             string config_json = System.Text.Json.JsonSerializer.Serialize(config);
 
             _mqttClient = await _publisher.IPublisher(_mqttClient, config_json, "/ABCD2/data");
-            _mqttClient = await _publisher.IPublisher(_mqttClient, "connected", "/ABCD2/data");
+            _mqttClient = await _publisher.IPublisher(_mqttClient, "Start", "/ABCD2/data");
             _mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
 
@@ -614,7 +614,7 @@ namespace MAUI_IOT.ViewModels
         }
         private async Task Disconnect()
         {
-            await _publisher.IPublisher(_mqttClient, "stop", "/ABCD/control/stop/req");
+            await _publisher.IPublisher(_mqttClient, "Stop", "/ABCD2/data");
             await _disconnect.IDisconnect(_mqttClient);
         }
 

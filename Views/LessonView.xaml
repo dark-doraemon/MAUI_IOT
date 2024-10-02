@@ -28,7 +28,7 @@
 
     <material:TabView x:Name="tab_View">
 
-        <material:TabItem Title="Experiment" x:Name="Experiment" >
+        <material:TabItem Title="Thí nghiệm" x:Name="Experiment" >
             <ScrollView Orientation="Vertical" Padding="10">
 
                 <Grid RowDefinitions="*, *" ColumnDefinitions="*" Grid.Row="0" Grid.Column="0">
@@ -71,7 +71,7 @@
 
         </material:TabItem>
 
-        <material:TabItem Title="Table" x:Name="table_results" IsVisible="True" >
+        <material:TabItem Title="Bảng kết quả" x:Name="table_results" IsVisible="True" >
             <material:TabItem.ContentTemplate>
                 <DataTemplate>
                     <tabView:Analysis BindingContext="{Binding .}" />
@@ -79,7 +79,7 @@
             </material:TabItem.ContentTemplate>
         </material:TabItem>
 
-        <material:TabItem Title="Database Mock">
+        <!--<material:TabItem Title="Database Mock" IsVisible="False">
             <Grid RowDefinitions="Auto, *, 2*">
 
                 <VerticalStackLayout>
@@ -141,7 +141,7 @@
                     </CollectionView>
                 </Grid>
             </Grid>
-        </material:TabItem>
+        </material:TabItem>-->
 
 
 

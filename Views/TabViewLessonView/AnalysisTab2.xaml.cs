@@ -20,31 +20,19 @@ public partial class AnalysisTab2 : ContentView
         }
     }
 
-    private async void Button_Clicked(object sender, EventArgs e)
+    private void Button_Clicked(object sender, EventArgs e)
     {
-        gridCollection1.Children.Clear();
-        gridCollection1.ColumnDefinitions.Clear();
+        gridCollection.Children.Clear();
 
-        tableDetail(gridCollection1);
+        Content.Children.Remove(gridCollection);
 
-        this.InvalidateMeasure();
+        tableDetail(gridCollection);
+
+        Content.Children.Add(gridCollection);
 
         LessonnViewModel l = BindingContext as LessonnViewModel;
+        Debug.WriteLine("Number of datas count: " + l.Datas_database.Count);
     }
-
-    //private void Button_Clicked(object sender, EventArgs e)
-    //{
-    //    gridCollection1.Children.Clear();
-
-    //    Content.Children.Remove(gridCollection);
-
-    //    tableDetail(gridCollection1);
-
-    //    Content.Children.Add(gridCollection);
-
-    //    LessonnViewModel l = BindingContext as LessonnViewModel;
-    //    Debug.WriteLine("Number of datas count: " + l.Datas_database.Count);
-    //}
 
     public Grid tableDetail(Grid view)
     {
@@ -59,7 +47,9 @@ public partial class AnalysisTab2 : ContentView
 
         for (int i = 0; i < columnCount; i++)
         {
-            view.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(500, GridUnitType.Absolute) });
+            view.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            view.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            view.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             var grid = generateColumn(temp.Datas_database[i], i);
             view.Children.Add(grid);
             view.SetColumn(grid, i);
@@ -68,11 +58,9 @@ public partial class AnalysisTab2 : ContentView
         return view;
     }
 
-    public IView generateColumn(ObservableCollection<Data> data, int ExperimentsTimes) // Thay YourDataType bằng kiểu dữ liệu thực tế
+    public IView generateColumn(ObservableCollection<Data> data, int i) // Thay YourDataType bằng kiểu dữ liệu thực tế
     {
         Grid columns = new Grid();
-        columns.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-        columns.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
         columns.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
         Grid headerGrid = new Grid
@@ -101,7 +89,7 @@ public partial class AnalysisTab2 : ContentView
         };
         var Times = new Label
         {
-            Text = $"Times {ExperimentsTimes} ",
+            Text = $"Times {i} ",
             BackgroundColor = Colors.LightGray,
             TextColor = Colors.Black,
             WidthRequest = 150,
@@ -134,11 +122,11 @@ public partial class AnalysisTab2 : ContentView
         headerGrid.SetRow(F, 1);
         headerGrid.SetRow(Times, 0);
         headerGrid.SetColumnSpan(Times, 2);
+
         // Thêm header vào cột
         columns.Children.Add(headerGrid);
-        Grid.SetRow(headerGrid, 0); // Đặt ở hàng đầu tiên
+        Grid.SetRow(headerGrid, 0);
 
-        // Tạo CollectionView cho phần còn lại
         var collectionView = new CollectionView
         {
             ItemsSource = data,
@@ -148,52 +136,41 @@ public partial class AnalysisTab2 : ContentView
                 Grid grid = new Grid
                 {
                     ColumnDefinitions = {
-                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                    },
-
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto }
+                },
                     RowDefinitions = {
-                    new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto }
                 }
                 };
 
                 var labelA = new Label
                 {
-                    TextColor = Colors.Black,
-                    WidthRequest = 75,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    FontAttributes = FontAttributes.Bold,
-
-
+                    BackgroundColor = Colors.Black,
+                    TextColor = Colors.Wheat
                 };
                 labelA.SetBinding(Label.TextProperty, "a", stringFormat: "{0:F3}");
 
                 var labelForce = new Label
                 {
-                    TextColor = Colors.Black,
-                    BackgroundColor = Colors.LightSkyBlue,
-                    WidthRequest = 75,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    FontAttributes = FontAttributes.Bold,
-
+                    BackgroundColor = Colors.Red
                 };
                 labelForce.SetBinding(Label.TextProperty, "force", stringFormat: "{0:F3}");
 
                 // Thêm Labels vào Grid
+
                 grid.Children.Add(labelA);
                 grid.Children.Add(labelForce);
                 grid.SetColumn(labelA, 0);
                 grid.SetColumn(labelForce, 1);
                 grid.SetRow(labelA, 0);
                 grid.SetRow(labelForce, 0);
-
                 return grid;
             })
         };
-        // Thêm CollectionView vào cột
+
         columns.Children.Add(collectionView);
-        Grid.SetRow(collectionView, 1); // Đặt ở hàng thứ hai
+        columns.SetColumn(collectionView, 1);
         return columns;
     }
 
